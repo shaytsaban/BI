@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הרצאה 1: מבוא לבינה עסקית (Business Intelligence) - מהדאטה אל ההחלטה</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&family=Heebo:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-light: #3B82F6;
+            --secondary: #059669;
+            --accent: #F59E0B;
+            --dark: #1F2937;
+            --light: #F3F4F6;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-top: 1.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+        }
+
+        /* --- Header / Hero --- */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), #1e40af, #312e81);
+            color: var(--white);
+            padding: 4rem 2rem;
+            border-radius: 0 0 var(--radius) var(--radius);
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            border: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .course-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .course-meta {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto 1.5rem auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lecturer-info {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .lecturer-info p {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .lecturer-info i {
+            margin-left: 8px;
+            color: #60A5FA;
+        }
+
+        /* --- Course Description --- */
+        .course-desc {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border-right: 5px solid var(--secondary);
+        }
+
+        .course-desc h3 {
+            margin-top: 0;
+            color: var(--secondary);
+            font-size: 1.4rem;
+        }
+
+        /* --- TOC --- */
+        .toc {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+            border-right: 5px solid var(--accent);
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .toc-item:hover {
+            background: #EFF6FF;
+            border-color: var(--primary-light);
+            transform: translateX(-3px);
+        }
+
+        .toc-num {
+            background: var(--primary);
+            color: var(--white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* --- Main Sections --- */
+        .section-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Concept Boxes --- */
+        .concept-box {
+            background: #EFF6FF;
+            border-right: 5px solid var(--primary-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .concept-box h4 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Actionable Box --- */
+        .actionable-box {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border-right: 5px solid #D97706;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .actionable-box h4 {
+            margin-top: 0;
+            color: #92400E;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Case Study --- */
+        .case-study {
+            background: linear-gradient(135deg, #FFF7ED, #FFFBEB);
+            border-right: 5px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .case-study h4 {
+            margin-top: 0;
+            color: #92400E;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Industry Box --- */
+        .industry-box {
+            background: linear-gradient(135deg, #ECFDF5, #F0FDF4);
+            border-right: 5px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .industry-box h4 {
+            margin-top: 0;
+            color: #065F46;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Career Box --- */
+        .career-box {
+            background: linear-gradient(135deg, #F5F3FF, #EDE9FE);
+            border-right: 5px solid #7C3AED;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .career-box h4 {
+            margin-top: 0;
+            color: #5B21B6;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .en-term {
+            direction: ltr;
+            display: inline-block;
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1rem;
+            margin: 0 5px;
+        }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+
+        tr:hover {
+            background-color: #F3F4F6;
+        }
+
+        /* --- Tool Cards --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        .tool-card .tool-logo {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tool-card h4 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .tool-card .tool-tag {
+            display: inline-block;
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .tool-card .tool-tag.highlight-tag {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        /* --- Stats Row --- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), #2563EB);
+            color: var(--white);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-card .stat-num {
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: 'Heebo', sans-serif;
+            line-height: 1;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .stat-card .stat-source {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .stat-card .stat-source a {
+            color: #93C5FD;
+            text-decoration: none;
+        }
+
+        .stat-card .stat-source a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Timeline --- */
+        .timeline {
+            position: relative;
+            padding-right: 30px;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-right: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: -28px;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            border: 3px solid var(--white);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .timeline-year {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* --- Question Bank --- */
+        .question-bank {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .question-bank h3 {
+            color: #334155;
+            margin-top: 0;
+            border-bottom: 2px solid #CBD5E1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #1E293B;
+        }
+
+        .difficulty-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .difficulty-easy { background: #D1FAE5; color: #065F46; }
+        .difficulty-medium { background: #FEF3C7; color: #92400E; }
+        .difficulty-hard { background: #FEE2E2; color: #991B1B; }
+
+        .options {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .options li {
+            margin-bottom: 0.5rem;
+            padding-right: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .options li:hover {
+            color: var(--primary-light);
+        }
+
+        .options li::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 7px;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #94A3B8;
+            border-radius: 50%;
+        }
+
+        .btn-reveal {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-reveal:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .answer-panel {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: #ECFDF5;
+            border-right: 4px solid var(--secondary);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .correct-opt {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        ul.bullet-list {
+            list-style-type: square;
+            margin-right: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        ul.bullet-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Tabs --- */
+        .tabs-container {
+            margin: 2rem 0;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-family: 'Heebo', sans-serif;
+            font-size: 1.05rem;
+            color: #64748B;
+            transition: all 0.2s;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1.5rem 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Collapsible --- */
+        .collapsible-header {
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            transition: background 0.2s;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        .collapsible-header:hover {
+            background: #E2E8F0;
+        }
+
+        .collapsible-header .arrow {
+            transition: transform 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .collapsible-header.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-body {
+            display: none;
+            padding: 1.5rem;
+            border: 1px solid #E2E8F0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background: var(--white);
+        }
+
+        .collapsible-body.open {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* --- Analogy Box --- */
+        .analogy-box {
+            background: linear-gradient(135deg, #FDF2F8, #FCE7F3);
+            border-right: 5px solid #DB2777;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .analogy-box h4 {
+            margin-top: 0;
+            color: #9D174D;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Footer --- */
+        .page-footer {
+            background: var(--dark);
+            color: #94A3B8;
+            text-align: center;
+            padding: 2rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 2rem;
+        }
+
+        .page-footer strong {
+            color: var(--white);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .section-card { padding: 1.5rem; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .toc-grid { grid-template-columns: 1fr; }
+            h2 { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="hero">
+        <p class="course-subtitle">המרכז האקדמי פרס | התוכנית למנהל עסקים | ההתמחות במערכות מידע</p>
+        <h1>בינה עסקית (Business Intelligence)</h1>
+        <p class="course-meta">הרצאה 1: מבוא לבינה עסקית — מהדאטה אל ההחלטה<br>סמסטר א' תשפ"ו (2026א) &nbsp;|&nbsp; תאריך: 10.3.2026</p>
+        <div class="lecturer-info">
+            <p><strong>מרצה:</strong> ד"ר שי צבאן</p>
+            <p><i class="fas fa-envelope"></i> shay.tsaban@gmail.com</p>
+            <p><i class="fas fa-phone"></i> 050-6551519</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Course Description -->
+        <div class="course-desc">
+            <h3><i class="fas fa-info-circle"></i> על הקורס</h3>
+            <p>קורס זה מספק לסטודנטים בתוכנית מנהל עסקים הבנה מעשית ותיאורטית של תחום הבינה העסקית (BI). במהלך הקורס נלמד כיצד ארגונים אוספים נתונים גולמיים מכלל מערכותיהם, מעבדים ומנתחים אותם, ומייצרים מהם <strong>תובנות מניעות-פעולה</strong> (Actionable Insights) שמשפרות את קבלת ההחלטות הניהוליות. הקורס ישלב הכרת כלים מובילים בתעשייה — ובראשם <strong>Tableau</strong> — לצד הבנת ארכיטקטורות נתונים, תהליכי אפיון עסקי, ומפת התפקידים בשוק העבודה. הקורס מותאם לסטודנטים ללא רקע טכני קודם.</p>
+        </div>
+
+        <!-- TOC -->
+        <div class="toc">
+            <h3><i class="fas fa-list-ol"></i> תוכן עניינים - מפת ההרצאה</h3>
+            <div class="toc-grid">
+                <a class="toc-item" href="#chapter1"><span class="toc-num">1</span> העקרונות של הבינה העסקית ותפקידה בקבלת החלטות</a>
+                <a class="toc-item" href="#chapter-tech"><span class="toc-num">2</span> טכנולוגיות תעשייה וכלים מובילים בשוק ה-BI</a>
+                <a class="toc-item" href="#chapter-careers"><span class="toc-num">3</span> מקצועות, תפקידים ותעשיות בעולם ה-BI</a>
+                <a class="toc-item" href="#chapter3"><span class="toc-num">4</span> תהליך אפיון המידע - זיהוי הנדרש להשגת מטרות</a>
+            </div>
+        </div>
+
+        <!-- BI Market Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num">$33-38B</div>
+                <div class="stat-label">שוק ה-BI העולמי (2025)</div>
+                <div class="stat-source"><a href="https://www.fortunebusinessinsights.com/business-intelligence-bi-market-103742" target="_blank">Fortune Business Insights</a> / <a href="https://www.precedenceresearch.com/business-intelligence-market" target="_blank">Precedence Research</a></div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #059669, #10B981);">
+                <div class="stat-num">~8%</div>
+                <div class="stat-label">קצב צמיחה שנתי (CAGR)</div>
+                <div class="stat-source"><a href="https://www.mordorintelligence.com/industry-reports/global-business-intelligence-bi-vendors-market-industry" target="_blank" style="color:#A7F3D0">Mordor Intelligence (8.17%)</a></div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #7C3AED, #8B5CF6);">
+                <div class="stat-num">80%+</div>
+                <div class="stat-label">מחברות Fortune 500 משתמשות ב-BI</div>
+                <div class="stat-source"><a href="https://straitsresearch.com/report/business-intelligence-market" target="_blank" style="color:#DDD6FE">Straits Research / 360Suite Survey</a></div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #DC2626, #EF4444);">
+                <div class="stat-num">35%</div>
+                <div class="stat-label">מהכנסות Amazon נובעות ממנוע ההמלצות</div>
+                <div class="stat-source"><a href="https://www.mdm.com/article/technology/ecommerce/amazons-secret-to-ai-powered-product-recommendations/" target="_blank" style="color:#FECACA">McKinsey / MDM</a></div>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             SECTION 1: CHAPTER 1
+             ============================================== -->
+        <div class="section-card" id="chapter1">
+            <h2>פרק 1: העקרונות של הבינה העסקית ותפקידה בקבלת החלטות</h2>
+            <p>בסביבה העסקית התחרותית של ימינו, ארגונים אוספים כמויות אדירות של נתונים ממשאבים טכנולוגיים שונים. עם זאת, איסוף המידע כשלעצמו אינו מהווה יתרון תחרותי. היתרון טמון ביכולת <strong>לנתח</strong> את המידע ולקבל בעזרתו <strong>החלטות עסקיות מושכלות</strong>. תהליך זה עומד בבסיסו של תחום הבינה העסקית.</p>
+            <p>חברות כגון <strong>Amazon</strong>, <strong>Netflix</strong> ו-<strong>Walmart</strong> הפכו למובילות בתעשיותיהן לא בזכות כמות הנתונים שלהן בלבד, אלא בזכות היכולת לנתח אותם ולפעול על בסיסם. ב-Amazon, למשל, מנוע ההמלצות שמבוסס על ניתוח התנהגות קנייה אחראי לכ-35% מסך ההכנסות (<a href="https://www.mdm.com/article/technology/ecommerce/amazons-secret-to-ai-powered-product-recommendations/" target="_blank">McKinsey</a>). ב-Netflix, אלגוריתם ההמלצות חוסך לחברה כ-1 מיליארד דולר בשנה בשימור מנויים (<a href="https://www.fool.com/investing/2016/06/19/how-netflixs-ai-saves-it-1-billion-every-year.aspx" target="_blank">The Motley Fool</a>).</p>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-book"></i> הגדרה פורמלית: בינה עסקית (BI)</h4>
+                <p><strong>Business Intelligence</strong> היא מערך של טכנולוגיות, תהליכים, ארכיטקטורות ומערכות, הממירים נתונים גולמיים <span class="en-term">Raw Data</span> למידע בעל משמעות ולתובנות עסקיות מניעות-פעולה <span class="en-term">Actionable Insights</span>. מטרת העל של מערכות ה-BI היא לתמוך ולשפר את איכות קבלת ההחלטות הניהוליות בארגון.</p>
+                <p style="margin-top:10px;">ההיסטוריה של המונח מתחילה ב-1958, כאשר חוקר IBM בשם <strong>Hans Peter Luhn</strong> הגדיר את הבינה העסקית כ"היכולת להבין את היחסים ההדדיים בין עובדות מוצגות באופן שמנחה פעולה לקראת מטרה רצויה". מאז חלה מהפכה: מדוחות מודפסים פעם ברבעון — לדשבורדים אינטראקטיביים בזמן אמת על מסך הנייד של המנכ"ל.</p>
+            </div>
+
+            <div class="actionable-box">
+                <h4><i class="fas fa-bullseye"></i> מהן "תובנות מניעות-פעולה" (Actionable Insights)?</h4>
+                <p>מונח מפתח בעולם ה-BI הוא <strong>Actionable Insights</strong> — תובנות שלא רק מתארות מה קרה, אלא <strong>אומרות לך מה לעשות</strong>. זה ההבדל בין "מידע מעניין" לבין "מידע שמשנה החלטה".</p>
+                <p style="margin-top:8px;"><strong>דוגמה:</strong> לדעת ש"שיעור הנטישה של לקוחות עלה ל-12%" — זה מידע. לדעת ש"לקוחות שלא השתמשו באפליקציה בחודש הראשון נוטשים ב-80%, ולכן צריך לשלוח להם מדריך שימוש ביום הראשון" — <strong>זו תובנה מניעת-פעולה</strong>.</p>
+                <p style="margin-top:8px;">תובנה מניעת-פעולה מאופיינת בשלושה מרכיבים: (1) <strong>ספציפית</strong> — מתייחסת לבעיה קונקרטית; (2) <strong>ברת-ביצוע</strong> — אפשר לפעול לפיה; (3) <strong>מבוססת ראיות</strong> — נתמכת בנתונים ולא באינטואיציה בלבד.</p>
+            </div>
+
+            <h3>פירמידת DIKW: מנתון לחכמה — מאיפה המודל הזה הגיע?</h3>
+            <p>כדי להבין את תפקיד ה-BI, יש להבחין בין ארבעה מושגי יסוד הנבנים זה על גבי זה. המודל הזה נקרא <strong>פירמידת DIKW</strong> (ראשי תיבות של Data, Information, Knowledge, Wisdom).</p>
+            
+            <div class="concept-box">
+                <h4><i class="fas fa-history"></i> מי המציא את פירמידת DIKW?</h4>
+                <p>מקורות הפירמידה שנויים במחלוקת, אך שני שמות מרכזיים קשורים אליה: <strong>Russell Ackoff</strong>, חלוץ בתחום חשיבה מערכתית, שניסח את ההיררכיה באופן מפורש במאמרו "From Data to Wisdom" ב-1989; ו-<strong>Milan Zeleny</strong>, שמיפה רמות דומות כבר ב-1987. הרעיון הבסיסי הוא אפילו עתיק יותר — המשורר <strong>T.S. Eliot</strong> כתב כבר ב-1934 בשירו <em>The Rock</em>: "Where is the wisdom we have lost in knowledge? Where is the knowledge we have lost in information?" (<a href="https://en.wikipedia.org/wiki/DIKW_pyramid" target="_blank">ויקיפדיה — DIKW Pyramid</a>).</p>
+            </div>
+
+            <ul class="bullet-list">
+                <li><strong>נתונים (Data):</strong> עובדות גולמיות, מספרים, תווים או סמלים חסרי הקשר. (דוגמה: המספר "1200").</li>
+                <li><strong>מידע (Information):</strong> נתונים שעברו עיבוד וקיבלו הקשר ומשמעות. (דוגמה: "1200 שקלים פדיון לשולחן מספר 4 במסעדה").</li>
+                <li><strong>ידע (Knowledge):</strong> הבנת המידע בתוך הקשר רחב יותר, זיהוי של תבניות או מגמות. (דוגמה: "הפדיון הממוצע בשולחנות משפחתיים בימי שלישי נמוך ב-30% משאר השבוע").</li>
+                <li><strong>בינה / חכמה (Wisdom / Intelligence):</strong> הפעלת הידע לצורך קבלת החלטה או נקיטת פעולה — כלומר <strong>Actionable Insight</strong>. (דוגמה: "נשיק מבצע ארוחות ילדים בחינם ביום שלישי כדי להעלות את הפדיון").</li>
+            </ul>
+            <p>מערכת ה-BI היא הגשר הדיגיטלי המאפשר לארגון לעלות במעלה הפירמידה הזו — מהנתון הגולמי בבסיס המסד ועד ל<strong>תובנה מניעת-פעולה</strong> במשרד המנכ"ל.</p>
+
+            <div class="case-study">
+                <h4><i class="fas fa-store"></i> דוגמה מהשטח: רשת שופרסל ודשבורד מכירות</h4>
+                <p>רשת שופרסל אוספת מדי יום מיליוני שורות נתונים מקופות רושמות, אפליקציית הנאמנות, ומערכות שרשרת אספקה. כשהמנכ"ל שואל "איך מתפקדת הרשת?", מערכת ה-BI ממירה מיליוני עסקאות לתצוגה של דשבורד עם מדדים כגון: פדיון יומי מול יעד, סל קניות ממוצע, שיעור המכירות מהאפליקציה, ואחוז פריטים אזלו מהמדף. בלי BI, היה צריך שבועות של עבודה ידנית באקסל כדי להפיק את אותם נתונים.</p>
+            </div>
+
+            <h3>ארכיטקטורה בסיסית של מערכת BI: מאחורי הקלעים</h3>
+            <p>עבור סטודנט השואף להשתלב בשוק העבודה, חשוב להכיר את שרשרת הערך (Pipeline) של הנתונים:</p>
+            <ol>
+                <li><strong>מקורות נתונים (Data Sources):</strong> המערכות התפעוליות של הארגון — קופות רושמות, מערכות CRM, אתר אינטרנט, מערכות ERP (כגון SAP, Priority), רשתות חברתיות, וחיישני IoT.</li>
+                <li><strong>תהליך ETL <span class="en-term">Extract, Transform, Load</span>:</strong> זהו השלב בו <strong>"שואבים" נתונים ממקורות שונים, "מנקים" אותם, ו"טוענים" אותם למקום מרכזי</strong>.</li>
+                <li><strong>מחסן נתונים <span class="en-term">Data Warehouse (DWH)</span>:</strong> מסד נתונים מרכזי ענק שמאחסן נתונים מכל הארגון לצורך ניתוח.</li>
+                <li><strong>שכבת מודלים סמנטיים <span class="en-term">Semantic Layer</span>:</strong> שכבה שמתרגמת את השמות הטכניים לשפה עסקית.</li>
+                <li><strong>שכבת התצוגה <span class="en-term">Dashboards & Reports</span>:</strong> הממשק שהמנהל רואה — דשבורד ב-Tableau או Power BI.</li>
+            </ol>
+
+            <div class="analogy-box">
+                <h4><i class="fas fa-lightbulb"></i> הסבר בשפה פשוטה: ETL, DWH, ו-Semantic Layer</h4>
+                <p>דמיינו מטבח במסעדה גדולה:</p>
+                <ul class="bullet-list">
+                    <li><strong>ETL = צוות ההכנה של המטבח.</strong> הם מקבלים סחורה ממספקים שונים (ירקות, בשר, דגים — בדיוק כמו נתונים ממקורות שונים). הם <strong>שואבים</strong> (Extract) את הסחורה, <strong>שוטפים, חותכים ומנקים</strong> אותה (Transform), ו<strong>מאחסנים</strong> אותה מסודרת במקרר הגדול (Load).</li>
+                    <li><strong>DWH (מחסן נתונים) = המקרר הגדול.</strong> כל הסחורה מכל הספקים מאוחסנת במקום אחד, מסודרת ונגישה. זה לא מקום שבו מבשלים (= לא מערכת תפעולית), אלא מקום שבו הכל <strong>שמור ומוכן לשימוש</strong>.</li>
+                    <li><strong>Semantic Layer = התפריט של המסעדה.</strong> הלקוח (המנהל) לא צריך לדעת שב-מקרר יש "חומר גלם 4517-B" — הוא רואה בתפריט "שניצל ביתי". באותו אופן, השכבה הסמנטית מתרגמת שמות טכניים של טבלאות (<code>tbl_trx_2024</code>) למונחים שהמנהל מבין: "עסקאות 2024".</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-balance-scale"></i> להבין מה BI אינו: השוואה בין ERP, אקסל ו-BI</h4>
+                <p>רבים מבלבלים בין מערכות המידע בארגון. הטבלה הבאה נועדה <strong>להדגיש מה הופך את ה-BI לייחודי</strong> — הוא לא כלי הזנה (כמו ERP) ולא כלי חישוב אישי (כמו אקסל), אלא <strong>כלי שמצליב נתונים מכל הארגון ומספק תמונה אסטרטגית</strong>.</p>
+
+                <p style="margin-top: 10px;"><strong>שני מושגים חשובים:</strong></p>
+                <ul class="bullet-list">
+                    <li><strong><span class="en-term">OLTP</span> (Online Transaction Processing):</strong> עיבוד פעולות בודדות בזמן אמת. כשקופאית סורקת מוצר בסופר — זו טרנזקציה. כשעובד מזין חשבונית ל-SAP — גם זו טרנזקציה. המערכת מטפלת בפעולות מהירות, קטנות, וממוקדות.</li>
+                    <li><strong><span class="en-term">OLAP</span> (Online Analytical Processing):</strong> ניתוח כמויות גדולות של נתונים. כשסמנכ"ל שואל "מה מגמת הרווחיות של כל הסניפים ב-5 השנים האחרונות?" — המערכת צריכה לסרוק מיליארדי רשומות ולהציג תשובה. זה OLAP, וזו הליבה של BI.</li>
+                </ul>
+
+                <table>
+                    <tr>
+                        <th>מאפיין</th>
+                        <th>אקסל (Excel)</th>
+                        <th>מערכת תפעולית / ERP</th>
+                        <th>מערכת בינה עסקית (BI)</th>
+                    </tr>
+                    <tr>
+                        <td><strong>מטרה עיקרית</strong></td>
+                        <td>ניתוח אישי, חישובים נקודתיים</td>
+                        <td>ניהול תהליכי ליבה ביצועיים — הזנת נתונים (OLTP)</td>
+                        <td>צילוב נתונים מכל הארגון ומתן תמונה אסטרטגית — ניתוח (OLAP)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>נפח נתונים</strong></td>
+                        <td>מוגבל, איטי בנתונים מורכבים</td>
+                        <td>טרנזקציות בודדות ומהירות</td>
+                        <td>שאילתות על מיליארדי רשומות</td>
+                    </tr>
+                    <tr>
+                        <td><strong>נקודת מבט</strong></td>
+                        <td>סטטי, סכנה ל"גרסאות אמת מרובות"</td>
+                        <td>נקודתי ("חשבונית 1045")</td>
+                        <td>ארגוני מתכלל — "גרסת אמת אחת"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>דוגמאות</strong></td>
+                        <td>Microsoft Excel, Google Sheets</td>
+                        <td>SAP, Oracle, Priority, Salesforce</td>
+                        <td>Tableau, Power BI, Qlik, Looker</td>
+                    </tr>
+                    <tr>
+                        <td><strong>משתמש טיפוסי</strong></td>
+                        <td>כל עובד, חשב, סטודנט</td>
+                        <td>עובד תפעולי, מנהל רכש</td>
+                        <td>מנהלים, אנליסטים, סמנכ"לים</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>ההיסטוריה הקצרה של ה-BI: מאיפה באנו?</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-year">שנות ה-60-70</span>
+                    <p>דוחות מודפסים על נייר מחורר (Mainframe Reports). המידע הגיע למנהלים פעם בחודש או ברבעון.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">שנות ה-80</span>
+                    <p>עידן ה-<span class="en-term">DSS - Decision Support Systems</span>. מערכות תמיכה בהחלטות. חברת <strong>Teradata</strong> משיקה את מחסן הנתונים הראשון.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">שנות ה-90</span>
+                    <p>Howard Dresner מ-Gartner Group מטביע את המונח "Business Intelligence" (1989). חברות כמו <strong>BusinessObjects</strong>, <strong>Cognos</strong> ו-<strong>MicroStrategy</strong> שולטות בשוק.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">שנות ה-2000</span>
+                    <p><strong>Tableau</strong> (2003) ו-<strong>QlikView</strong> מדמוקרטיזציה של הנתונים — כעת גם משתמש עסקי יכול לבנות דשבורד. SAP רוכשת את BusinessObjects, IBM רוכשת את Cognos.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="timeline-year">2015 - היום</span>
+                    <p>עידן הענן וה-AI. <strong>Tableau</strong> נרכשת ע"י Salesforce ב-2019 ב-15.7 מיליארד דולר — עדות להשפעתה. <strong>Power BI</strong> של מיקרוסופט צומח. מערכות ענן כגון <strong>Snowflake</strong> ו-<strong>Databricks</strong> משנות את כללי המשחק.</p>
+                </div>
+            </div>
+
+            <!-- QUESTION BANK CHAPTER 1 -->
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 1</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 1. מהו ההבדל המרכזי בין מערכת ERP למערכת BI?</p>
+                    <ul class="options">
+                        <li>א. מערכת ERP מיועדת לייצוא גרפים, בעוד BI מיועדת להזנת נתונים.</li>
+                        <li>ב. ERP משמשת לניהול תהליכים יומיומיים והזנת נתונים (OLTP), בעוד BI קוראת נתונים אלו לצורך ניתוח וקבלת החלטות (OLAP).</li>
+                        <li>ג. אין הבדל — אותה פלטפורמה.</li>
+                        <li>ד. BI משמשת רק IT, ו-ERP מיועדת להנהלה.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans1-1')">הצג פתרון</button>
+                    <div id="ans1-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: ERP היא מערכת תפעולית (OLTP) בה מוזנים נתונים כגון קליטת עובד או הפקת חשבונית. ה-BI נועד לשאיבת הנתונים, צילובם וניתוחם (OLAP) לטובת קבלת החלטות.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 2. מה תפקידו של תהליך ה-ETL?</p>
+                    <ul class="options">
+                        <li>א. עיצוב הדשבורד.</li>
+                        <li>ב. מחיקת נתונים ישנים.</li>
+                        <li>ג. קיצור של Executive Team Leader.</li>
+                        <li>ד. שליפת נתונים ממקורות, ניקויים והמרתם, וטעינתם למחסן הנתונים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans1-2')">הצג פתרון</button>
+                    <div id="ans1-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ד'</p>
+                        <p>הסבר: Extract (שליפה), Transform (המרה/ניקוי), Load (טעינה). כמו צוות ההכנה במטבח — מקבלים סחורה, מנקים ומארגנים אותה במקרר.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 3. על פי פירמידת DIKW, המשפט "פדיון סניף תל אביב ירד ב-15% ברבעון האחרון בהשוואה לשנה קודמת" נמצא ברמה של:</p>
+                    <ul class="options">
+                        <li>א. Data (נתון גולמי)</li>
+                        <li>ב. Information (מידע)</li>
+                        <li>ג. Knowledge (ידע)</li>
+                        <li>ד. Wisdom (חכמה/בינה)</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans1-4')">הצג פתרון</button>
+                    <div id="ans1-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ג' - Knowledge</p>
+                        <p>הסבר: ברמת הידע מזהים מגמות והשוואות לאורך זמן. ברמת Wisdom היינו מקבלים החלטה כגון "נשיק קמפיין שיווקי ממוקד לסניף" — וזו כבר תובנה מניעת-פעולה (Actionable Insight).</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 4. מהו ההבדל בין OLTP ל-OLAP?</p>
+                    <ul class="options">
+                        <li>א. OLTP מעבד טרנזקציות בודדות בזמן אמת, ואילו OLAP מנתח כמויות גדולות של נתונים לצורך קבלת החלטות.</li>
+                        <li>ב. OLAP הוא כלי לעיצוב גרפי ו-OLTP הוא כלי לבדיקת תכנה.</li>
+                        <li>ג. שניהם פועלים באותו אופן.</li>
+                        <li>ד. OLTP משמש ממשלות בלבד.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans1-5')">הצג פתרון</button>
+                    <div id="ans1-5" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: א'</p>
+                        <p>הסבר: OLTP = פעולות נקודתיות (סריקת מוצר, הפקת חשבונית). OLAP = ניתוח כמויות ענק (מגמת רווחיות ב-5 שנים). BI מבוסס על OLAP.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             SECTION 2: TECHNOLOGY & TOOLS
+             ============================================== -->
+        <div class="section-card" id="chapter-tech">
+            <h2>פרק 2: טכנולוגיות תעשייה וכלים מובילים בשוק ה-BI</h2>
+            <p>הבנת הנוף הטכנולוגי חיונית לסטודנט שנכנס לשוק העבודה. חשוב לציין: הכלי הוא רק אמצעי. מי שמבין את העקרונות יידע להתאים את עצמו לכל טכנולוגיה. <strong>בקורס שלנו נעבוד בעיקר עם Tableau</strong> — כלי שזכה להוקרה עולמית בזכות יכולות הויזואליזציה שלו, וזמין על כל מערכת הפעלה.</p>
+
+            <h3>כלי הצגה וויזואליזציה <span class="en-term">BI Visualization Platforms</span></h3>
+            <div class="tools-grid">
+                <div class="tool-card" style="border: 2px solid var(--accent); box-shadow: 0 0 0 1px var(--accent);">
+                    <div class="tool-logo">📈</div>
+                    <h4>Tableau (Salesforce) ⭐ הכלי שנלמד בקורס</h4>
+                    <p>נחשב לכלי בעל יכולות הוויזואליזציה <strong>החזקות ביותר</strong> בתעשייה. יתרונות עיקריים לסטודנטים:</p>
+                    <ul class="bullet-list" style="margin-top:8px;">
+                        <li><strong>Cross-Platform:</strong> עובד על Windows, Mac, ובגרסת Web — לא תלוי במערכת הפעלה.</li>
+                        <li><strong>Tableau Public:</strong> גרסה חינמית לחלוטין שמאפשרת ליצור ולפרסם דשבורדים — מושלם לבניית פורטפוליו.</li>
+                        <li><strong>אינטואיטיבי:</strong> ממשק Drag-and-Drop שמאפשר לבנות ויזואליזציות תוך דקות ללא קוד.</li>
+                        <li><strong>מוכר בתעשייה:</strong> נרכש ע"י <strong>Salesforce</strong> ב-2019 ב-15.7 מיליארד דולר. פופולרי בחברות טכנולוגיה ובשוק הגלובלי.</li>
+                    </ul>
+                    <p style="margin-top:8px;">משתמש בשפת <span class="en-term">VizQL</span> הייחודית שמתרגמת פעולות גרירה לשאילתות נתונים.</p>
+                    <span class="tool-tag highlight-tag">כלי הקורס שלנו</span>
+                    <span class="tool-tag">ויזואליזציה מתקדמת</span>
+                    <span class="tool-tag">Cross-Platform</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-logo">📊</div>
+                    <h4>Microsoft Power BI</h4>
+                    <p>כלי נפוץ בישראל בזכות האינטגרציה עם מוצרי מיקרוסופט (Office 365, Azure). כולל <strong>Power BI Desktop</strong> (חינמי, Windows בלבד), <strong>Power BI Service</strong> (ענן). מבוסס על שפת <span class="en-term">DAX</span>. יתרון: אם הארגון כבר עובד עם Microsoft, זה בחירה טבעית.</p>
+                    <span class="tool-tag">נפוץ בישראל</span>
+                    <span class="tool-tag">Windows Only (Desktop)</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-logo">🔗</div>
+                    <h4>Qlik Sense / QlikView</h4>
+                    <p>מאופיין ב-<span class="en-term">Associative Engine</span> — מנוע ייחודי המאפשר לחקור נתונים בכל כיוון ללא הגדרה מוקדמת. נפוץ בתעשיות הפיננסים והביטוח.</p>
+                    <span class="tool-tag">מנוע אסוציאטיבי</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-logo">🔍</div>
+                    <h4>Looker (Google Cloud)</h4>
+                    <p>כלי BI מבוסס-ענן של <strong>Google</strong> (נרכש ב-2020 ב-2.6 מיליארד דולר). מתבסס על שפת מודלים <span class="en-term">LookML</span>. מתחבר ל-BigQuery. פופולרי בסטארטאפים.</p>
+                    <span class="tool-tag">Cloud-Native</span>
+                    <span class="tool-tag">Google Cloud</span>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-logo">🐍</div>
+                    <h4>Python + Jupyter + Plotly/Dash</h4>
+                    <p>שילוב Python עם ספריות כמו <strong>Pandas</strong>, <strong>Plotly</strong>, ו-<strong>Dash</strong> מאפשר בניית דשבורדים מותאמים אישית. נפוץ בצוותי Data Science. פתרון חינמי ופתוח.</p>
+                    <span class="tool-tag">Open Source</span>
+                    <span class="tool-tag">Data Science</span>
+                </div>
+            </div>
+
+            <h3>טכנולוגיות תשתית: מחסן נתונים, אגם נתונים, וכלי ETL</h3>
+
+            <div class="analogy-box">
+                <h4><i class="fas fa-lightbulb"></i> הסבר אינטואיטיבי: מחסן נתונים (DWH) מול אגם נתונים (Data Lake)</h4>
+                <p>דמיינו שני סוגי אחסון:</p>
+                <ul class="bullet-list">
+                    <li><strong>מחסן נתונים (DWH) = ספרייה מסודרת.</strong> כל ספר ממוין לפי נושא, מקוטלג, ועומד על המדף הנכון. כשאתם מחפשים מידע — אתם מוצאים אותו מיד. <strong>היתרון:</strong> מהיר, מדויק, מוכן לשימוש. <strong>החיסרון:</strong> צריך להשקיע מראש בסידור (Schema-on-Write). דוגמאות: <strong>Snowflake</strong>, <strong>Google BigQuery</strong>, <strong>Amazon Redshift</strong>.</li>
+                    <li><strong>אגם נתונים (Data Lake) = מחסן ענק.</strong> זורקים פנימה הכל — ספרים, תמונות, סרטונים, קבצים בכל פורמט. אין סדר מוקדם — מסדרים רק כשצריך (Schema-on-Read). <strong>היתרון:</strong> גמיש, מאחסן הכל. <strong>החיסרון:</strong> יכול להפוך ל"ביצת נתונים" (Data Swamp) אם לא מנהלים נכון. דוגמאות: <strong>Amazon S3</strong>, <strong>Azure Data Lake</strong>.</li>
+                </ul>
+                <p style="margin-top:10px;"><strong>והפתרון המודרני?</strong> <span class="en-term">Data Lakehouse</span> — ארכיטקטורה חדשנית (מבית <strong>Databricks</strong>) שמשלבת את שני העולמות: הגמישות של אגם + הסדר של מחסן.</p>
+            </div>
+
+            <div class="analogy-box">
+                <h4><i class="fas fa-exchange-alt"></i> ETL מול ELT: למה עברו מגישה אחת לשנייה?</h4>
+                <p>בעבר (<strong>ETL</strong>), קודם ניקו ועיבדו את הנתונים (Transform) ורק אז טענו אותם למחסן (Load). למה? כי מחסני הנתונים היו יקרים ואיטיים — לא רצו "ללכלך" אותם בנתונים גולמיים.</p>
+                <p style="margin-top:8px;">כיום (<strong>ELT</strong>), עם מחסני ענן עוצמתיים כמו Snowflake ו-BigQuery, טוענים קודם את הנתון הגולמי (Load) ואז מנקים ומעבדים בתוך המחסן עצמו (Transform). למה? כי <strong>הענן עוצמתי מספיק</strong> לעשות את העיבוד בתוך עצמו, ואנחנו שומרים את הנתון המקורי (גם אם הוא מבולגן) למקרה שנצטרך אותו בעתיד.</p>
+                <p style="margin-top:8px;">כלי פופולרי לשכבת ה-Transform: <strong>dbt (Data Build Tool)</strong> — מאפשר לכתוב את לוגיקת הניקוי ב-SQL ולנהל אותה כקוד.</p>
+            </div>
+
+            <h3>הקשר לענן (Cloud): למה הכל עבר לשם?</h3>
+            <p>בעבר, ארגונים החזיקו שרתים פיזיים בחדר שרתים (On-Premise). כיום, רוב הארגונים עברו לענן — שרתים וירטואליים שמנוהלים ע"י חברות כמו Amazon (AWS), Microsoft (Azure), ו-Google (GCP). למה?</p>
+            <ul class="bullet-list">
+                <li><strong>גמישות:</strong> אם צריך יותר עוצמה — מגדילים בלחיצה. אם פחות — מקטינים.</li>
+                <li><strong>חיסכון:</strong> משלמים רק על מה שמשתמשים (Pay-per-Use), במקום לקנות שרתים יקרים מראש.</li>
+                <li><strong>נגישות:</strong> אפשר לגשת לנתונים מכל מקום בעולם.</li>
+                <li><strong>תחזוקה:</strong> ספק הענן מטפל בעדכונים, גיבויים, ואבטחה.</li>
+            </ul>
+
+            <table>
+                <tr>
+                    <th>ספק ענן</th>
+                    <th>אחסון</th>
+                    <th>מחסן נתונים</th>
+                    <th>ETL</th>
+                    <th>BI / ויזואליזציה</th>
+                </tr>
+                <tr>
+                    <td><strong>AWS (Amazon)</strong></td>
+                    <td>S3</td>
+                    <td>Redshift</td>
+                    <td>Glue</td>
+                    <td>QuickSight</td>
+                </tr>
+                <tr>
+                    <td><strong>Azure (Microsoft)</strong></td>
+                    <td>ADLS / Blob</td>
+                    <td>Synapse</td>
+                    <td>Data Factory</td>
+                    <td>Power BI</td>
+                </tr>
+                <tr>
+                    <td><strong>GCP (Google)</strong></td>
+                    <td>Cloud Storage</td>
+                    <td>BigQuery</td>
+                    <td>Dataflow</td>
+                    <td>Looker</td>
+                </tr>
+            </table>
+
+            <h3>ה-Modern Data Stack: "ערימת הנתונים המודרנית"</h3>
+            <div class="concept-box">
+                <h4><i class="fas fa-layer-group"></i> מה זה Modern Data Stack? (בשפה פשוטה)</h4>
+                <p>דמיינו שאתם בונים מפעל לייצור תובנות. כמו בכל מפעל, יש שרשרת ייצור עם תחנות:</p>
+                <ol>
+                    <li><strong>תחנת שאיבה (Ingestion):</strong> כלים כמו Fivetran / Airbyte מביאים נתונים מכל מקור (Salesforce, Google Analytics, מסדי נתונים) למקום אחד.</li>
+                    <li><strong>תחנת אחסון (Storage):</strong> Snowflake / BigQuery — המחסן שבו הנתונים יושבים.</li>
+                    <li><strong>תחנת ניקוי ועיבוד (Transform):</strong> dbt — מנקה, מארגן, ומכין את הנתונים.</li>
+                    <li><strong>תחנת תזמור (Orchestration):</strong> Airflow / Dagster — מוודא שהכל רץ בסדר הנכון ובזמן.</li>
+                    <li><strong>תחנת תצוגה (Visualization):</strong> <strong>Tableau</strong> / Power BI / Looker — מציג דשבורדים ודוחות למנהלים.</li>
+                </ol>
+                <p style="margin-top:10px;">כל תחנה היא <strong>כלי ענן נפרד</strong> שמתמחה בדבר אחד ועושה אותו מצוין. זה כמו "לגו" — מרכיבים מהחלקים הטובים ביותר במקום לקנות מערכת אחת ענקית ומגושמת.</p>
+            </div>
+
+            <!-- QUESTION BANK CHAPTER TECH -->
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 2 — טכנולוגיות</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 1. סטארטאפ ישראלי מחפש מחסן נתונים Serverless שמתמחר לפי כמות נתונים שנסרקת. מה מתאים?</p>
+                    <ul class="options">
+                        <li>א. Oracle Database (On-Premise)</li>
+                        <li>ב. Google BigQuery</li>
+                        <li>ג. Microsoft Excel Online</li>
+                        <li>ד. MySQL Community Edition</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans-tech-1')">הצג פתרון</button>
+                    <div id="ans-tech-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Google BigQuery הוא שירות Serverless ומתמחר לפי סריקה — מתאים לסטארטאפים שרוצים גמישות.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 2. מה ההבדל בין ETL ל-ELT?</p>
+                    <ul class="options">
+                        <li>א. ב-ETL מעבדים לפני הטעינה; ב-ELT טוענים גולמי ומעבדים בתוך המחסן.</li>
+                        <li>ב. ETL לענן בלבד, ELT לשרתים מקומיים.</li>
+                        <li>ג. אין הבדל.</li>
+                        <li>ד. ELT קשור לבינה מלאכותית.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans-tech-2')">הצג פתרון</button>
+                    <div id="ans-tech-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: א'</p>
+                        <p>הסבר: ELT התאפשר הודות לעוצמת מחסני הענן — אין צורך לנקות מבחוץ, המחסן חזק מספיק לעשות זאת בעצמו.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 3. מה ההבדל בין Data Lake ל-Data Warehouse?</p>
+                    <ul class="options">
+                        <li>א. אותו הדבר.</li>
+                        <li>ב. DWH מאחסן נתונים מסודרים ומובנים; Data Lake מאחסן הכל בצורה גולמית.</li>
+                        <li>ג. Data Lake מיועד רק לתמונות וסרטונים.</li>
+                        <li>ד. DWH זמין רק בענן, Data Lake רק בשרתים מקומיים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans-tech-3')">הצג פתרון</button>
+                    <div id="ans-tech-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: DWH = ספרייה מסודרת (Schema-on-Write). Data Lake = מחסן ענק שזורקים אליו הכל (Schema-on-Read). ארכיטקטורת Lakehouse משלבת את שניהם.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             SECTION 3: CAREERS & INDUSTRIES
+             ============================================== -->
+        <div class="section-card" id="chapter-careers">
+            <h2>פרק 3: מקצועות, תפקידים ותעשיות בעולם ה-BI</h2>
+            <p>תחום הבינה העסקית פתח שלל של תפקידים חדשים שלא היו קיימים לפני עשור. עבור סטודנטים, חשוב להבין את מפת הקריירה ולהכיר את המיומנויות הנדרשות לכל תפקיד.</p>
+
+            <h3>מפת התפקידים בעולם הנתונים <span class="en-term">Data Career Map</span></h3>
+            <table>
+                <tr>
+                    <th>תפקיד</th>
+                    <th>תיאור</th>
+                    <th>כלים ומיומנויות</th>
+                    <th>שכר ממוצע (ישראל)</th>
+                </tr>
+                <tr>
+                    <td><strong>BI Analyst</strong></td>
+                    <td>בונה דשבורדים, עונה על שאלות עסקיות, עובד מול הנהלה.</td>
+                    <td>Tableau / Power BI, SQL, Excel, הבנה עסקית</td>
+                    <td>₪18,000-28,000</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Analyst</strong></td>
+                    <td>מנתח נתונים לעומק, סטטיסטיקה, דוחות Ad-Hoc, זיהוי מגמות.</td>
+                    <td>SQL, Python/R, Excel, סטטיסטיקה</td>
+                    <td>₪16,000-25,000</td>
+                </tr>
+                <tr>
+                    <td><strong>Analytics Engineer</strong></td>
+                    <td>מגשר בין Data Engineer לבין Analyst. בונה מודלים של נתונים.</td>
+                    <td>SQL, dbt, Git, Snowflake/BigQuery</td>
+                    <td>₪25,000-40,000</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Engineer</strong></td>
+                    <td>בונה תשתית: צינורות ETL, מחסני נתונים. "האינסטלטור" של הנתונים.</td>
+                    <td>Python, SQL, Spark, Airflow, Cloud</td>
+                    <td>₪30,000-50,000</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Scientist</strong></td>
+                    <td>בונה מודלים סטטיסטיים ולמידת מכונה לחיזוי.</td>
+                    <td>Python, ML frameworks, סטטיסטיקה מתקדמת</td>
+                    <td>₪30,000-50,000+</td>
+                </tr>
+            </table>
+
+            <div class="career-box">
+                <h4><i class="fas fa-graduation-cap"></i> עבורך כסטודנט/ית: לאן לכוון?</h4>
+                <p>אם אתם לומדים <strong>מנהל עסקים עם התמחות במערכות מידע</strong> ואין לכם ניסיון טכני קודם — <strong>נקודת הכניסה הטבעית והריאלית ביותר</strong> היא תפקיד <strong>BI Analyst</strong> (אנליסט בינה עסקית) או <strong>Data Analyst</strong> (מנתח נתונים).</p>
+                
+                <p style="margin-top: 12px;"><strong>למה דווקא התפקידים האלה?</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>הם דורשים בדיוק את השילוב שלכם:</strong> הבנה עסקית (מהתואר במנהל עסקים) + ידע טכני בסיסי (מהקורסים במערכות מידע). אתם לא צריכים להיות מתכנתים.</li>
+                    <li><strong>הביקוש גבוה:</strong> כמעט כל ארגון בישראל מחפש אנליסטים. זה אחד התחומים עם הביקוש הגבוה ביותר.</li>
+                    <li><strong>שער כניסה לקריירה:</strong> אחרי שנה-שנתיים כאנליסט, אפשר להתקדם ל-Analytics Engineer, BI Developer, ואפילו Product Manager.</li>
+                </ul>
+
+                <p style="margin-top: 12px;"><strong>מה לעשות כבר עכשיו כדי להגדיל סיכויים?</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>SQL:</strong> למדו SELECT, JOIN, GROUP BY, ותתות-שאילתות. זו השפה הבסיסית ביותר — כמעט כל משרת נתונים דורשת אותה.</li>
+                    <li><strong>Tableau:</strong> בנו 2-3 דשבורדים על נתונים אמיתיים (מ-Kaggle או מידע ציבורי) ופרסמו ב-<strong>Tableau Public</strong> — זה הפורטפוליו שלכם.</li>
+                    <li><strong>Excel מתקדם:</strong> Pivot Tables, VLOOKUP/INDEX-MATCH, ולפחות בסיס ב-Power Query.</li>
+                    <li><strong>חשיבה עסקית:</strong> היכולת לתרגם שאלה עסקית ("למה הפדיון ירד?") לשאילתת נתונים — <strong>זו המיומנות שמפרידה בין אנליסט טוב למצוין</strong>. וזה בדיוק מה שתואר במנהל עסקים נותן לכם.</li>
+                </ul>
+                <p style="margin-top: 12px; background: rgba(124, 58, 237, 0.1); padding: 10px; border-radius: 6px;"><strong>טיפ חשוב:</strong> בקורות החיים, הדגישו את ה<strong>שילוב</strong>: "אנליסט עם הבנה עסקית וידע ב-SQL ו-Tableau". ארגונים מחפשים את מי ש"מדבר את שתי השפות" — גם עסקית וגם טכנולוגית.</p>
+            </div>
+
+            <h3>תעשיות שמשתמשות ב-BI באופן אינטנסיבי</h3>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🏦 בנקאות ופיננסים</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>בנקים כמו <strong>לאומי</strong> ו-<strong>הפועלים</strong> מפעילים מערכות BI מורכבות לניטור סיכונים, ניהול תיקי אשראי, ועמידה ברגולציה. חברות פינטק משתמשות ב-BI לזיהוי הונאות בזמן אמת. מדד KPI טיפוסי: Loss Ratio (יחס ההפסד).</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🛒 קמעונאות ו-E-Commerce</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>רשתות כמו <strong>שופרסל</strong>, <strong>רמי לוי</strong>, <strong>IKEA</strong> ו-<strong>Walmart</strong> משתמשות ב-BI לניהול מלאי, אופטימיזציית מבצעים, וסגמנטציית לקוחות. <strong>Amazon</strong> ממנפת BI לתמחור דינמי והמלצות מותאמות. מדדי KPI: סל ממוצע, Conversion Rate, Customer Lifetime Value.</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>⚕️ בריאות ופארמה</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>בתי חולים וקופות חולים (<strong>כללית</strong>, <strong>מכבי</strong>) משתמשים ב-BI לניתוח ביצועי מחלקות, ניבוי עומסי מיון, ומעקב אחר זמני המתנה. חברות פארמה משתמשות ב-BI למעקב אחר ניסויים קליניים ותופעות לוואי.</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>📱 Hi-Tech וסטארטאפים</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>חברות כמו <strong>Wix</strong>, <strong>Monday.com</strong>, <strong>Fiverr</strong> משתמשות ב-BI לניתוח התנהגות משתמשים, מעקב אחר מדדי SaaS (ARR, MRR, Churn), ואופטימיזציית Funnel. כלים פופולריים: <strong>Amplitude</strong>, <strong>Mixpanel</strong>, <strong>Looker</strong>.</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🏗️ נדל"ן ובינוי</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>חברות כמו <strong>עזריאלי</strong> ו-<strong>אמות</strong> משתמשות ב-BI לניתוח שיעורי תפוסה, פדיון למ"ר, ומגמות שוק. קבלנים משתמשים ב-BI לניהול תקציב פרויקטים ומעקב אחר ספקים.</p>
+            </div>
+
+            <div class="case-study">
+                <h4><i class="fas fa-lightbulb"></i> Case Study: איך Netflix משתמשת ב-BI?</h4>
+                <ul class="bullet-list">
+                    <li><strong>המלצות תוכן:</strong> מנתחים מיליארדי נקודות נתונים (מה צפית, מתי עצרת) כדי להמליץ על תוכן. חוסך ~$1B בשנה בשימור מנויים.</li>
+                    <li><strong>החלטות הפקה:</strong> "House of Cards" אושרה על בסיס ניתוח שהראה ביקוש לשילוב של קווין ספייסי + דרמה פוליטית + דייוויד פינצ'ר.</li>
+                    <li><strong>A/B Testing:</strong> כל שינוי בממשק (כולל התמונה הממוזערת של כל סרט!) נבדק על מיליוני משתמשים.</li>
+                </ul>
+                <p style="margin-top:8px;">כל אלו הן דוגמאות ל-<strong>Actionable Insights</strong> — תובנות שמובילות לפעולה קונקרטית.</p>
+            </div>
+
+            <!-- QUESTION BANK CAREERS -->
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 3</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 1. מה ההבדל בין Data Analyst ל-Data Engineer?</p>
+                    <ul class="options">
+                        <li>א. אין הבדל.</li>
+                        <li>ב. Data Analyst מנתח ומפיק תובנות; Data Engineer בונה את התשתית שמאפשרת את הניתוח.</li>
+                        <li>ג. Data Engineer עובד רק עם Excel.</li>
+                        <li>ד. Data Analyst מנהל צוותים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans-career-1')">הצג פתרון</button>
+                    <div id="ans-career-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Data Engineer = "האינסטלטור" שבונה צינורות. Data Analyst = "הטבח" שמשתמש בהם לבשל תובנות.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 2. חברת ביטוח רוצה דשבורד לניטור תביעות. מהו מדד KPI טיפוסי?</p>
+                    <ul class="options">
+                        <li>א. סל קניות ממוצע.</li>
+                        <li>ב. Loss Ratio (סך התביעות ÷ סך הפרמיות).</li>
+                        <li>ג. Monthly Active Users.</li>
+                        <li>ד. זמן המתנה ממוצע במיון.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans-career-2')">הצג פתרון</button>
+                    <div id="ans-career-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Loss Ratio הוא מדד מרכזי בביטוח — מראה כמה מההכנסות חוזרות כתביעות.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             SECTION 4: REQUIREMENTS
+             ============================================== -->
+        <div class="section-card" id="chapter3">
+            <h2>פרק 4: תהליך אפיון המידע — זיהוי הנדרש להשגת מטרות עסקיות</h2>
+            <p>טכנולוגיית BI לא תועיל אם הארגון מנתח את הדברים הלא נכונים. הגישה המקצועית היא <strong>Top-Down (מלמעלה למטה)</strong> — מתחילים מהמטרה העסקית, לא מהטכנולוגיה.</p>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-sitemap"></i> מתודולוגיית האפיון</h4>
+                <ol>
+                    <li><strong>הגדרת יעד עסקי <span class="en-term">Business Objective</span>:</strong> "הקטנת נטישת לקוחות ב-10% ברבעון הקרוב."</li>
+                    <li><strong>ניסוח שאלות עסקיות:</strong> "מי הם הלקוחות שבסיכון נטישה?" "באיזה שלב הם נוטשים?"</li>
+                    <li><strong>הגדרת <span class="en-term">KPI</span>:</strong> מדדים כמותיים — Retention Rate, Churn Rate.</li>
+                    <li><strong>איתור מקורות נתונים:</strong> <strong>רק כעת</strong> פונים ל-IT ושואלים: באילו מערכות שוכנים הנתונים?</li>
+                </ol>
+            </div>
+
+            <h3>KPI לעומק: דוגמאות לפי תעשייה</h3>
+            <p>KPI טוב הוא <strong>כמותי</strong>, <strong>רלוונטי</strong>, <strong>מוגבל בזמן</strong>, ו<strong>בר-השפעה</strong>.</p>
+
+            <table>
+                <tr>
+                    <th>תעשייה</th>
+                    <th>יעד עסקי</th>
+                    <th>KPI</th>
+                    <th>נוסחה</th>
+                </tr>
+                <tr>
+                    <td>קמעונאות</td>
+                    <td>הגדלת פדיון</td>
+                    <td>Average Order Value</td>
+                    <td>פדיון ÷ עסקאות</td>
+                </tr>
+                <tr>
+                    <td>SaaS</td>
+                    <td>שימור לקוחות</td>
+                    <td>Churn Rate</td>
+                    <td>לקוחות שעזבו ÷ לקוחות בתחילת תקופה</td>
+                </tr>
+                <tr>
+                    <td>בנקאות</td>
+                    <td>ניהול סיכונים</td>
+                    <td>NPL Ratio</td>
+                    <td>הלוואות בפיגור ÷ תיק אשראי</td>
+                </tr>
+                <tr>
+                    <td>שיווק דיגיטלי</td>
+                    <td>מקסום ROI</td>
+                    <td>CAC</td>
+                    <td>הוצאות שיווק ÷ לקוחות חדשים</td>
+                </tr>
+            </table>
+
+            <h3>מהו מסמך BRD?</h3>
+            <p>מסמך <span class="en-term">Business Requirements Document (BRD)</span> מתווך בין "השפה העסקית" של המנכ"ל לבין "השפה הטכנית" של המפתח. הוא מפרט בדיוק לאיזה מידע הארגון זקוק ואת הלוגיקה העסקית לחישוב המדדים.</p>
+
+            <div class="industry-box">
+                <h4><i class="fas fa-file-alt"></i> מבנה טיפוסי של מסמך BRD</h4>
+                <ol>
+                    <li><strong>תקציר מנהלים:</strong> תמצית הפרויקט.</li>
+                    <li><strong>רקע עסקי:</strong> מדוע נחוץ?</li>
+                    <li><strong>יעדים ו-KPIs:</strong> יעדים מדידים.</li>
+                    <li><strong>בעלי עניין (Stakeholders):</strong> מי ישתמש?</li>
+                    <li><strong>דרישות פונקציונליות:</strong> אילו דוחות? אילו פילטרים?</li>
+                    <li><strong>הגדרות עסקיות (Business Glossary):</strong> הגדרה מדויקת של כל מדד.</li>
+                    <li><strong>מקורות נתונים:</strong> מאילו מערכות?</li>
+                    <li><strong>דרישות לא-פונקציונליות:</strong> ביצועים, אבטחה, הרשאות.</li>
+                    <li><strong>לוח זמנים ותקציב.</strong></li>
+                </ol>
+            </div>
+
+            <div class="case-study">
+                <h4><i class="fas fa-building"></i> דוגמה: אפיון דשבורד מכירות לרשת מזון</h4>
+                <p>סמנכ"ל מכירות מבקש "דשבורד מכירות". לפני שמתחילים, האנליסט מבצע ראיון אפיון:</p>
+                <ul class="bullet-list">
+                    <li><strong>יעד:</strong> "הגדלת פדיון ב-8% בשנה הקרובה."</li>
+                    <li><strong>שאלות:</strong> "אילו סניפים מפגרים? אילו קטגוריות צומחות? מה השפעת מבצעים?"</li>
+                    <li><strong>KPIs:</strong> פדיון יומי/שבועי/חודשי, סל ממוצע, מכירות למ"ר, השוואה ליעד ולשנה קודמת.</li>
+                    <li><strong>ממדים (Dimensions):</strong> זמן, סניף, קטגוריה, ספק, סוג לקוח.</li>
+                </ul>
+                <p>רק <strong>לאחר</strong> שכל הפרטים מתועדים ומאושרים — מתחילים בבניית הדשבורד.</p>
+            </div>
+
+            <!-- QUESTION BANK CHAPTER 3 -->
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 4</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 1. מה הצעד הראשון באפיון פרויקט BI?</p>
+                    <ul class="options">
+                        <li>א. לחקור את בסיסי הנתונים.</li>
+                        <li>ב. לשבת עם ההנהלה ולהבין את המטרות העסקיות.</li>
+                        <li>ג. להתקין Tableau.</li>
+                        <li>ד. להכין Mockup באקסל.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans3-1')">הצג פתרון</button>
+                    <div id="ans3-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Top-Down = מתחילים מהעסק, לא מהטכנולוגיה.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 2. מה משמעות KPI?</p>
+                    <ul class="options">
+                        <li>א. Knowledge Process Integration.</li>
+                        <li>ב. Key Programming Interface.</li>
+                        <li>ג. Key Performance Indicator — מדד ביצוע מרכזי.</li>
+                        <li>ד. אינו רלוונטי ל-BI.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans3-2')">הצג פתרון</button>
+                    <div id="ans3-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ג'</p>
+                        <p>הסבר: KPI הוא ה"דופק" של הארגון — מכמת מטרות מופשטות למספר שאפשר לעקוב אחריו בדשבורד.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 3. מנהל שיווק שואל "כמה עולה לגייס לקוח חדש?" — באיזה KPI מדובר?</p>
+                    <ul class="options">
+                        <li>א. Churn Rate</li>
+                        <li>ב. CAC (Customer Acquisition Cost)</li>
+                        <li>ג. NPS</li>
+                        <li>ד. OEE</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('ans3-4')">הצג פתרון</button>
+                    <div id="ans3-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב' - CAC</p>
+                        <p>הסבר: CAC = הוצאות שיווק ÷ לקוחות חדשים. מדד קריטי בחברות SaaS.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             SUMMARY
+             ============================================== -->
+        <div class="section-card">
+            <h2>סיכום ההרצאה: מהנתון להחלטה</h2>
+            <table>
+                <tr>
+                    <th>נושא</th>
+                    <th>תובנה מרכזית</th>
+                </tr>
+                <tr>
+                    <td><strong>הגדרת BI</strong></td>
+                    <td>מערך טכנולוגיות הממיר נתונים גולמיים ל<strong>תובנות מניעות-פעולה</strong> (Actionable Insights).</td>
+                </tr>
+                <tr>
+                    <td><strong>פירמידת DIKW</strong></td>
+                    <td>Data → Information → Knowledge → Wisdom. BI מאיץ את המעבר עד ל-Actionable Insight.</td>
+                </tr>
+                <tr>
+                    <td><strong>ארכיטקטורה</strong></td>
+                    <td>Sources → ETL/ELT → DWH/Lakehouse → Semantic Layer → Dashboards.</td>
+                </tr>
+                <tr>
+                    <td><strong>כלים</strong></td>
+                    <td><strong>Tableau</strong> (כלי הקורס, Cross-Platform), Power BI (נפוץ בישראל), Qlik, Looker.</td>
+                </tr>
+                <tr>
+                    <td><strong>קריירה</strong></td>
+                    <td>נקודת כניסה: BI Analyst / Data Analyst. מיומנויות ליבה: SQL, Tableau, חשיבה עסקית.</td>
+                </tr>
+                <tr>
+                    <td><strong>אפיון</strong></td>
+                    <td>Top-Down: יעד עסקי → שאלות → KPIs → מקורות נתונים. מתועד במסמך BRD.</td>
+                </tr>
+            </table>
+
+            <div class="concept-box" style="background: linear-gradient(135deg, #ECFDF5, #F0FDF4); border-right-color: #059669;">
+                <h4 style="color: #065F46;"><i class="fas fa-rocket"></i> מסר לסטודנט</h4>
+                <p>עולם הבינה העסקית הוא אחד מתחומי הצמיחה המהירים ביותר בשוק העבודה. המפתח להצלחה אינו רק ידע טכני — אלא <strong>היכולת לגשר בין העולם העסקי לעולם הטכנולוגי</strong>. מי שמבין את השפה של המנכ"ל ויודע לתרגם אותה לדשבורד ב-Tableau — זהו האנליסט שכולם מחפשים.</p>
+            </div>
+        </div>
+
+
+        <!-- ==============================================
+             COMPREHENSIVE QUIZ
+             ============================================== -->
+        <div class="section-card">
+            <h2>בחן את עצמך: מבחן מסכם מקיף</h2>
+            <p>שאלות ברמות קושי שונות — קל, בינוני, מתקדם — לבדיקת הבנה מעמיקה של כלל החומר.</p>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-star"></i> שאלות ברמה קלה</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 1. מהי הגדרת Business Intelligence (BI)?</p>
+                    <ul class="options">
+                        <li>א. תוכנה ליצירת מצגות.</li>
+                        <li>ב. מערך טכנולוגיות ותהליכים שממיר נתונים גולמיים לתובנות מניעות-פעולה לצורך קבלת החלטות.</li>
+                        <li>ג. שם אחר למערכת ERP.</li>
+                        <li>ד. אלגוריתם של בינה מלאכותית.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-1')">הצג פתרון</button>
+                    <div id="final-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>BI = המרת נתונים גולמיים לתובנות שמובילות לפעולה.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 2. מה תפקיד שכבת ה-Semantic Layer?</p>
+                    <ul class="options">
+                        <li>א. אחסון נתונים פיזי.</li>
+                        <li>ב. תרגום שמות טכניים של טבלאות לשפה עסקית שמנהלים מבינים.</li>
+                        <li>ג. מחיקת נתונים ישנים.</li>
+                        <li>ד. עיצוב הלוגו של הדשבורד.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-2')">הצג פתרון</button>
+                    <div id="final-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>כמו "התפריט במסעדה" — מתרגם מ"חומר גלם 4517" ל"עסקאות 2024".</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 3. איזה כלי BI פועל על כל מערכת הפעלה (Windows, Mac, Web) ומציע גרסה חינמית?</p>
+                    <ul class="options">
+                        <li>א. Power BI Desktop</li>
+                        <li>ב. Tableau (Tableau Public)</li>
+                        <li>ג. SAP BusinessObjects</li>
+                        <li>ד. MicroStrategy</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-3')">הצג פתרון</button>
+                    <div id="final-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>Tableau הוא Cross-Platform ומציע Tableau Public בחינם. Power BI Desktop עובד רק על Windows.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-easy">קל</span> 4. מהו מסמך BRD?</p>
+                    <ul class="options">
+                        <li>א. מסמך טכני לכתיבת קוד SQL.</li>
+                        <li>ב. מסמך דרישות עסקיות שמתווך בין השפה העסקית לטכנית.</li>
+                        <li>ג. קיצור של Big Research Database.</li>
+                        <li>ד. דוח כספי שנתי.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-4')">הצג פתרון</button>
+                    <div id="final-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>Business Requirements Document — מגדיר מה הארגון צריך מהמערכת, בשפה שגם המנכ"ל וגם המפתח מבינים.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-bank" style="margin-top: 2rem;">
+                <h3><i class="fas fa-star"></i><i class="fas fa-star"></i> שאלות ברמה בינונית</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 5. חברת SaaS מגלה שלקוחות שלא השתמשו באפליקציה בשבוע הראשון נוטשים ב-70%. צוות הנתונים ממליץ לשלוח מייל הדרכה אוטומטי ביום הראשון. מה סוג התובנה?</p>
+                    <ul class="options">
+                        <li>א. Data — נתון גולמי.</li>
+                        <li>ב. Information — מידע עם הקשר.</li>
+                        <li>ג. Knowledge — זיהוי תבנית.</li>
+                        <li>ד. Actionable Insight — תובנה מניעת-פעולה (ברמת Wisdom).</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-5')">הצג פתרון</button>
+                    <div id="final-5" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ד'</p>
+                        <p>התובנה כוללת ידע (70% נוטשים) + המלצה לפעולה (שליחת מייל) = Actionable Insight.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 6. למה ארגונים עברו מ-ETL ל-ELT?</p>
+                    <ul class="options">
+                        <li>א. כי ממשלות חייבו אותם.</li>
+                        <li>ב. כי מחסני הענן חזקים מספיק לעבד נתונים בתוכם, וכך שומרים את הנתון המקורי.</li>
+                        <li>ג. כי ETL לא עובד בכלל.</li>
+                        <li>ד. כי ELT זול יותר תמיד.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-6')">הצג פתרון</button>
+                    <div id="final-6" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>עם מחסני ענן כמו Snowflake ו-BigQuery, אפשר לטעון גולמי ולעבד בתוך המחסן. ETL קלאסי עדיין קיים בארגונים מסורתיים.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 7. מה היתרון המרכזי של Data Lakehouse על פני DWH בלבד?</p>
+                    <ul class="options">
+                        <li>א. הוא זול יותר תמיד.</li>
+                        <li>ב. הוא משלב את הגמישות של Data Lake (אחסון כל סוגי נתונים) עם הסדר והאמינות של DWH.</li>
+                        <li>ג. הוא לא דורש שרתים כלל.</li>
+                        <li>ד. הוא מיועד רק לתמונות וסרטונים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-7')">הצג פתרון</button>
+                    <div id="final-7" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>Lakehouse = ספרייה מסודרת שיכולה גם לאחסן סרטים, תמונות ומסמכים — "הטוב משני העולמות".</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-medium">בינוני</span> 8. מה ה-Modern Data Stack?</p>
+                    <ul class="options">
+                        <li>א. תוכנה אחת שעושה הכל.</li>
+                        <li>ב. שרשרת של כלי ענן מתמחים — כל אחד עושה דבר אחד מצוין — משאיבת נתונים ועד דשבורד.</li>
+                        <li>ג. שם של חברת BI.</li>
+                        <li>ד. גישה שמיושנת ולא רלוונטית.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-8')">הצג פתרון</button>
+                    <div id="final-8" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>כמו "לגו" — מרכיבים מהכלים הטובים ביותר: Fivetran (שאיבה) + Snowflake (אחסון) + dbt (עיבוד) + Tableau (הצגה).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-bank" style="margin-top: 2rem;">
+                <h3><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> שאלות ברמה מתקדמת</h3>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-hard">מתקדם</span> 9. סמנכ"ל כספים וסמנכ"ל שיווק מציגים בישיבה מספרי רווח שונים לאותו רבעון. מה ככל הנראה הבעיה, ומה הפתרון מעולם ה-BI?</p>
+                    <ul class="options">
+                        <li>א. אחד מהם משקר. הפתרון: לפטר מישהו.</li>
+                        <li>ב. כל אחד השתמש בהגדרה שונה של "רווח" (בלי/עם הובלה, בלי/עם מע"מ). הפתרון: הגדרת Business Glossary במסמך BRD + "גרסת אמת אחת" במערכת BI.</li>
+                        <li>ג. מערכת ה-ERP תקולה. הפתרון: להחליף ל-SAP.</li>
+                        <li>ד. לא ניתן לפתור — זה מצב נורמלי בכל ארגון.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-9')">הצג פתרון</button>
+                    <div id="final-9" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>זו בדיוק הבעיה ש-BI פותרת: "גרסאות אמת מרובות". כשיש Business Glossary ברור ומערכת BI אחת — כולם רואים את אותם מספרים.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-hard">מתקדם</span> 10. מנהל מוצר בסטארטאפ מבקש "דשבורד שמראה לי הכל על הלקוחות". מה לא בסדר בבקשה הזו, ומה תעשו כאנליסט?</p>
+                    <ul class="options">
+                        <li>א. הבקשה מצוינת — נתחיל לבנות מיד דשבורד עם כל הנתונים שיש.</li>
+                        <li>ב. הבקשה חסרת מיקוד. כאנליסט, נשב איתו ונשאל: "מה המטרה העסקית? אילו שאלות אתה צריך לענות עליהן? אילו KPIs?" — נעבוד Top-Down.</li>
+                        <li>ג. נסביר לו שאי אפשר לבנות דשבורדים על לקוחות.</li>
+                        <li>ד. נעביר את הבקשה ל-IT ונחכה.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-10')">הצג פתרון</button>
+                    <div id="final-10" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>"הכל" = דשבורד מבולגן שאיש לא ישתמש בו. גישת Top-Down = מתחילים מהמטרה. זו בדיוק החשיבה העסקית שמפרידה אנליסט טוב ממי שרק יודע ללחוץ כפתורים.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-hard">מתקדם</span> 11. חברת קמעונאות בנתה דשבורד מבוסס BI שמראה שפדיון סניף חיפה ירד ב-20%. מנהלת הסניף טוענת שהנתונים לא כוללים מכירות אונליין שנשלחות מהסניף שלה. מה סוג הבעיה?</p>
+                    <ul class="options">
+                        <li>א. בעיית ויזואליזציה — הגרף לא ברור.</li>
+                        <li>ב. בעיית Data Source / ETL — מקור נתוני האונליין לא חובר למחסן הנתונים, ולכן הדשבורד מציג תמונה חלקית.</li>
+                        <li>ג. בעיה עסקית — הסניף באמת לא מוכר מספיק.</li>
+                        <li>ד. בעיית KPI — בחרו מדד לא נכון.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-11')">הצג פתרון</button>
+                    <div id="final-11" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>זו בעיה קלאסית של "סילו ארגוני" — מערכת האונליין לא מחוברת לתהליך ה-ETL. הדשבורד מציג רק חלק מהתמונה. זו סיבה מרכזית לחשיבות של אפיון מקורות נתונים מקיף ב-BRD.</p>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <p class="question-text"><span class="difficulty-tag difficulty-hard">מתקדם</span> 12. למה Russell Ackoff הציע את פירמידת DIKW, ומה הרלוונטיות שלה לעולם ה-BI?</p>
+                    <ul class="options">
+                        <li>א. הוא המציא את Excel ורצה לשווק אותו.</li>
+                        <li>ב. הוא רצה להראות שנתונים כשלעצמם חסרי ערך — רק כשמוסיפים הקשר, מזהים תבניות, ומפעילים שיקול דעת, מגיעים לבינה שמניעה פעולה. זה בדיוק מה ש-BI עושה.</li>
+                        <li>ג. הפירמידה לא רלוונטית ל-BI כלל.</li>
+                        <li>ד. הוא היה מהנדס תוכנה ב-Google.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('final-12')">הצג פתרון</button>
+                    <div id="final-12" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>Ackoff (1989) הראה שהערך לא בנתון עצמו אלא בתהליך העיבוד — Data → Information → Knowledge → Wisdom. מערכת BI היא הגשר הדיגיטלי שמאפשר לארגונים לעלות במעלה הפירמידה אל Actionable Insights.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End Container -->
+
+    <footer class="page-footer">
+        <p><strong>קורס: בינה עסקית</strong> | ד"ר שי צבאן | הרצאה 1 — מבוא לבינה עסקית</p>
+        <p style="margin-top: 5px; font-size: 0.9rem;">המרכז האקדמי פרס | התוכנית למנהל עסקים | סמסטר א' 2026</p>
+        <p style="margin-top: 5px; font-size: 0.85rem;">© כל הזכויות שמורות. חומר זה מיועד לסטודנטים הרשומים לקורס בלבד.</p>
+    </footer>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === "block") {
+                el.style.display = "none";
+            } else {
+                el.style.display = "block";
+            }
+        }
+
+        function switchTab(event, tabId) {
+            const container = event.target.closest('.tabs-container');
+            container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function toggleCollapsible(header) {
+            header.classList.toggle('open');
+            const body = header.nextElementSibling;
+            body.classList.toggle('open');
+        }
+
+        // Smooth scroll for TOC
+        document.querySelectorAll('.toc-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
