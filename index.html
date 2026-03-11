@@ -1,1 +1,366 @@
-
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בינה עסקית | BI — ד"ר שי צבאן</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&family=Noto+Sans+Hebrew:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #F6F7FB;
+            --bg-white: #FFFFFF;
+            --bg-warm: #FAFBFE;
+            --surface: #F0F1F7;
+            --border: rgba(0,0,0,0.06);
+            --border-hover: rgba(0,0,0,0.12);
+            --text: #1A1A2E;
+            --text-secondary: #4A4A6A;
+            --text-muted: #9494AD;
+            --accent: #5B4FE8;
+            --accent-light: #7B71FF;
+            --accent-bg: rgba(91,79,232,0.06);
+            --teal: #0ABFAC;
+            --teal-bg: rgba(10,191,172,0.08);
+            --gold: #E8A817;
+            --rose: #E85D75;
+            --shadow-soft: 0 2px 20px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 30px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 50px rgba(0,0,0,0.08);
+            --shadow-glow: 0 4px 30px rgba(91,79,232,0.12);
+            --radius: 20px;
+            --radius-sm: 14px;
+        }
+        body {
+            font-family: 'Noto Sans Hebrew', 'Rubik', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .bg-decor {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .bg-decor .blob {
+            position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+        }
+        .bg-decor .blob:nth-child(1) {
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(91,79,232,0.12) 0%, transparent 70%);
+            top: -250px; right: -150px;
+            animation: blobDrift 30s ease-in-out infinite alternate;
+        }
+        .bg-decor .blob:nth-child(2) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(10,191,172,0.1) 0%, transparent 70%);
+            bottom: -100px; left: -100px;
+            animation: blobDrift 24s ease-in-out infinite alternate-reverse;
+        }
+        .bg-decor .blob:nth-child(3) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(232,168,23,0.08) 0%, transparent 70%);
+            top: 40%; left: 60%;
+            animation: blobDrift 28s ease-in-out infinite alternate;
+            animation-delay: -8s;
+        }
+        @keyframes blobDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -30px) scale(1.06); }
+            100% { transform: translate(-20px, 20px) scale(0.96); }
+        }
+        .page { position: relative; z-index: 2; }
+        nav {
+            padding: 1.2rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(20px) saturate(1.2);
+            background: rgba(246,247,251,0.75);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--teal));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 0.8rem; color: white;
+            box-shadow: 0 2px 12px rgba(91,79,232,0.25);
+        }
+        .nav-title { font-weight: 700; font-size: 1rem; color: var(--text); }
+        .nav-title span { color: var(--text-muted); font-weight: 400; }
+        .nav-meta {
+            font-size: 0.82rem; color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace; direction: ltr;
+        }
+        .hero {
+            padding: 5rem 2rem 3.5rem; max-width: 850px;
+            margin: 0 auto; text-align: center;
+        }
+        .hero-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 18px;
+            background: var(--accent-bg);
+            border: 1px solid rgba(91,79,232,0.12);
+            border-radius: 100px;
+            font-size: 0.82rem; color: var(--accent); font-weight: 600;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.7s ease both;
+        }
+        .hero-chip .chip-dot {
+            width: 7px; height: 7px; background: var(--teal);
+            border-radius: 50%; box-shadow: 0 0 6px rgba(10,191,172,0.5);
+            animation: chipPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes chipPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(10,191,172,0.5); }
+            50% { opacity: 0.6; box-shadow: 0 0 2px rgba(10,191,172,0.3); }
+        }
+        .hero h1 {
+            font-family: 'Rubik', sans-serif;
+            font-size: clamp(2.6rem, 6vw, 4rem);
+            font-weight: 900; line-height: 1.15; letter-spacing: -1.5px;
+            margin-bottom: 1.2rem;
+            animation: fadeUp 0.7s ease 0.08s both;
+        }
+        .hero h1 .grad {
+            background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 40%, var(--teal) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero .sub {
+            font-size: 1.15rem; color: var(--text-secondary);
+            max-width: 560px; margin: 0 auto 1.2rem; font-weight: 400;
+            animation: fadeUp 0.7s ease 0.16s both;
+        }
+        .hero .institution {
+            font-size: 0.88rem; color: var(--text-muted);
+            animation: fadeUp 0.7s ease 0.24s both;
+        }
+        .hero .institution strong { color: var(--text-secondary); font-weight: 600; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stats {
+            max-width: 750px; margin: 0 auto 4.5rem; padding: 0 2rem;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+            animation: fadeUp 0.7s ease 0.32s both;
+        }
+        .stat-pill {
+            background: var(--bg-white); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 1.3rem 1rem;
+            text-align: center; box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+        .stat-pill:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .stat-pill .stat-emoji { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .stat-pill .stat-label {
+            font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted); margin-bottom: 0.15rem;
+        }
+        .stat-pill .stat-val { font-weight: 700; font-size: 1rem; color: var(--text); }
+        .divider {
+            max-width: 1060px; margin: 0 auto 2.5rem; padding: 0 2rem;
+            display: flex; align-items: center; gap: 18px;
+            animation: fadeUp 0.7s ease 0.4s both;
+        }
+        .divider .bar { flex: 1; height: 1px; background: var(--border); }
+        .divider h2 {
+            font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 3px; color: var(--text-muted);
+            font-weight: 700; white-space: nowrap;
+        }
+        .grid {
+            max-width: 1060px; margin: 0 auto 5rem; padding: 0 2rem;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+        }
+        .card {
+            background: var(--bg-white); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.8rem 1.6rem;
+            position: relative; overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: var(--shadow-soft);
+            animation: fadeUp 0.55s ease both;
+        }
+        .card:nth-child(1)  { animation-delay: 0.42s; }
+        .card:nth-child(2)  { animation-delay: 0.47s; }
+        .card:nth-child(3)  { animation-delay: 0.52s; }
+        .card:nth-child(4)  { animation-delay: 0.57s; }
+        .card:nth-child(5)  { animation-delay: 0.62s; }
+        .card:nth-child(6)  { animation-delay: 0.67s; }
+        .card:nth-child(7)  { animation-delay: 0.72s; }
+        .card:nth-child(8)  { animation-delay: 0.77s; }
+        .card:nth-child(9)  { animation-delay: 0.82s; }
+        .card:nth-child(10) { animation-delay: 0.87s; }
+        .card:nth-child(11) { animation-delay: 0.92s; }
+        .card:nth-child(12) { animation-delay: 0.97s; }
+        .card:hover {
+            transform: translateY(-4px); box-shadow: var(--shadow-lg);
+            border-color: var(--border-hover);
+        }
+        .card.live {
+            cursor: pointer;
+            border-color: rgba(91,79,232,0.15);
+            background: linear-gradient(135deg, var(--bg-white) 0%, rgba(91,79,232,0.02) 100%);
+        }
+        .card.live::before {
+            content: ''; position: absolute; top: 0; right: 0; left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--teal));
+            border-radius: 4px 4px 0 0;
+        }
+        .card.live:hover {
+            border-color: rgba(91,79,232,0.25); box-shadow: var(--shadow-glow);
+        }
+        .card.locked { opacity: 0.5; }
+        .card.locked:hover { opacity: 0.65; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .card-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 1rem;
+        }
+        .card-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem; font-weight: 600;
+            padding: 5px 12px; border-radius: 8px; direction: ltr;
+        }
+        .card.live .card-number { background: var(--accent-bg); color: var(--accent); }
+        .card.locked .card-number { background: var(--surface); color: var(--text-muted); }
+        .card-badge {
+            font-size: 0.68rem; font-weight: 700;
+            padding: 4px 12px; border-radius: 100px;
+            text-transform: uppercase; letter-spacing: 0.6px;
+        }
+        .badge-available { background: var(--teal-bg); color: var(--teal); }
+        .badge-coming { background: var(--surface); color: var(--text-muted); }
+        .card-body h3 {
+            font-weight: 700; font-size: 1.08rem; line-height: 1.45;
+            letter-spacing: -0.2px; margin-bottom: 0.5rem;
+        }
+        .card.live .card-body h3 { color: var(--text); }
+        .card.locked .card-body h3 { color: var(--text-muted); }
+        .card-body p { font-size: 0.88rem; line-height: 1.65; color: var(--text-secondary); }
+        .card-cta {
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 1.1rem; font-size: 0.84rem; font-weight: 600;
+            color: var(--accent); opacity: 0; transform: translateX(6px);
+            transition: all 0.3s ease;
+        }
+        .card.live:hover .card-cta { opacity: 1; transform: translateX(0); }
+        .card-cta svg { width: 16px; height: 16px; transform: scaleX(-1); }
+        .card-locked-label {
+            margin-top: 0.4rem; font-size: 0.82rem;
+            color: var(--text-muted); font-style: italic;
+        }
+        .note-wrapper {
+            max-width: 680px; margin: 0 auto 5rem; padding: 0 2rem;
+            animation: fadeUp 0.7s ease 1.1s both;
+        }
+        .note {
+            background: var(--bg-white); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 2.2rem 2.5rem;
+            text-align: center; box-shadow: var(--shadow-soft);
+            position: relative; overflow: hidden;
+        }
+        .note::before {
+            content: ''; position: absolute; top: 0; right: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--rose), var(--accent));
+        }
+        .note .note-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .note p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.9; }
+        .note strong { color: var(--text); }
+        .note a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .note a:hover { text-decoration: underline; }
+        footer {
+            border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+            text-align: center; background: var(--bg-warm);
+        }
+        .footer-brand { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+        .footer-brand .fb-icon {
+            width: 26px; height: 26px;
+            background: linear-gradient(135deg, var(--accent), var(--teal));
+            border-radius: 7px; display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 0.65rem; color: white;
+        }
+        .footer-brand span { font-weight: 600; font-size: 0.88rem; color: var(--text-secondary); }
+        footer p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.9; }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        @media (max-width: 700px) {
+            .hero { padding: 3.5rem 1.5rem 2.5rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .stats { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; padding: 0 1rem; }
+            nav { padding: 1rem 1.2rem; }
+            .nav-meta { display: none; }
+            .note { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-decor"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
+<div class="page">
+    <nav>
+        <div class="nav-brand">
+            <div class="nav-logo">BI</div>
+            <div class="nav-title">בינה עסקית <span>· ד"ר שי צבאן</span></div>
+        </div>
+        <div class="nav-meta">Semester A · 2026</div>
+    </nav>
+    <section class="hero">
+        <div class="hero-chip"><span class="chip-dot"></span>סמסטר א׳ תשפ״ו — פעיל</div>
+        <h1><span class="grad">בינה עסקית</span><br>סיכומי הרצאות</h1>
+        <p class="sub">כל סיכומי השיעורים של הקורס — מסודרים לפי הרצאה.<br>הסילבוס המלא, מועדי הגשה והציונים מפורסמים בידיעון.</p>
+        <p class="institution"><strong>המרכז האקדמי פרס</strong> · התוכנית למנהל עסקים · התמחות במערכות מידע</p>
+    </section>
+    <div class="stats">
+        <div class="stat-pill"><div class="stat-emoji">👨‍🏫</div><div class="stat-label">מרצה</div><div class="stat-val">ד"ר שי צבאן</div></div>
+        <div class="stat-pill"><div class="stat-emoji">📅</div><div class="stat-label">סמסטר</div><div class="stat-val">א׳ 2026</div></div>
+        <div class="stat-pill"><div class="stat-emoji">📊</div><div class="stat-label">הרצאות</div><div class="stat-val">12 מפגשים</div></div>
+    </div>
+    <div class="divider"><div class="bar"></div><h2>הרצאות הקורס</h2><div class="bar"></div></div>
+    <div class="grid">
+        <a href="lecture1_bi_intro.html" style="text-decoration:none;color:inherit;">
+        <div class="card live">
+            <div class="card-header">
+                <span class="card-number">01</span>
+                <span class="card-badge badge-available">זמין ✓</span>
+            </div>
+            <div class="card-body">
+                <h3>מבוא לבינה עסקית — מהדאטה אל ההחלטה</h3>
+                <p>הגדרות יסוד, פירמידת DIKW, ארכיטקטורת BI, כלי ויזואליזציה, מפת קריירה, ותהליך אפיון מידע.</p>
+            </div>
+            <div class="card-cta">
+                <span>לסיכום ההרצאה</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            </div>
+        </div>
+        </a>
+        <div class="card locked"><div class="card-header"><span class="card-number">02</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 2</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">03</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 3</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">04</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 4</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">05</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 5</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">06</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 6</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">07</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 7</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">08</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 8</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">09</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 9</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">10</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 10</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">11</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 11</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+        <div class="card locked"><div class="card-header"><span class="card-number">12</span><span class="card-badge badge-coming">בקרוב</span></div><div class="card-body"><h3>הרצאה 12</h3></div><div class="card-locked-label">⏳ הסיכום יעלה לאחר ההרצאה</div></div>
+    </div>
+    <div class="note-wrapper">
+        <div class="note">
+            <div class="note-icon">📋</div>
+            <p>סיכומי ההרצאות באתר זה הם <strong>כל החומר התיאורטי</strong> של הקורס.<br>מידע נוסף כגון צילומי הרצאות ומטלות הגשה, מפורסם <strong>בידיעון של המוסד</strong>.<br>לשאלות — <a href="mailto:shay.tsaban@gmail.com">shay.tsaban@gmail.com</a></p>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-brand"><div class="fb-icon">BI</div><span>בינה עסקית · סמסטר א׳ 2026</span></div>
+        <p>ד"ר שי צבאן · המרכז האקדמי פרס · התוכנית למנהל עסקים<br>© כל הזכויות שמורות. חומר זה מיועד לסטודנטים הרשומים לקורס בלבד.</p>
+    </footer>
+</div>
+</body>
+</html>
