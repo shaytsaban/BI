@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הרצאה 2: ויזואליזציית נתונים - סוגי גרפים, עקרונות עיצוב וכלי Tableau</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0F4C75;
+            --primary-light: #3282B8;
+            --secondary: #BBE1FA;
+            --accent: #E8505B;
+            --accent-green: #059669;
+            --dark: #1B262C;
+            --light: #F0F5F9;
+            --white: #FFFFFF;
+            --border: #D6E4EE;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius: 12px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        h1,h2,h3,h4 {
+            font-family: 'Heebo', sans-serif;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+
+        h3 { font-size: 1.5rem; color: var(--dark); margin-top: 1.5rem; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+
+        /* --- Hero --- */
+        .hero {
+            background: linear-gradient(135deg, #0F4C75, #1B262C 60%, #3282B8);
+            color: var(--white);
+            padding: 4rem 2rem;
+            border-radius: 0 0 var(--radius) var(--radius);
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(187,225,250,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(232,80,91,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero h1 { color: var(--white); font-size: 2.8rem; margin-bottom: 1rem; position: relative; z-index:1; }
+        .hero p { font-size: 1.3rem; font-weight: 300; opacity: 0.9; max-width: 800px; margin: 0 auto 2rem auto; position: relative; z-index:1; }
+        .lecturer-info {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            backdrop-filter: blur(5px);
+            position: relative; z-index:1;
+        }
+        .lecturer-info p { margin:0; font-size: 1.1rem; }
+        .lecturer-info i { margin-left: 8px; color: var(--secondary); }
+
+        /* --- TOC --- */
+        .toc {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+            border-right: 5px solid var(--accent);
+        }
+        .toc h3 { margin-top:0; color: var(--primary); font-size: 1.4rem; }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 1rem;
+        }
+        .toc-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; background: #F8FAFC; border-radius: 8px;
+            text-decoration: none; color: var(--dark);
+            transition: all 0.2s; border: 1px solid transparent; cursor: pointer;
+        }
+        .toc-item:hover { background: #E6F0F8; border-color: var(--primary-light); transform: translateX(-3px); }
+        .toc-num {
+            background: var(--primary);
+            color: var(--white);
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+        }
+
+        /* --- Section Card --- */
+        .section-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* --- Concept Box --- */
+        .concept-box {
+            background: #E6F0F8;
+            border-right: 5px solid var(--primary-light);
+            padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;
+        }
+        .concept-box h4 { margin-top:0; color: var(--primary); font-size:1.3rem; display:flex; align-items:center; gap:10px; }
+
+        /* --- Case Study --- */
+        .case-study {
+            background: linear-gradient(135deg, #FFF7ED, #FFFBEB);
+            border-right: 5px solid #F59E0B;
+            padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;
+        }
+        .case-study h4 { margin-top:0; color: #92400E; font-size:1.3rem; display:flex; align-items:center; gap:10px; }
+
+        /* --- Practical Box --- */
+        .practical-box {
+            background: linear-gradient(135deg, #ECFDF5, #F0FDF4);
+            border-right: 5px solid var(--accent-green);
+            padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;
+        }
+        .practical-box h4 { margin-top:0; color: #065F46; font-size:1.3rem; display:flex; align-items:center; gap:10px; }
+
+        /* --- Warning Box --- */
+        .warning-box {
+            background: linear-gradient(135deg, #FEF2F2, #FFF1F2);
+            border-right: 5px solid var(--accent);
+            padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;
+        }
+        .warning-box h4 { margin-top:0; color: #991B1B; font-size:1.3rem; display:flex; align-items:center; gap:10px; }
+
+        .en-term {
+            direction: ltr; display: inline-block;
+            background: #DBEAFE; color: #1E40AF;
+            padding: 2px 6px; border-radius: 4px;
+            font-weight: 600; font-family: monospace; font-size: 1rem; margin: 0 5px;
+        }
+
+        /* --- Tables --- */
+        table { width:100%; border-collapse:collapse; margin:2rem 0; background:var(--white); box-shadow:var(--shadow-sm); border-radius:8px; overflow:hidden; }
+        th, td { padding:1rem; text-align:right; border-bottom:1px solid var(--border); }
+        th { background: var(--primary); color: var(--white); font-weight:600; }
+        tr:nth-child(even) { background-color: #F8FAFC; }
+        tr:hover { background-color: #F0F5F9; }
+
+        ul.bullet-list { list-style-type: square; margin-right: 2rem; margin-bottom: 1.5rem; }
+        ul.bullet-list li { margin-bottom: 0.5rem; }
+        ol li { margin-bottom: 0.5rem; }
+
+        /* ============ CHART VISUAL EXAMPLES ============ */
+        .chart-example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .chart-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+        .chart-visual {
+            background: #F8FAFC;
+            padding: 1.5rem;
+            min-height: 220px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+        }
+        .chart-info {
+            padding: 1.2rem 1.5rem;
+        }
+        .chart-info h4 { font-size:1.15rem; margin-bottom:0.3rem; }
+        .chart-info p { font-size: 0.95rem; color: #64748B; margin-bottom: 0.5rem; }
+        .chart-tag {
+            display: inline-block;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 600;
+            margin-left: 5px; margin-top: 5px;
+        }
+        .tag-comparison { background: #DBEAFE; color: #1E40AF; }
+        .tag-trend { background: #D1FAE5; color: #065F46; }
+        .tag-composition { background: #FEF3C7; color: #92400E; }
+        .tag-distribution { background: #EDE9FE; color: #5B21B6; }
+        .tag-relation { background: #FCE7F3; color: #9D174D; }
+        .tag-geo { background: #CFFAFE; color: #155E75; }
+
+        /* Mini bar chart CSS */
+        .mini-bars { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 20px; }
+        .mini-bar {
+            flex: 1; border-radius: 4px 4px 0 0;
+            position: relative; transition: height 0.5s ease;
+            min-width: 30px;
+        }
+        .mini-bar::after {
+            content: attr(data-label);
+            position: absolute; bottom: -22px; left: 50%;
+            transform: translateX(-50%); font-size: 0.75rem; color: #64748B;
+            white-space: nowrap;
+        }
+        .mini-bar::before {
+            content: attr(data-val);
+            position: absolute; top: -20px; left: 50%;
+            transform: translateX(-50%); font-size: 0.72rem; font-weight:700; color: var(--dark);
+        }
+
+        /* Mini line chart CSS */
+        .mini-line-chart { width: 100%; height: 160px; }
+
+        /* Mini pie CSS */
+        .mini-pie-container { display: flex; align-items: center; gap: 20px; }
+        .mini-pie { width: 140px; height: 140px; border-radius: 50%; position: relative; }
+        .pie-legend { font-size: 0.85rem; }
+        .pie-legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .pie-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink:0; }
+
+        /* Mini scatter */
+        .mini-scatter { width: 100%; height: 160px; position: relative; }
+        .scatter-dot {
+            position: absolute;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--primary-light); opacity: 0.7;
+        }
+        .scatter-axis-x { position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: #CBD5E1; }
+        .scatter-axis-y { position: absolute; top: 0; bottom: 0; right: 0; width: 1px; background: #CBD5E1; }
+
+        /* Mini heatmap */
+        .mini-heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; width: 100%; }
+        .heat-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        /* ============ INTERACTIVE EXERCISE ============ */
+        .exercise-container {
+            background: #F1F5F9;
+            border: 2px solid #CBD5E1;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .exercise-container h3 { margin-top: 0; color: var(--primary); }
+
+        .match-exercise {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        @media (max-width: 768px) { .match-exercise { grid-template-columns: 1fr; } }
+
+        .scenario-list, .chart-options { list-style: none; }
+        .scenario-item, .chart-option {
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .scenario-item {
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+            position: relative;
+            padding-right: 40px;
+        }
+        .scenario-item:hover { border-color: var(--primary-light); }
+        .scenario-item .s-num {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: var(--primary); color: var(--white);
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700;
+        }
+        .chart-option {
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+        }
+        .chart-option:hover { border-color: var(--accent); background: #FEF2F2; }
+        .chart-option.selected { border-color: var(--accent); background: #FEF2F2; font-weight: 600; }
+
+        /* ============ QUESTION BANK ============ */
+        .question-bank {
+            background: #F8FAFC; border: 1px solid #E2E8F0;
+            border-radius: var(--radius); padding: 2.5rem; margin-top: 2.5rem;
+        }
+        .question-bank h3 {
+            color: #334155; margin-top:0;
+            border-bottom: 2px solid #CBD5E1; padding-bottom:10px; margin-bottom:20px;
+        }
+        .question { margin-bottom: 1.5rem; }
+        .question-text { font-weight: 600; margin-bottom: 0.8rem; color: #1E293B; }
+        .options { list-style: none; margin-bottom: 1rem; }
+        .options li {
+            margin-bottom: 0.5rem; padding-right: 25px;
+            position: relative; cursor: pointer; transition: color 0.2s;
+        }
+        .options li:hover { color: var(--primary-light); }
+        .options li::before {
+            content: ''; position: absolute; right:0; top:7px;
+            width:12px; height:12px; border: 2px solid #94A3B8; border-radius:50%;
+        }
+        .btn-reveal {
+            background: var(--white); color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px; border-radius: 6px;
+            font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .btn-reveal:hover { background: var(--primary); color: var(--white); }
+        .answer-panel {
+            display: none; margin-top:10px; padding:15px;
+            background: #ECFDF5; border-right: 4px solid var(--accent-green);
+            border-radius: 6px; font-size: 1rem;
+        }
+        .correct-opt { font-weight: bold; color: var(--accent-green); margin-bottom:5px; }
+
+        /* ============ TABS ============ */
+        .tabs-container { margin: 2rem 0; }
+        .tabs-header { display: flex; gap:0; border-bottom: 2px solid var(--border); flex-wrap:wrap; }
+        .tab-btn {
+            padding: 12px 24px; background: none; border: none;
+            border-bottom: 3px solid transparent; cursor: pointer;
+            font-family: 'Heebo', sans-serif; font-size: 1.05rem;
+            color: #64748B; transition: all 0.2s; margin-bottom: -2px;
+        }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight:700; }
+        .tab-content { display: none; padding: 1.5rem 0; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+        /* ============ COLLAPSIBLE ============ */
+        .collapsible-header {
+            background: #F1F5F9; border: 1px solid #E2E8F0;
+            border-radius: 8px; padding: 1rem 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 1rem; transition: background 0.2s;
+            font-family: 'Heebo', sans-serif; font-weight:700; font-size:1.1rem; color: var(--dark);
+        }
+        .collapsible-header:hover { background: #E2E8F0; }
+        .collapsible-header .arrow { transition: transform 0.3s; font-size:0.9rem; }
+        .collapsible-header.open .arrow { transform: rotate(180deg); }
+        .collapsible-body {
+            display: none; padding:1.5rem;
+            border: 1px solid #E2E8F0; border-top: none;
+            border-radius: 0 0 8px 8px; background: var(--white);
+        }
+        .collapsible-body.open { display: block; animation: fadeIn 0.3s ease; }
+
+        /* ============ SCENARIO BUILDER ============ */
+        .scenario-builder {
+            background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
+            border: 2px solid #BAE6FD;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .scenario-builder h4 { margin-top:0; color: var(--primary); }
+        .sb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+        @media (max-width: 768px) { .sb-grid { grid-template-columns: 1fr; } }
+        .sb-card {
+            background: var(--white); border-radius: 8px; padding: 1.2rem;
+            border: 1px solid #BAE6FD; cursor: pointer; transition: all 0.2s;
+        }
+        .sb-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .sb-card h5 { font-family: 'Heebo',sans-serif; color: var(--primary); margin-bottom:0.3rem; font-size:1.05rem; }
+        .sb-card p { font-size: 0.95rem; color: #475569; margin:0; }
+        .sb-result {
+            display: none; margin-top: 1rem; padding: 1.2rem;
+            background: var(--white); border-radius: 8px;
+            border-right: 4px solid var(--accent-green);
+        }
+        .sb-result.show { display: block; animation: fadeIn 0.3s ease; }
+
+        /* ============ VISUAL COMPARISON ============ */
+        .vs-container {
+            display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0;
+            align-items: start; margin: 2rem 0;
+        }
+        @media (max-width: 768px) { .vs-container { grid-template-columns: 1fr; } }
+        .vs-panel {
+            border-radius: var(--radius); padding: 1.5rem; min-height: 200px;
+        }
+        .vs-good { background: #F0FDF4; border: 2px solid #86EFAC; }
+        .vs-bad { background: #FEF2F2; border: 2px solid #FCA5A5; }
+        .vs-divider {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #94A3B8; padding-top: 60px;
+        }
+        .vs-panel h4 { margin-top:0; }
+        .vs-good h4 { color: #166534; }
+        .vs-bad h4 { color: #991B1B; }
+
+        /* ============ STATS ROW ============ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem; margin: 2rem 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), #3282B8);
+            color: var(--white); border-radius: var(--radius); padding: 1.5rem; text-align: center;
+        }
+        .stat-card .stat-num { font-size: 2.5rem; font-weight:900; font-family:'Heebo',sans-serif; line-height:1; margin-bottom:0.3rem; }
+        .stat-card .stat-label { font-size:0.95rem; opacity:0.9; }
+
+        /* ============ FOOTER ============ */
+        .page-footer {
+            background: var(--dark); color: #94A3B8; text-align: center;
+            padding: 2rem; border-radius: var(--radius) var(--radius) 0 0; margin-top: 2rem;
+        }
+        .page-footer strong { color: var(--white); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .section-card { padding: 1.5rem; }
+            .chart-example-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            h2 { font-size: 1.7rem; }
+            .vs-container { grid-template-columns: 1fr; }
+            .vs-divider { padding-top:0; transform: rotate(90deg); padding:10px 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="hero">
+        <h1><i class="fas fa-chart-area"></i> ויזואליזציית נתונים בעולם ה-BI</h1>
+        <p>הרצאה 2: סוגי גרפים, עקרונות עיצוב דשבורדים, וכלי Tableau<br>מערך שיעור מקיף (180 דקות)</p>
+        <div class="lecturer-info">
+            <p><strong>מרצה:</strong> ד"ר שי צבאן</p>
+            <p><i class="fas fa-envelope"></i> shay.tsaban@gmail.com</p>
+            <p><i class="fas fa-phone"></i> 050-6551519</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- TOC -->
+        <div class="toc">
+            <h3><i class="fas fa-list-ol"></i> תוכן עניינים - מפת ההרצאה</h3>
+            <div class="toc-grid">
+                <a class="toc-item" href="#ch1"><span class="toc-num">1</span> מדוע ויזואליזציה? הכוח של התמונה בעולם BI</a>
+                <a class="toc-item" href="#ch2"><span class="toc-num">2</span> סוגי גרפים: מתי להשתמש בכל סוג</a>
+                <a class="toc-item" href="#ch3"><span class="toc-num">3</span> עקרונות עיצוב דשבורדים - מה עובד ומה לא</a>
+                <a class="toc-item" href="#ch4"><span class="toc-num">4</span> מבוא ל-Tableau: הכלי, הממשק והשפה</a>
+                <a class="toc-item" href="#ch5"><span class="toc-num">5</span> תרגילי סינתזה: מהשאלה העסקית לגרף הנכון</a>
+                <a class="toc-item" href="#ch6"><span class="toc-num">6</span> טעויות נפוצות בוויזואליזציה וכיצד להימנע מהן</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num">65%</div>
+                <div class="stat-label">מהאוכלוסייה הם "לומדים ויזואליים"</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg,#E8505B,#FF6B6B);">
+                <div class="stat-num">×60K</div>
+                <div class="stat-label">המוח מעבד תמונה מהר פי 60,000 מטקסט</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #059669, #10B981);">
+                <div class="stat-num">28%</div>
+                <div class="stat-label">שיפור בקבלת החלטות עם ויזואליזציה טובה</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg,#7C3AED,#8B5CF6);">
+                <div class="stat-num">5 שנ'</div>
+                <div class="stat-label">Tableau שולט בעקביות ב-Gartner Magic Quadrant</div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 1: WHY VISUALIZATION
+             ======================================== -->
+        <div class="section-card" id="ch1">
+            <h2>פרק 1: מדוע ויזואליזציה? הכוח של התמונה בעולם BI</h2>
+
+            <p>בהרצאה הקודמת הבנו כי מערכת BI ממירה נתונים גולמיים לתובנות עסקיות. אך כיצד מעבירים את התובנה הזו למנכ"ל שיש לו 30 שניות ביומנו להסתכל על הדשבורד? התשובה: <strong>ויזואליזציה</strong> - הצגה גרפית של נתונים שמאפשרת לזהות דפוסים, מגמות וחריגות במבט מהיר.</p>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-eye"></i> הגדרה: ויזואליזציית נתונים <span class="en-term">Data Visualization</span></h4>
+                <p>ויזואליזציית נתונים היא ייצוג גרפי של מידע ונתונים. באמצעות רכיבים ויזואליים כמו גרפים, תרשימים ומפות, כלי ויזואליזציה מספקים דרך נגישה לראות ולהבין <strong>מגמות</strong> <span class="en-term">Trends</span>, <strong>חריגות</strong> <span class="en-term">Outliers</span>, ו<strong>תבניות</strong> <span class="en-term">Patterns</span> בנתונים.</p>
+                <p style="margin-top:10px;">בעולם ה-BI, ויזואליזציה היא לא "קישוט" - היא <strong>שכבת הממשק הקריטית</strong> בין מערכת הנתונים לבין מקבל ההחלטות. גרף רע יוביל להחלטה שגויה; גרף טוב ישנה את פני הארגון.</p>
+            </div>
+
+            <h3>המוח האנושי ועיבוד ויזואלי: מדע קוגניטיבי</h3>
+            <p>הבנת הבסיס המדעי מאחורי ויזואליזציה חיונית לאנליסט BI. מספר עקרונות קוגניטיביים מרכזיים:</p>
+            <ul class="bullet-list">
+                <li><strong>עיבוד קדם-קשבי <span class="en-term">Pre-Attentive Processing</span>:</strong> המוח מזהה מאפיינים ויזואליים מסוימים (צבע, גודל, כיוון, צורה) תוך פחות מ-250 מילישניות - <em>לפני</em> שהמודעות מתחילה לפעול. לכן, שימוש נכון בצבע להדגשת חריגה יאפשר למנהל לזהות בעיה ב"מבט ראשון".</li>
+                <li><strong>עקרון ה-Gestalt:</strong> המוח נוטה לקבץ אלמנטים ויזואליים על בסיס קרבה, דמיון, המשכיות וסגירות. אנליסט BI משתמש בעיקרון זה כשהוא מקבץ KPIs קשורים באותו אזור בדשבורד.</li>
+                <li><strong>עומס קוגניטיבי <span class="en-term">Cognitive Load</span>:</strong> יותר מדי פרטים בגרף אחד מעמיסים על המוח ומפחיתים את היכולת להבין. כלל האצבע של מומחי ויזואליזציה: <strong>אם לוקח יותר מ-5 שניות להבין את הגרף - הוא מורכב מדי</strong>.</li>
+                <li><strong>יחס נתון-דיו <span class="en-term">Data-Ink Ratio</span>:</strong> מושג של <strong>Edward Tufte</strong>, אבי תחום ויזואליזציית הנתונים. היחס בין הדיו שמייצג נתונים לבין סך הדיו בגרף צריך להיות גבוה ככל האפשר. פירוש: <em>הסר כל אלמנט שאינו תורם להבנת הנתונים</em>.</li>
+            </ul>
+
+            <div class="case-study">
+                <h4><i class="fas fa-history"></i> מקרה היסטורי: מפת כולרה של ג'ון סנואו (1854)</h4>
+                <p>אחת מהדוגמאות המפורסמות ביותר לכוחה של ויזואליזציה: הרופא <strong>ג'ון סנואו</strong> מיפה מקרי כולרה בלונדון על גבי מפת רחוב. הוויזואליזציה חשפה שהמקרים מרוכזים סביב משאבת מים ספציפית ברחוב ברוד סטריט. בעזרת "דשבורד" פרימיטיבי זה, הוא שכנע את הרשויות לסגור את המשאבה ועצר את המגפה - עוד לפני שידעו מהם חיידקים.</p>
+                <p>אותו עיקרון עובד בדיוק כך גם בדשבורד BI מודרני: ריכוז ויזואלי של תלונות לקוח על מפה גיאוגרפית יכול לחשוף בעיה באזור מסוים שלא נראתה בטבלת נתונים.</p>
+            </div>
+
+            <h3>סוגי שאלות BI ומשפחות הגרפים</h3>
+            <p>כל גרף עונה על <strong>סוג שאלה</strong> שונה. לפני שבוחרים גרף, צריך להבין את השאלה:</p>
+            <table>
+                <tr>
+                    <th>סוג השאלה</th>
+                    <th>דוגמה לשאלה עסקית</th>
+                    <th>משפחת גרפים מתאימה</th>
+                </tr>
+                <tr>
+                    <td><strong>השוואה <span class="en-term">Comparison</span></strong></td>
+                    <td>"איזה סניף מוכר הכי הרבה?"</td>
+                    <td>גרף עמודות, גרף עמודות אופקי</td>
+                </tr>
+                <tr>
+                    <td><strong>מגמה לאורך זמן <span class="en-term">Trend</span></strong></td>
+                    <td>"איך התפתח הפדיון בשנה האחרונה?"</td>
+                    <td>גרף קו, גרף שטח</td>
+                </tr>
+                <tr>
+                    <td><strong>הרכב / חלקים מתוך שלם <span class="en-term">Composition</span></strong></td>
+                    <td>"מה חלקו של כל מוצר מסך המכירות?"</td>
+                    <td>עוגה, טבעת, Treemap, 100% Stacked Bar</td>
+                </tr>
+                <tr>
+                    <td><strong>התפלגות <span class="en-term">Distribution</span></strong></td>
+                    <td>"מה טווח הגילאים של הלקוחות שלנו?"</td>
+                    <td>היסטוגרמה, Box Plot</td>
+                </tr>
+                <tr>
+                    <td><strong>קשר בין משתנים <span class="en-term">Relationship</span></strong></td>
+                    <td>"האם יש קשר בין שעות שירות לשביעות רצון?"</td>
+                    <td>פיזור (Scatter), Bubble Chart</td>
+                </tr>
+                <tr>
+                    <td><strong>גיאוגרפיה <span class="en-term">Geospatial</span></strong></td>
+                    <td>"באיזה אזורים בארץ יש לנו הכי הרבה לקוחות?"</td>
+                    <td>מפת חום, Filled Map, Bubble Map</td>
+                </tr>
+            </table>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 1</h3>
+                <div class="question">
+                    <p class="question-text">1. מנהל שיווק שואל: "מה המגמה של כמות הלידים (Leads) שנכנסים לנו מדי חודש בשנה האחרונה?" איזה סוג גרף הכי מתאים?</p>
+                    <ul class="options">
+                        <li>א. גרף עוגה (Pie Chart)</li>
+                        <li>ב. גרף קו (Line Chart) עם ציר זמן חודשי</li>
+                        <li>ג. גרף פיזור (Scatter Plot)</li>
+                        <li>ד. מפת חום גיאוגרפית</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a1-1')">הצג פתרון</button>
+                    <div id="a1-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: השאלה עוסקת ב<strong>מגמה לאורך זמן</strong> (Trend). גרף קו הוא הכלי האידיאלי להצגת שינויים לאורך ציר זמן. ציר X = חודשים, ציר Y = כמות לידים. גרף עוגה מציג הרכב (חלקים מתוך שלם) ולא מגמה.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">2. מהו עיקרון ה-Data-Ink Ratio של Edward Tufte?</p>
+                    <ul class="options">
+                        <li>א. יש להשתמש בכמה שיותר צבעים כדי שהגרף ייראה מרשים.</li>
+                        <li>ב. כל "טיפת דיו" (פיקסל) בגרף צריכה לייצג נתון אמיתי - יש להסיר כל אלמנט דקורטיבי שאינו תורם להבנה.</li>
+                        <li>ג. יש להדפיס את הגרפים רק בשחור-לבן.</li>
+                        <li>ד. כלל טכני של מדפסות בלבד, לא רלוונטי לדשבורדים דיגיטליים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a1-2')">הצג פתרון</button>
+                    <div id="a1-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Tufte, בספרו The Visual Display of Quantitative Information, טוען שהיחס בין "דיו של נתונים" לבין סך הדיו בגרף צריך להיות מקסימלי. כל קו רקע מיותר, מסגרת דקורטיבית, או אפקט תלת-ממדי שלא משרת את הנתונים - צריך להיות מוסר.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">3. אמת או שקר: Pre-Attentive Processing פירושו שהמוח מסוגל לזהות הבדלים בצבע, גודל וכיוון תוך פחות מ-250 מילישניות, עוד לפני שהמודעות מתחילה לפעול.</p>
+                    <ul class="options">
+                        <li>א. אמת</li>
+                        <li>ב. שקר</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a1-3')">הצג פתרון</button>
+                    <div id="a1-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: אמת (א)</p>
+                        <p>הסבר: זהו עיקרון מרכזי בעיצוב דשבורדים. כאשר אנליסט BI צובע ערך חריג באדום בתוך דשבורד, המנהל "תופס" אותו כמעט מיידית בזכות עיבוד קדם-קשבי. זה העיקרון שמאחורי Conditional Formatting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 2: CHART TYPES
+             ======================================== -->
+        <div class="section-card" id="ch2">
+            <h2>פרק 2: סוגי גרפים - מדריך מקיף לאנליסט</h2>
+            <p>בפרק זה נסקור לעומק את סוגי הגרפים המרכזיים, נבין מתי כל אחד מתאים, ונראה דוגמאות ויזואליות. זהו אחד הפרקים החשובים ביותר - <strong>בחירת הגרף הנכון היא 50% מההצלחה של הוויזואליזציה</strong>.</p>
+
+            <h3>א. גרף עמודות <span class="en-term">Bar Chart</span></h3>
+            <div class="chart-example-grid">
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <div class="mini-bars">
+                            <div class="mini-bar" style="height:75%; background:#3282B8;" data-label="ת״א" data-val="₪2.1M"></div>
+                            <div class="mini-bar" style="height:55%; background:#3282B8;" data-label="חיפה" data-val="₪1.5M"></div>
+                            <div class="mini-bar" style="height:90%; background:#E8505B;" data-label="ירושלים" data-val="₪2.5M"></div>
+                            <div class="mini-bar" style="height:40%; background:#3282B8;" data-label="ב״ש" data-val="₪1.1M"></div>
+                            <div class="mini-bar" style="height:62%; background:#3282B8;" data-label="נתניה" data-val="₪1.7M"></div>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף עמודות אנכי <span class="en-term">Column Chart</span></h4>
+                        <p>מציג <strong>השוואה בין קטגוריות</strong>. כאן: פדיון לפי סניף, כשהעמודה האדומה מסמנת את הגבוה ביותר.</p>
+                        <span class="chart-tag tag-comparison">השוואה</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-visual" style="flex-direction:column; align-items:stretch; justify-content:center; padding:20px 30px; gap:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:0.8rem;width:70px;text-align:left;">מכירות</span>
+                            <div style="height:22px;background:var(--primary-light);border-radius:4px;width:85%;"></div>
+                            <span style="font-size:0.75rem;font-weight:700;">₪4.2M</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:0.8rem;width:70px;text-align:left;">שירות</span>
+                            <div style="height:22px;background:#059669;border-radius:4px;width:60%;"></div>
+                            <span style="font-size:0.75rem;font-weight:700;">₪3.0M</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:0.8rem;width:70px;text-align:left;">R&D</span>
+                            <div style="height:22px;background:#F59E0B;border-radius:4px;width:45%;"></div>
+                            <span style="font-size:0.75rem;font-weight:700;">₪2.2M</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:0.8rem;width:70px;text-align:left;">שיווק</span>
+                            <div style="height:22px;background:#E8505B;border-radius:4px;width:30%;"></div>
+                            <span style="font-size:0.75rem;font-weight:700;">₪1.5M</span>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף עמודות אופקי <span class="en-term">Horizontal Bar Chart</span></h4>
+                        <p>אידיאלי כשיש שמות קטגוריה ארוכים, או כשרוצים לדרג מהגדול לקטן. כאן: תקציב לפי מחלקה.</p>
+                        <span class="chart-tag tag-comparison">השוואה</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-lightbulb"></i> מתי לבחור עמודות אנכיות מול אופקיות?</h4>
+                <ul class="bullet-list">
+                    <li><strong>אנכיות (Column):</strong> כשיש עד 7-8 קטגוריות, כשהציר הוא זמני (רבעונים/חודשים), או כשההשוואה היא ברורה.</li>
+                    <li><strong>אופקיות (Bar):</strong> כשיש הרבה קטגוריות (10+), כששמות הקטגוריות ארוכים (שמות מוצרים, ערים), או כשרוצים לדרג (Top 10/Bottom 10).</li>
+                    <li><strong>Grouped Bar (עמודות מקובצות):</strong> להשוואה בין שתי סדרות (למשל: מכירות שנה נוכחית מול שנה קודמת, לכל סניף).</li>
+                    <li><strong>Stacked Bar (עמודות מוערמות):</strong> כשרוצים להציג גם את הסך הכללי וגם את ההרכב הפנימי.</li>
+                </ul>
+            </div>
+
+            <h3>ב. גרף קו <span class="en-term">Line Chart</span></h3>
+            <div class="chart-example-grid">
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <svg viewBox="0 0 300 160" style="width:100%;height:160px;">
+                            <line x1="30" y1="140" x2="280" y2="140" stroke="#CBD5E1" stroke-width="1"/>
+                            <line x1="30" y1="10" x2="30" y2="140" stroke="#CBD5E1" stroke-width="1"/>
+                            <!-- grid -->
+                            <line x1="30" y1="107" x2="280" y2="107" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4"/>
+                            <line x1="30" y1="74" x2="280" y2="74" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4"/>
+                            <line x1="30" y1="41" x2="280" y2="41" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="4"/>
+                            <!-- line 1 -->
+                            <polyline points="40,120 80,100 120,90 160,70 200,55 240,30 270,25" fill="none" stroke="#3282B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- line 2 -->
+                            <polyline points="40,110 80,108 120,95 160,88 200,82 240,75 270,70" fill="none" stroke="#E8505B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6,3"/>
+                            <!-- dots -->
+                            <circle cx="270" cy="25" r="4" fill="#3282B8"/>
+                            <circle cx="270" cy="70" r="4" fill="#E8505B"/>
+                            <!-- labels -->
+                            <text x="40" y="155" font-size="8" fill="#64748B" font-family="Assistant">ינואר</text>
+                            <text x="120" y="155" font-size="8" fill="#64748B" font-family="Assistant">מרץ</text>
+                            <text x="200" y="155" font-size="8" fill="#64748B" font-family="Assistant">מאי</text>
+                            <text x="260" y="155" font-size="8" fill="#64748B" font-family="Assistant">יולי</text>
+                            <!-- legend -->
+                            <line x1="170" y1="8" x2="190" y2="8" stroke="#3282B8" stroke-width="2"/>
+                            <text x="165" y="11" font-size="7" fill="#3282B8" font-family="Assistant">2024</text>
+                            <line x1="220" y1="8" x2="240" y2="8" stroke="#E8505B" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="215" y="11" font-size="7" fill="#E8505B" font-family="Assistant">יעד</text>
+                        </svg>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף קו + קו יעד</h4>
+                        <p>מציג <strong>מגמה לאורך זמן</strong> עם השוואה ליעד. הקו הכחול = ביצוע בפועל, הקו האדום המקווקו = יעד.</p>
+                        <span class="chart-tag tag-trend">מגמה</span>
+                        <span class="chart-tag tag-comparison">השוואה ליעד</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <svg viewBox="0 0 300 160" style="width:100%;height:160px;">
+                            <defs>
+                                <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#3282B8;stop-opacity:0.3" />
+                                    <stop offset="100%" style="stop-color:#3282B8;stop-opacity:0.02" />
+                                </linearGradient>
+                            </defs>
+                            <line x1="30" y1="140" x2="280" y2="140" stroke="#CBD5E1" stroke-width="1"/>
+                            <polygon points="40,120 80,95 120,100 160,60 200,45 240,50 270,20 270,140 40,140" fill="url(#areaGrad)"/>
+                            <polyline points="40,120 80,95 120,100 160,60 200,45 240,50 270,20" fill="none" stroke="#3282B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף שטח <span class="en-term">Area Chart</span></h4>
+                        <p>וריאציה של גרף קו עם מילוי שמדגיש את <strong>הנפח המצטבר</strong>. מתאים להצגת גידול בצבירה (למשל: סך הלקוחות המצטבר).</p>
+                        <span class="chart-tag tag-trend">מגמה</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practical-box">
+                <h4><i class="fas fa-tools"></i> טיפ מעשי: כללים לגרף קו מוצלח</h4>
+                <ul class="bullet-list">
+                    <li>ציר X צריך להיות <strong>תמיד זמני</strong> (ימים, שבועות, חודשים, שנים). אם הציר אינו זמני - השתמש בגרף עמודות.</li>
+                    <li>הגבל ל-<strong>4-5 קווים</strong> מקסימום באותו גרף. יותר מכך יוצר "ספגטי" בלתי קריא.</li>
+                    <li>השתמש ב<strong>קו יעד</strong> (Target Line) או <strong>קו ממוצע</strong> (Average Line) כהשוואה.</li>
+                    <li>ב-Tableau: גרר את שדה התאריך ל-Columns, את המדד ל-Rows, ובחר Marks → Line.</li>
+                </ul>
+            </div>
+
+            <h3>ג. גרף עוגה וטבעת <span class="en-term">Pie & Donut Chart</span></h3>
+            <div class="chart-example-grid">
+                <div class="chart-card">
+                    <div class="chart-visual" style="justify-content:center; align-items:center;">
+                        <div class="mini-pie-container">
+                            <div class="mini-pie" style="background: conic-gradient(#3282B8 0% 42%, #E8505B 42% 67%, #F59E0B 67% 85%, #059669 85% 100%);"></div>
+                            <div class="pie-legend">
+                                <div class="pie-legend-item"><span class="pie-dot" style="background:#3282B8;"></span> אלקטרוניקה 42%</div>
+                                <div class="pie-legend-item"><span class="pie-dot" style="background:#E8505B;"></span> ביגוד 25%</div>
+                                <div class="pie-legend-item"><span class="pie-dot" style="background:#F59E0B;"></span> מזון 18%</div>
+                                <div class="pie-legend-item"><span class="pie-dot" style="background:#059669;"></span> אחר 15%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף עוגה</h4>
+                        <p>מציג <strong>חלקים מתוך שלם</strong>. כאן: פילוח מכירות לפי קטגוריה.</p>
+                        <span class="chart-tag tag-composition">הרכב</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-visual" style="justify-content:center; align-items:center;">
+                        <div class="mini-pie-container">
+                            <div class="mini-pie" style="background: conic-gradient(#3282B8 0% 42%, #E8505B 42% 67%, #F59E0B 67% 85%, #059669 85% 100%); display:flex; align-items:center; justify-content:center;">
+                                <div style="width:70px;height:70px;background:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:var(--dark);font-family:'Heebo',sans-serif;">₪8.5M</div>
+                            </div>
+                            <div class="pie-legend" style="font-size:0.85rem;">
+                                <p style="margin-bottom:8px;font-weight:700;color:var(--dark);">סה"כ הכנסות ברבעון</p>
+                                <p style="color:#64748B;font-size:0.85rem;">גרף טבעת מציג גם את הסך הכללי במרכז - מידע שגרף עוגה לא מציג.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף טבעת <span class="en-term">Donut Chart</span></h4>
+                        <p>כמו עוגה אך עם "חור" במרכז לתצוגת סכום/KPI. פופולרי בדשבורדים מודרניים.</p>
+                        <span class="chart-tag tag-composition">הרכב</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4><i class="fas fa-exclamation-triangle"></i> אזהרה: מתי לא להשתמש בגרף עוגה</h4>
+                <ul class="bullet-list">
+                    <li><strong>יותר מ-5-6 פרוסות</strong> - הגרף הופך לבלתי קריא. השתמש ב-Treemap או Bar Chart במקום.</li>
+                    <li><strong>כשהפרוסות דומות בגודל</strong> - המוח מתקשה להבדיל בין 22% ל-25% בעוגה. בעמודות ההבדל ברור.</li>
+                    <li><strong>השוואה בין שתי תקופות</strong> - אל תציג שתי עוגות זו לצד זו. עדיף Grouped Bar.</li>
+                    <li><strong>כלל אצבע:</strong> אם אתה "מתלבט" אם לבחור עוגה - <em>אל תבחר עוגה</em>. ישנם מעט מאוד מצבים בהם עוגה עדיפה על חלופות.</li>
+                </ul>
+            </div>
+
+            <h3>ד. גרף פיזור <span class="en-term">Scatter Plot</span></h3>
+            <div class="chart-example-grid">
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <svg viewBox="0 0 300 170" style="width:100%;height:170px;">
+                            <line x1="30" y1="150" x2="280" y2="150" stroke="#CBD5E1" stroke-width="1"/>
+                            <line x1="30" y1="10" x2="30" y2="150" stroke="#CBD5E1" stroke-width="1"/>
+                            <!-- dots -->
+                            <circle cx="55" cy="125" r="5" fill="#3282B8" opacity="0.6"/><circle cx="70" cy="115" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="90" cy="105" r="5" fill="#3282B8" opacity="0.6"/><circle cx="105" cy="100" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="120" cy="85" r="5" fill="#3282B8" opacity="0.6"/><circle cx="140" cy="80" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="155" cy="70" r="5" fill="#3282B8" opacity="0.6"/><circle cx="175" cy="60" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="195" cy="50" r="5" fill="#3282B8" opacity="0.6"/><circle cx="210" cy="55" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="230" cy="35" r="5" fill="#3282B8" opacity="0.6"/><circle cx="250" cy="25" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="260" cy="30" r="5" fill="#3282B8" opacity="0.6"/>
+                            <circle cx="160" cy="120" r="5" fill="#E8505B" opacity="0.8"/>
+                            <!-- trend line -->
+                            <line x1="45" y1="130" x2="265" y2="25" stroke="#E8505B" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5"/>
+                            <!-- labels -->
+                            <text x="140" y="168" font-size="8" fill="#64748B" font-family="Assistant" text-anchor="middle">תקציב שיווק (₪)</text>
+                            <text x="15" y="85" font-size="8" fill="#64748B" font-family="Assistant" transform="rotate(-90 15 85)">מכירות</text>
+                            <!-- outlier label -->
+                            <text x="163" y="135" font-size="7" fill="#E8505B" font-family="Assistant">חריגה!</text>
+                        </svg>
+                    </div>
+                    <div class="chart-info">
+                        <h4>גרף פיזור + קו מגמה</h4>
+                        <p>חושף <strong>קשרים בין שני משתנים</strong>. כאן: האם יש קורלציה בין תקציב שיווק למכירות? הנקודה האדומה = חריגה (Outlier).</p>
+                        <span class="chart-tag tag-relation">קשר</span>
+                        <span class="chart-tag tag-distribution">התפלגות</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <svg viewBox="0 0 300 170" style="width:100%;height:170px;">
+                            <line x1="30" y1="150" x2="280" y2="150" stroke="#CBD5E1" stroke-width="1"/>
+                            <line x1="30" y1="10" x2="30" y2="150" stroke="#CBD5E1" stroke-width="1"/>
+                            <circle cx="80" cy="90" r="18" fill="#3282B8" opacity="0.4"/><circle cx="130" cy="50" r="30" fill="#059669" opacity="0.4"/>
+                            <circle cx="200" cy="70" r="12" fill="#E8505B" opacity="0.5"/><circle cx="170" cy="110" r="22" fill="#F59E0B" opacity="0.4"/>
+                            <circle cx="240" cy="40" r="25" fill="#7C3AED" opacity="0.4"/><circle cx="60" cy="130" r="8" fill="#3282B8" opacity="0.5"/>
+                            <circle cx="250" cy="100" r="15" fill="#059669" opacity="0.4"/>
+                            <text x="130" y="55" font-size="7" fill="#065F46" font-family="Heebo" text-anchor="middle" font-weight="700">Google</text>
+                            <text x="240" y="45" font-size="7" fill="#5B21B6" font-family="Heebo" text-anchor="middle" font-weight="700">Amazon</text>
+                            <text x="80" y="94" font-size="6" fill="#1E40AF" font-family="Heebo" text-anchor="middle" font-weight="700">Meta</text>
+                        </svg>
+                    </div>
+                    <div class="chart-info">
+                        <h4>Bubble Chart (גרף בועות)</h4>
+                        <p>כמו Scatter אבל מוסיף <strong>ממד שלישי</strong> דרך גודל הבועה. כאן: ציר X=הכנסות, Y=רווח, גודל בועה=מספר עובדים.</p>
+                        <span class="chart-tag tag-relation">קשר</span>
+                        <span class="chart-tag tag-comparison">השוואה</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>ה. היסטוגרמה <span class="en-term">Histogram</span></h3>
+            <div class="chart-example-grid">
+                <div class="chart-card">
+                    <div class="chart-visual">
+                        <div class="mini-bars" style="gap:2px;">
+                            <div class="mini-bar" style="height:15%;background:#BBE1FA;" data-label="18-24" data-val=""></div>
+                            <div class="mini-bar" style="height:35%;background:#3282B8;" data-label="25-34" data-val=""></div>
+                            <div class="mini-bar" style="height:80%;background:#0F4C75;" data-label="35-44" data-val=""></div>
+                            <div class="mini-bar" style="height:95%;background:#0F4C75;" data-label="45-54" data-val=""></div>
+                            <div class="mini-bar" style="height:60%;background:#3282B8;" data-label="55-64" data-val=""></div>
+                            <div class="mini-bar" style="height:25%;background:#BBE1FA;" data-label="65+" data-val=""></div>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>היסטוגרמה</h4>
+                        <p>מציגה <strong>התפלגות של משתנה רציף</strong> - כאן: פילוח לקוחות לפי טווחי גיל. שימו לב: בניגוד ל-Bar Chart, אין רווח בין העמודות כי הטווחים רציפים.</p>
+                        <span class="chart-tag tag-distribution">התפלגות</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-visual" style="padding:15px 25px;">
+                        <div style="width:100%;">
+                            <div style="font-size:0.8rem;color:var(--dark);font-weight:700;margin-bottom:10px;">Heatmap: מכירות לפי יום ושעה</div>
+                            <div class="mini-heatmap">
+                                <div class="heat-cell" style="background:rgba(50,130,184,0.1);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.15);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.2);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.1);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.3);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.5);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.7);"></div>
+                                <div class="heat-cell" style="background:rgba(50,130,184,0.2);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.25);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.3);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.2);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.4);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.6);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.8);"></div>
+                                <div class="heat-cell" style="background:rgba(50,130,184,0.5);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.6);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.7);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.5);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.6);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.9);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.95);"></div>
+                                <div class="heat-cell" style="background:rgba(50,130,184,0.3);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.4);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.5);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.3);"></div><div class="heat-cell" style="background:rgba(50,130,184,0.5);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.7);"></div><div class="heat-cell" style="background:rgba(232,80,91,0.6);"></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#64748B;margin-top:5px;">
+                                <span>א'</span><span>ב'</span><span>ג'</span><span>ד'</span><span>ה'</span><span>ו'</span><span>שבת</span>
+                            </div>
+                            <div style="display:flex;gap:8px;margin-top:8px;font-size:0.7rem;color:#64748B;">
+                                <span>⬆ בוקר</span><span>|</span><span>צהריים</span><span>|</span><span>ערב ⬇</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-info">
+                        <h4>מפת חום <span class="en-term">Heatmap</span></h4>
+                        <p>מציגה <strong>עוצמה של ערך לפי שני ממדים</strong>. כאן: מכירות לפי יום בשבוע ושעה ביום. אדום כהה = שיא מכירות.</p>
+                        <span class="chart-tag tag-distribution">התפלגות</span>
+                        <span class="chart-tag tag-comparison">השוואה</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>ו. גרפים נוספים חשובים</h3>
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab(event,'tab-treemap')">Treemap</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-waterfall')">Waterfall</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-gauge')">Gauge / KPI Card</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-funnel')">Funnel</button>
+                    <button class="tab-btn" onclick="switchTab(event,'tab-combo')">Combo Chart</button>
+                </div>
+                <div id="tab-treemap" class="tab-content active">
+                    <h4>Treemap (מפת עץ)</h4>
+                    <p><strong>מתי:</strong> הצגת הרכב הירארכי עם הרבה קטגוריות (יותר מ-6, שם עוגה כבר לא עובדת). כל מלבן מייצג קטגוריה, וגודלו פרופורציונלי לערכו.</p>
+                    <p><strong>דוגמה BI:</strong> פילוח הכנסות לפי קו מוצרים > תת-קטגוריה > מוצר ספציפי.</p>
+                    <p><strong>ב-Tableau:</strong> Marks → Square. גרור את ה-Dimension ל-Color ואת ה-Measure ל-Size.</p>
+                    <p><strong>יתרון:</strong> ניצול מקסימלי של שטח הדשבורד. מצוין כשיש עשרות קטגוריות.</p>
+                </div>
+                <div id="tab-waterfall" class="tab-content">
+                    <h4>Waterfall Chart (גרף מפל)</h4>
+                    <p><strong>מתי:</strong> הצגת <strong>פירוט ההשפעה של מרכיבים שונים</strong> על תוצאה סופית. "מה גרם לנו לעבור מהכנסות של ₪10M לרווח נקי של ₪2M?"</p>
+                    <p><strong>דוגמה BI:</strong> ניתוח גשר רווח (Bridge Analysis): מתחילים בהכנסות, מפחיתים עלויות שונות (חומרי גלם, שכר, שיווק, מיסים) ומגיעים לרווח נקי. כל "מדרגה" מראה את ההשפעה.</p>
+                    <p><strong>ב-Tableau:</strong> נדרש חישוב Running Total ושימוש ב-Gantt Bar. או שימוש ב-Waterfall chart type מובנה (מגרסה 2020.2).</p>
+                    <p><strong>שימושי במיוחד ל:</strong> סמנכ"לי כספים (CFOs), מנתחי השקעות, ודיוני דירקטוריון.</p>
+                </div>
+                <div id="tab-gauge" class="tab-content">
+                    <h4>Gauge Chart / KPI Card (מד מהירות / כרטיס KPI)</h4>
+                    <p><strong>מתי:</strong> הצגת <strong>מדד בודד אל מול יעד</strong>. "האם הגענו ליעד?"</p>
+                    <p><strong>דוגמה BI:</strong> אחוז עמידה ביעד מכירות רבעוני (78% מתוך 100%), שביעות רצון לקוחות (NPS = 42), עומס שרת (CPU 67%).</p>
+                    <p><strong>KPI Card</strong> מציג מספר גדול בולט עם חץ ירוק/אדום לציון מגמה. פשוט, ברור, ואפקטיבי. בדשבורדים מודרניים, זהו הרכיב הראשון שהעין תופסת.</p>
+                    <p><strong>ב-Power BI:</strong> Visual type → Card / KPI / Gauge. ב-Tableau: BAN (Big-Ass Number) - הצגת מספר גדול עם עיצוב בולט.</p>
+                </div>
+                <div id="tab-funnel" class="tab-content">
+                    <h4>Funnel Chart (גרף משפך)</h4>
+                    <p><strong>מתי:</strong> הצגת <strong>שלבים ברצף שמצטמצם</strong> - כמה מתחילים בשלב ראשון וכמה "שורדים" לשלב הבא.</p>
+                    <p><strong>דוגמה BI:</strong> משפך מכירות (Sales Funnel): 1000 לידים → 400 פגישות → 150 הצעות מחיר → 60 סגירות. משפך גיוס: 500 קו"ח → 100 ראיונות → 20 ימי מיון → 5 קליטות.</p>
+                    <p><strong>KPI נלווה:</strong> Conversion Rate (שיעור המרה) בין כל שלב. אם יש צוואר בקבוק - הוא בולט מיד.</p>
+                    <p><strong>פופולרי במיוחד ב:</strong> שיווק דיגיטלי, מכירות SaaS, E-Commerce (Checkout Funnel).</p>
+                </div>
+                <div id="tab-combo" class="tab-content">
+                    <h4>Combo Chart (גרף משולב)</h4>
+                    <p><strong>מתי:</strong> הצגת <strong>שני מדדים שונים על אותו ציר זמן</strong> כשיש להם סקאלות שונות. למשל: עמודות למכירות (בשקלים) + קו לאחוז רווח גולמי.</p>
+                    <p><strong>דוגמה BI:</strong> דשבורד מכירות חודשי שמציג גם סך הכנסות (עמודות, ציר Y שמאלי) וגם מספר עסקאות (קו, ציר Y ימני). מאפשר לראות אם העלייה בהכנסות נובעת מעסקאות יותר או מסכומים גדולים יותר.</p>
+                    <p><strong>ב-Tableau:</strong> Dual Axis - לחיצה ימנית על ה-Measure השני → Dual Axis → Synchronize Axis.</p>
+                    <p><strong>חשוב:</strong> ודא שהצירים מסונכרנים ושברור איזה מדד שייך לאיזה ציר.</p>
+                </div>
+            </div>
+
+            <h3>טבלת סיכום: בחירת הגרף הנכון</h3>
+            <table>
+                <tr>
+                    <th>סוג גרף</th>
+                    <th>שאלה שעונה עליה</th>
+                    <th>מתאים כש...</th>
+                    <th>לא מתאים כש...</th>
+                </tr>
+                <tr><td><strong>Bar/Column</strong></td><td>מי הגדול/קטן?</td><td>השוואה בין קטגוריות</td><td>מגמה לאורך זמן</td></tr>
+                <tr><td><strong>Line</strong></td><td>מה המגמה?</td><td>ציר X הוא זמן</td><td>הציר אינו רציף</td></tr>
+                <tr><td><strong>Pie/Donut</strong></td><td>מה החלק מתוך השלם?</td><td>2-5 פרוסות, הבדלים ברורים</td><td>6+ פרוסות, פרוסות דומות</td></tr>
+                <tr><td><strong>Scatter</strong></td><td>האם יש קשר?</td><td>בודקים קורלציה בין שני מדדים</td><td>משתנה אחד בלבד</td></tr>
+                <tr><td><strong>Histogram</strong></td><td>איך מתפלג?</td><td>משתנה רציף (גיל, סכום)</td><td>משתנה קטגוריאלי</td></tr>
+                <tr><td><strong>Heatmap</strong></td><td>איפה הנקודה הכי חמה?</td><td>שני ממדים + עוצמה</td><td>מעט נקודות נתונים</td></tr>
+                <tr><td><strong>Treemap</strong></td><td>מה החלק, הירארכית?</td><td>הרבה קטגוריות, מבנה עץ</td><td>קטגוריות בודדות</td></tr>
+                <tr><td><strong>Waterfall</strong></td><td>מה גרם לשינוי?</td><td>פירוק מרכיבי רווח/הפסד</td><td>מגמות לאורך זמן</td></tr>
+                <tr><td><strong>Funnel</strong></td><td>איפה מפסידים?</td><td>תהליך רצפי עם נשירה</td><td>נתונים ללא סדר</td></tr>
+                <tr><td><strong>KPI Card</strong></td><td>מה המצב עכשיו?</td><td>מדד בודד מול יעד</td><td>ניתוח מעמיק</td></tr>
+            </table>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 2</h3>
+                <div class="question">
+                    <p class="question-text">1. סמנכ"ל הכספים רוצה להבין "מה הוביל לירידה ברווח הנקי מ-₪5M ל-₪2M". איזה גרף הכי מתאים?</p>
+                    <ul class="options">
+                        <li>א. גרף עוגה</li>
+                        <li>ב. Waterfall Chart (גרף מפל)</li>
+                        <li>ג. Scatter Plot</li>
+                        <li>ד. Funnel Chart</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a2-1')">הצג פתרון</button>
+                    <div id="a2-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Waterfall מתחיל בערך פתיחה (₪5M הכנסות), מפחית כל גורם (עלויות חומרים, שכר, שיווק, מיסים) ב"מדרגות" יורדות, ומסיים בערך סגירה (₪2M רווח נקי). מאפשר לראות בדיוק "מה אכל" את הרווח.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">2. מנהלת שיווק רוצה לראות כמה לקוחות עוברים כל שלב במשפך המכירות שלה (מליד ועד רכישה). איזה גרף?</p>
+                    <ul class="options">
+                        <li>א. Heatmap</li>
+                        <li>ב. Line Chart</li>
+                        <li>ג. Funnel Chart</li>
+                        <li>ד. Histogram</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a2-2')">הצג פתרון</button>
+                    <div id="a2-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ג'</p>
+                        <p>הסבר: Funnel Chart מציג תהליך רצפי מצטמצם: למשל 1000 לידים → 300 פגישות → 80 הצעות מחיר → 25 רכישות. ברור מיד איפה ה"צוואר בקבוק" - השלב בו הנשירה הגבוהה ביותר.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">3. אמת או שקר: היסטוגרמה וגרף עמודות הם אותו הדבר בדיוק.</p>
+                    <ul class="options">
+                        <li>א. אמת</li>
+                        <li>ב. שקר</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a2-3')">הצג פתרון</button>
+                    <div id="a2-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: שקר (ב)</p>
+                        <p>הסבר: למרות שנראים דומים, יש הבדל מהותי. <strong>Bar Chart</strong> מציג קטגוריות נפרדות (סניפים, מוצרים) ויש רווח בין העמודות. <strong>Histogram</strong> מציג התפלגות של משתנה רציף (גיל, סכום, זמן) - העמודות צמודות כי הטווחים רציפים. בהיסטוגרמה, סדר העמודות משמעותי; בעמודות רגילות ניתן לשנות סדר.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">4. מנכ"ל רשת מזון רוצה לדעת "אילו מוצרים מהווים את 80% ההכנסות" כשיש 200 מוצרים שונים. מה הגרף המתאים?</p>
+                    <ul class="options">
+                        <li>א. גרף עוגה עם 200 פרוסות</li>
+                        <li>ב. Treemap</li>
+                        <li>ג. Box Plot</li>
+                        <li>ד. גרף קו</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a2-4')">הצג פתרון</button>
+                    <div id="a2-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: עוגה עם 200 פרוסות תהיה לגמרי בלתי קריאה. Treemap מתאים מצוין: כל מלבן מייצג מוצר, גודלו פרופורציונלי להכנסות. המוצרים הגדולים בולטים מיד, והמנכ"ל רואה ב"מבט ציפור" את כל ההרכב. ניתן גם להוסיף צבע לפי קטגוריה.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 3: DASHBOARD DESIGN
+             ======================================== -->
+        <div class="section-card" id="ch3">
+            <h2>פרק 3: עקרונות עיצוב דשבורדים - מה עובד ומה לא</h2>
+            <p>דשבורד BI אינו "אוסף גרפים". דשבורד טוב הוא <strong>סיפור ויזואלי</strong> שמוביל את מקבל ההחלטות מהתמונה הכללית לפרטים - בצורה אינטואיטיבית וללא מאמץ.</p>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-desktop"></i> עיקרון ה-5 שניות</h4>
+                <p>דשבורד טוב צריך לענות על השאלה "מה המצב?" תוך <strong>5 שניות</strong> של הסתכלות. אם המנהל צריך "לחפש" את התובנה - העיצוב נכשל. העין צריכה לזרום מ-KPIs ראשיים בראש → לגרפי מגמה באמצע → לפרטים בתחתית.</p>
+            </div>
+
+            <h3>מבנה דשבורד אפקטיבי: שיטת Z</h3>
+            <p>העין האנושית סורקת דף בתבנית Z (בשפות LTR) או Z הפוכה (בעברית/ערבית RTL). תכנון הדשבורד בהתאם:</p>
+            <ol>
+                <li><strong>חלק עליון (Header):</strong> כותרת, פילטרים ראשיים (תאריכים, סניף), ו-3-5 כרטיסי KPI ראשיים (הפדיון, שיעור המרה, עמידה ביעד). <em>זה מה שהמנהל רואה ראשון.</em></li>
+                <li><strong>חלק אמצעי (Body):</strong> גרפי מגמה (קו), גרפי השוואה (עמודות) - המספקים הקשר ועומק לנתוני ה-KPI.</li>
+                <li><strong>חלק תחתון (Details):</strong> טבלאות מפורטות, Drill-Down, ו-Tooltip עם פרטים נוספים.</li>
+            </ol>
+
+            <h3>הדו ושלא בעיצוב דשבורד BI</h3>
+            <div class="vs-container">
+                <div class="vs-panel vs-good">
+                    <h4><i class="fas fa-check-circle"></i> עשה (Do's)</h4>
+                    <ul class="bullet-list">
+                        <li><strong>אחידות:</strong> פונט אחד, פלטת צבעים מוגבלת (3-5 צבעים), סגנון גרפים זהה.</li>
+                        <li><strong>היררכיה ברורה:</strong> KPIs גדולים למעלה, פרטים למטה.</li>
+                        <li><strong>צבעים בעלי משמעות:</strong> אדום = מתחת ליעד, ירוק = מעל ליעד. עקבי בכל הדשבורד.</li>
+                        <li><strong>Whitespace:</strong> השאר "אוויר" בין הגרפים. צפיפות פוגעת בקריאות.</li>
+                        <li><strong>כותרת לכל גרף:</strong> "מכירות לפי סניף - רבעון 3, 2024" ולא "Chart 1".</li>
+                        <li><strong>פילטרים אינטראקטיביים:</strong> אפשר למנהל לבחור תקופה, סניף, מוצר.</li>
+                        <li><strong>הדגשת חריגות:</strong> Conditional Formatting - אדום לערכים מתחת ליעד.</li>
+                    </ul>
+                </div>
+                <div class="vs-divider">⚡</div>
+                <div class="vs-panel vs-bad">
+                    <h4><i class="fas fa-times-circle"></i> אל תעשה (Don'ts)</h4>
+                    <ul class="bullet-list">
+                        <li><strong>3D בגרפים:</strong> אפקט תלת-ממדי מעוות את הנתונים ומקשה על השוואה. <em>תמיד 2D.</em></li>
+                        <li><strong>יותר מ-7-8 גרפים בדשבורד:</strong> עומס קוגניטיבי. מוטב לפצל לכמה דשבורדים.</li>
+                        <li><strong>צירים חתוכים:</strong> ציר Y שלא מתחיל מ-0 בגרף עמודות מטעה (גורם להבדלים קטנים להיראות ענקיים).</li>
+                        <li><strong>קשת צבעים:</strong> שימוש ב-12 צבעים שונים הופך את הדשבורד לכאוטי.</li>
+                        <li><strong>ספגטי בגרף קו:</strong> 8+ קווים על אותו גרף. אף אחד לא יבין.</li>
+                        <li><strong>גרף עוגה עם 10 פרוסות:</strong> פשוט לא עובד. השתמש ב-Treemap או Bar.</li>
+                        <li><strong>טקסט מרובה:</strong> דשבורד הוא לא מסמך Word. מינימום מילים, מקסימום גרפיקה.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="case-study">
+                <h4><i class="fas fa-briefcase"></i> דוגמה: דשבורד מכירות "מנהל אזור"</h4>
+                <p>נתאר דשבורד שנבנה עבור מנהל אזור צפון ברשת קמעונאית:</p>
+                <ul class="bullet-list">
+                    <li><strong>שורה עליונה:</strong> 4 כרטיסי KPI - פדיון חודשי (₪2.3M, ↑8% מיעד), סל ממוצע (₪187), מספר עסקאות (12,340), שביעות רצון (4.2/5).</li>
+                    <li><strong>שורה שנייה:</strong> גרף קו - מגמת פדיון יומי ב-30 ימים אחרונים + קו יעד. גרף עמודות - השוואת ביצועי 5 סניפים באזור.</li>
+                    <li><strong>שורה שלישית:</strong> Treemap - פילוח מכירות לפי קטגוריית מוצר. Heatmap - מכירות לפי יום ושעה.</li>
+                    <li><strong>שורה תחתונה:</strong> טבלה מפורטת עם Top 10 מוצרים / Bottom 10 מוצרים. Conditional Formatting באדום/ירוק.</li>
+                    <li><strong>פילטרים:</strong> בחירת חודש, סניף ספציפי, קטגוריית מוצר. כל גרף מגיב ללחיצה על אלמנט בגרף אחר (Cross-Filtering).</li>
+                </ul>
+            </div>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 3</h3>
+                <div class="question">
+                    <p class="question-text">1. מדוע אסור להתחיל את ציר Y מערך שאינו 0 בגרף עמודות?</p>
+                    <ul class="options">
+                        <li>א. זה חוקי ומותר תמיד - אין בעיה.</li>
+                        <li>ב. כי זה גורם להבדלים קטנים להיראות גדולים בצורה מטעה. עמודה שערכה 95 תיראה כפולה מעמודה שערכה 90 אם הציר מתחיל מ-85.</li>
+                        <li>ג. כי מערכת Power BI לא מאפשרת זאת טכנית.</li>
+                        <li>ד. כי הצבעים לא ייראו טוב.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a3-1')">הצג פתרון</button>
+                    <div id="a3-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: ציר חתוך (Truncated Axis) הוא אחת מטכניקות ה-"Misleading Charts" הנפוצות. בגרף עמודות, האורך החזותי צריך להיות פרופורציונלי לערך. הערה: בגרף קו, חיתוך הציר <em>לעיתים</em> מקובל כדי להראות שינויים עדינים - אך יש לציין זאת בבירור.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">2. מה עיקרון ה-"5 שניות" בהקשר של דשבורדים?</p>
+                    <ul class="options">
+                        <li>א. הדשבורד צריך להיטען תוך 5 שניות.</li>
+                        <li>ב. יש לרענן את הנתונים כל 5 שניות.</li>
+                        <li>ג. מקבל ההחלטות צריך להיות מסוגל לענות על השאלה "מה המצב?" תוך 5 שניות של הסתכלות על הדשבורד.</li>
+                        <li>ד. כל גרף צריך להכיל מקסימום 5 נקודות נתונים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a3-2')">הצג פתרון</button>
+                    <div id="a3-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ג'</p>
+                        <p>הסבר: דשבורד BI נועד לתמוך בהחלטות מהירות. אם מנהל צריך "לחפור" כדי להבין את המצב, העיצוב נכשל. KPIs בולטים בראש הדשבורד, צבעי אדום/ירוק, וחיצים של מגמה - כולם משרתים את עיקרון ה-5 שניות.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">3. אמת או שקר: Cross-Filtering פירושו שלחיצה על אלמנט בגרף אחד (למשל: סניף ירושלים) מסננת אוטומטית את כל שאר הגרפים בדשבורד להציג רק נתוני ירושלים.</p>
+                    <ul class="options">
+                        <li>א. אמת</li>
+                        <li>ב. שקר</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a3-3')">הצג פתרון</button>
+                    <div id="a3-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: אמת (א)</p>
+                        <p>הסבר: Cross-Filtering (או Interactivity) הוא אחד מהיתרונות המרכזיים של כלי BI מודרניים כמו Power BI ו-Tableau על פני Excel סטטי. זה מאפשר חקירה אינטראקטיבית של הנתונים מזוויות שונות.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 4: TABLEAU
+             ======================================== -->
+        <div class="section-card" id="ch4">
+            <h2>פרק 4: מבוא ל-Tableau - הכלי, הממשק והשפה</h2>
+            <p><strong>Tableau</strong> (נרכש על ידי Salesforce ב-2019 ב-$15.7B) הוא אחד מכלי ה-BI הנפוצים בעולם, ונחשב למוביל בתחום הויזואליזציה. בפרק זה נכיר את הממשק, המונחים, והרעיונות הבסיסיים שיאפשרו לכם להתחיל לעבוד בכלי.</p>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-th-large"></i> גרסאות Tableau</h4>
+                <ul class="bullet-list">
+                    <li><strong>Tableau Public</strong> - גרסה חינמית, שומרת עבודות רק באופן פומבי (לא לנתונים חסויים). <em>מושלמת לסטודנטים וללימוד.</em></li>
+                    <li><strong>Tableau Desktop</strong> - הגרסה המקצועית (כ-$70/חודש). חיבור למקורות נתונים מגוונים, שמירה מקומית.</li>
+                    <li><strong>Tableau Server / Tableau Cloud</strong> - פלטפורמה ארגונית לשיתוף דשבורדים עם כלל הארגון.</li>
+                    <li><strong>Tableau Prep</strong> - כלי ETL ויזואלי לניקוי ועיבוד נתונים לפני הכנסתם ל-Tableau Desktop.</li>
+                </ul>
+            </div>
+
+            <h3>מונחי יסוד ב-Tableau <span class="en-term">Tableau Terminology</span></h3>
+            <table>
+                <tr>
+                    <th>מונח</th>
+                    <th>תרגום/הסבר</th>
+                    <th>דוגמה</th>
+                </tr>
+                <tr>
+                    <td><strong>Dimension<br/><span class="en-term">ממד</span></strong></td>
+                    <td>שדה קטגוריאלי / תיאורי - <em>לפי מה</em> אנחנו מפלחים</td>
+                    <td>שם סניף, קטגוריית מוצר, אזור, מין, שנה</td>
+                </tr>
+                <tr>
+                    <td><strong>Measure<br/><span class="en-term">מדד</span></strong></td>
+                    <td>שדה מספרי שניתן לאגרג (לחשב סכום, ממוצע, ספירה) - <em>מה</em> אנחנו מודדים</td>
+                    <td>סכום מכירות, כמות יחידות, רווח, שביעות רצון</td>
+                </tr>
+                <tr>
+                    <td><strong>Rows & Columns<br/><span class="en-term">שורות ועמודות</span></strong></td>
+                    <td>ה"מדפים" (Shelves) שעליהם גוררים שדות. Columns = ציר X, Rows = ציר Y</td>
+                    <td>גרור "חודש" ל-Columns ו-"מכירות" ל-Rows → גרף קו</td>
+                </tr>
+                <tr>
+                    <td><strong>Marks<br/><span class="en-term">סימנים</span></strong></td>
+                    <td>סוג הוויזואליזציה (Bar, Line, Circle, Square, Map, Text) + מאפייני צבע, גודל, תווית</td>
+                    <td>Marks → Color → גרור "אזור" כדי לצבוע לפי אזור</td>
+                </tr>
+                <tr>
+                    <td><strong>Filters<br/><span class="en-term">מסננים</span></strong></td>
+                    <td>הגבלת הנתונים המוצגים. ניתן לגרור כל שדה למדף ה-Filters</td>
+                    <td>סנן רק שנת 2024, או רק סניפי צפון</td>
+                </tr>
+                <tr>
+                    <td><strong>Pages<br/><span class="en-term">דפים</span></strong></td>
+                    <td>"אנימציה" - הצגת הנתונים שלב אחר שלב (למשל: שנה אחר שנה)</td>
+                    <td>גרור "שנה" ל-Pages כדי "להנפיש" את הנתונים</td>
+                </tr>
+                <tr>
+                    <td><strong>Calculated Field<br/><span class="en-term">שדה מחושב</span></strong></td>
+                    <td>נוסחה שאתה יוצר - כמו עמודה מחושבת באקסל</td>
+                    <td>Profit Margin = [Profit] / [Sales]</td>
+                </tr>
+                <tr>
+                    <td><strong>Dashboard</strong></td>
+                    <td>קנבס שמרכז מספר Worksheets (גרפים) בתצוגה אחת</td>
+                    <td>דשבורד שמכיל גרף מכירות + מפה + טבלה</td>
+                </tr>
+                <tr>
+                    <td><strong>Worksheet</strong></td>
+                    <td>גרף/ויזואליזציה בודדת. מספר Worksheets מרכיבים Dashboard</td>
+                    <td>"Sheet 1" = גרף עמודות של מכירות לפי סניף</td>
+                </tr>
+                <tr>
+                    <td><strong>Dual Axis</strong></td>
+                    <td>שני צירי Y על אותו גרף (Combo Chart)</td>
+                    <td>ציר שמאלי: מכירות (עמודות). ציר ימני: % רווח (קו)</td>
+                </tr>
+            </table>
+
+            <h3>תהליך עבודה ב-Tableau: מחיבור נתונים לדשבורד</h3>
+            <div class="practical-box">
+                <h4><i class="fas fa-shoe-prints"></i> צעד אחר צעד: בניית הגרף הראשון</h4>
+                <ol>
+                    <li><strong>התחברות למקור נתונים:</strong> פתיחת Tableau → Connect → בחירת קובץ (Excel, CSV, SQL Server, Google Sheets). Tableau מזהה אוטומטית שדות ומסווג אותם ל-Dimensions ו-Measures.</li>
+                    <li><strong>הכרת Data Pane:</strong> בצד שמאל (ימין בגרסה עברית) מופיעים כל השדות מחולקים: למעלה Dimensions (אייקון כחול), למטה Measures (אייקון ירוק).</li>
+                    <li><strong>גרירת שדות:</strong> גרור Dimension ל-Columns (ציר X), ו-Measure ל-Rows (ציר Y). Tableau מייצר אוטומטית גרף מתאים!</li>
+                    <li><strong>התאמת סוג הגרף:</strong> לחץ על Show Me (בפינה העליונה) כדי לבחור סוג גרף אחר, או שנה ב-Marks Card.</li>
+                    <li><strong>הוספת פרטים:</strong> גרור שדות נוספים ל-Color (צבע), Size (גודל), Label (תוויות), Detail (פירוט).</li>
+                    <li><strong>סינון:</strong> גרור שדה ל-Filters, או לחץ לחיצה ימנית → Show Filter כדי שהמשתמש יוכל לסנן אינטראקטיבית.</li>
+                    <li><strong>בניית דשבורד:</strong> לחץ על New Dashboard. גרור Worksheets מהצד לקנבס. הגדר גודל (1920×1080 למסך, 800×600 לנייד). הוסף פילטרים גלובליים.</li>
+                </ol>
+            </div>
+
+            <h3>פעולות חשובות ב-Tableau</h3>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🔀 Sorting & Filtering (מיון וסינון)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p><strong>מיון:</strong> לחיצה על כותרת ציר ממיינת אוטומטית (עולה/יורד). לחלופין: לחצני מיון בטולבר, או לחיצה ימנית → Sort.</p>
+                <p><strong>סינון:</strong> 4 רמות סינון ב-Tableau (לפי סדר עדיפות): Extract Filters → Data Source Filters → Context Filters → Dimension/Measure Filters. למשתמש הרגיל, הסינון הנפוץ הוא גרירת שדה ל-Filters Shelf.</p>
+                <p><strong>Top N / Bottom N:</strong> בחלון Filter → Tab: Top → By Field → Top 10 (למשל: 10 הלקוחות הרווחיים ביותר).</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🧮 Calculated Fields (שדות מחושבים)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>שדות מחושבים ב-Tableau דומים לנוסחאות באקסל, אך פועלים על כל הנתונים:</p>
+                <ul class="bullet-list">
+                    <li><code>[Profit] / [Sales]</code> → Profit Margin</li>
+                    <li><code>IF [Sales] > 10000 THEN "גבוה" ELSE "נמוך" END</code> → סגמנטציה</li>
+                    <li><code>DATEDIFF('month', [Order Date], TODAY())</code> → גיל ההזמנה בחודשים</li>
+                    <li><code>FIXED [Region] : SUM([Sales])</code> → Level of Detail (LOD) - חישוב ברמה קבועה</li>
+                </ul>
+                <p><strong>LOD Expressions</strong> (Level of Detail) הם אחד הנושאים המתקדמים והחזקים ביותר ב-Tableau - הם מאפשרים לחשב מדדים ברמת פירוט שונה מזו המוצגת בגרף.</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>📊 Show Me Panel (תפריט סוגי הגרפים)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>לחצן <strong>Show Me</strong> (בפינה הימנית העליונה) מציג את כל סוגי הגרפים הזמינים ומסמן אילו מתאימים לשדות שנבחרו:</p>
+                <ul class="bullet-list">
+                    <li><strong>1 Dimension + 1 Measure:</strong> Bar Chart, Pie, Treemap.</li>
+                    <li><strong>Date + 1 Measure:</strong> Line Chart, Area Chart.</li>
+                    <li><strong>2 Measures:</strong> Scatter Plot.</li>
+                    <li><strong>Geographic Dimension:</strong> Map (Symbol / Filled).</li>
+                    <li><strong>2 Dimensions + 1 Measure:</strong> Highlight Table (Heatmap), Stacked Bar.</li>
+                </ul>
+                <p>Show Me הוא "כלל אצבע" מצוין למתחילים, אך מקצוענים בוחרים ידנית את סוג הגרף על בסיס השאלה העסקית.</p>
+            </div>
+
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span>🎨 Formatting & Styling (עיצוב ופורמט)</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-body">
+                <p>Tableau מאפשר שליטה מלאה בעיצוב:</p>
+                <ul class="bullet-list">
+                    <li><strong>Format Menu:</strong> שליטה בפונטים, צבעי רקע, גבולות, קווי רשת, ופורמט מספרים (₪, %, מספרים שלמים).</li>
+                    <li><strong>Color Palette:</strong> לחיצה על Color ב-Marks Card → Edit Colors. ניתן לבחור פלטות מוכנות או ליצור מותאם אישית. <strong>טיפ:</strong> השתמש בפלטות ידידותיות לעיוורי צבעים (Color Blind Safe).</li>
+                    <li><strong>Tooltips:</strong> מידע שמופיע בריחוף עכבר. ניתן לערוך ולהוסיף שדות, טקסט, ואפילו גרף מוטמע (Viz in Tooltip!).</li>
+                    <li><strong>Annotations:</strong> הוספת הערות טקסט לנקודות ספציפיות בגרף (למשל: "שיא מכירות - Black Friday").</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <h4><i class="fas fa-exchange-alt"></i> Tableau מול Power BI: השוואה מהירה</h4>
+                <table>
+                    <tr>
+                        <th>קריטריון</th>
+                        <th>Tableau</th>
+                        <th>Power BI</th>
+                    </tr>
+                    <tr><td><strong>חוזקה מרכזית</strong></td><td>ויזואליזציה מתקדמת, חקירה אקספלורטיבית</td><td>אינטגרציה עם Microsoft, עלות נמוכה</td></tr>
+                    <tr><td><strong>שפת חישוב</strong></td><td>Tableau Calculations, LOD</td><td>DAX, Power Query (M)</td></tr>
+                    <tr><td><strong>עלות</strong></td><td>$70/חודש (Creator)</td><td>$10/חודש (Pro)</td></tr>
+                    <tr><td><strong>עקומת למידה</strong></td><td>בינונית-גבוהה</td><td>בינונית</td></tr>
+                    <tr><td><strong>חיבור לנתונים</strong></td><td>מצוין - מאות מחברים</td><td>מצוין - דגש על Azure ו-Microsoft</td></tr>
+                    <tr><td><strong>פופולריות בישראל</strong></td><td>גבוהה בחברות טכנולוגיה</td><td>הגבוהה ביותר בכל המגזרים</td></tr>
+                    <tr><td><strong>גרסה חינמית</strong></td><td>Tableau Public</td><td>Power BI Desktop</td></tr>
+                </table>
+            </div>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 4 - Tableau</h3>
+                <div class="question">
+                    <p class="question-text">1. ב-Tableau, מהו ההבדל בין Dimension לבין Measure?</p>
+                    <ul class="options">
+                        <li>א. Dimension הוא שדה מספרי ו-Measure הוא שדה טקסטואלי.</li>
+                        <li>ב. Dimension הוא שדה קטגוריאלי (לפי מה מפלחים - סניף, מוצר, תאריך), ואילו Measure הוא שדה מספרי שניתן לאגרג (מה מודדים - סכום, ממוצע, ספירה).</li>
+                        <li>ג. אין הבדל - ניתן להחליף ביניהם תמיד.</li>
+                        <li>ד. Dimension קיים רק ב-Tableau ו-Measure קיים רק ב-Power BI.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a4-1')">הצג פתרון</button>
+                    <div id="a4-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Dimension = "לפי מה?" (סניף, קטגוריה, חודש). Measure = "כמה?" (סכום מכירות, כמות, אחוז). ב-Tableau, Dimensions מופיעים בכחול ו-Measures בירוק. הערה: לפעמים ניתן להמיר Measure ל-Dimension ולהיפך (למשל: מספר לקוח - מספרי אך קטגוריאלי).</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">2. כיצד יוצרים Combo Chart (גרף עמודות + קו על אותם צירים) ב-Tableau?</p>
+                    <ul class="options">
+                        <li>א. זה לא אפשרי ב-Tableau.</li>
+                        <li>ב. באמצעות Dual Axis: גרירת Measure שני ל-Rows, לחיצה ימנית → Dual Axis, ושינוי סוג Marks לכל ציר בנפרד.</li>
+                        <li>ג. באמצעות Ctrl+C Ctrl+V מאקסל.</li>
+                        <li>ד. רק דרך קוד Python.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a4-2')">הצג פתרון</button>
+                    <div id="a4-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Dual Axis הוא מהכלים החזקים ביותר ב-Tableau. הוא מאפשר להציג שני מדדים בסקאלות שונות על אותו גרף. למשל: עמודות למכירות (₪) וקו לאחוז רווח (%). חשוב לזכור ללחוץ "Synchronize Axis" אם הסקאלות דומות.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">3. מה עושה פונקציית Show Me ב-Tableau?</p>
+                    <ul class="options">
+                        <li>א. מציגה את הדשבורד למנהל בגרסת Full Screen.</li>
+                        <li>ב. מציגה פאנל של כל סוגי הגרפים הזמינים ומסמנת אילו מהם מתאימים לשדות שנבחרו.</li>
+                        <li>ג. שולחת את הדשבורד במייל.</li>
+                        <li>ד. מציגה את קוד ה-SQL מאחורי הגרף.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a4-3')">הצג פתרון</button>
+                    <div id="a4-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: Show Me הוא "עוזר חכם" שמזהה אילו סוגי גרפים מתאימים לשדות שגררת. אם יש לך Date + Measure, הוא ימליץ Line. אם יש Geographic dimension, הוא ימליץ Map. זה נקודת התחלה מצוינת למתחילים.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">4. אמת או שקר: Tableau Public הוא כלי חינמי לחלוטין שמתאים לסטודנטים ללמוד את Tableau, אך הוא שומר עבודות רק באופן פומבי באינטרנט.</p>
+                    <ul class="options">
+                        <li>א. אמת</li>
+                        <li>ב. שקר</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a4-4')">הצג פתרון</button>
+                    <div id="a4-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: אמת (א)</p>
+                        <p>הסבר: Tableau Public הוא כלי מצוין ללמידה. החיסרון היחיד: כל דשבורד שתבנה יישמר באתר הציבורי של Tableau ויהיה נגיש לכולם. לכן אסור להשתמש בו עם נתונים חסויים של חברה. לשימוש ארגוני - צריך Tableau Desktop/Cloud.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 5: SYNTHESIS EXERCISES
+             ======================================== -->
+        <div class="section-card" id="ch5">
+            <h2>פרק 5: תרגילי סינתזה - מהשאלה העסקית לגרף הנכון</h2>
+            <p>בפרק זה נתרגל את היכולת לנתח שאלה עסקית, לזהות את סוג השאלה, ולבחור את הגרף המתאים. זוהי המיומנות המרכזית של אנליסט BI.</p>
+
+            <h3>תרגיל אינטראקטיבי: התאם את הסיטואציה לגרף</h3>
+            <div class="exercise-container">
+                <h3><i class="fas fa-puzzle-piece"></i> תרגיל: בחר את הגרף הנכון לכל תרחיש</h3>
+                <p>לחץ על כל תרחיש כדי לראות את הפתרון המלא:</p>
+
+                <div class="scenario-builder">
+                    <div class="sb-grid">
+                        <div class="sb-card" onclick="toggleScenario('sc1')">
+                            <h5>תרחיש 1: מנהל רכש</h5>
+                            <p>"רוצה להבין מי 5 הספקים שאנחנו הכי תלויים בהם מבחינת נפח רכישות."</p>
+                        </div>
+                        <div class="sb-card" onclick="toggleScenario('sc2')">
+                            <h5>תרחיש 2: סמנכ"ל שיווק</h5>
+                            <p>"האם יש קשר בין תקציב הקמפיין באינסטגרם לבין מספר הלידים שנכנסו?"</p>
+                        </div>
+                        <div class="sb-card" onclick="toggleScenario('sc3')">
+                            <h5>תרחיש 3: מנהל סניף</h5>
+                            <p>"באילו שעות ביום ובאילו ימים יש לנו הכי הרבה לקוחות בחנות?"</p>
+                        </div>
+                        <div class="sb-card" onclick="toggleScenario('sc4')">
+                            <h5>תרחיש 4: CFO (סמנכ"ל כספים)</h5>
+                            <p>"מה הוביל לירידה ברווח התפעולי מ-₪8M ל-₪3M ברבעון האחרון?"</p>
+                        </div>
+                        <div class="sb-card" onclick="toggleScenario('sc5')">
+                            <h5>תרחיש 5: מנהלת HR</h5>
+                            <p>"איך מתפלגים העובדים שלנו לפי טווחי ותק (0-1, 1-3, 3-5, 5-10, 10+ שנים)?"</p>
+                        </div>
+                        <div class="sb-card" onclick="toggleScenario('sc6')">
+                            <h5>תרחיש 6: VP מכירות</h5>
+                            <p>"מהי מגמת ההכנסות החודשיות שלנו ב-12 החודשים האחרונים, בהשוואה ל-12 חודשים קודמים?"</p>
+                        </div>
+                    </div>
+
+                    <div id="sc1" class="sb-result">
+                        <p><strong>גרף נכון: Bar Chart אופקי (Horizontal Bar), ממויין מהגדול לקטן</strong></p>
+                        <p><strong>סוג שאלה:</strong> השוואה (Comparison) + דירוג (Ranking)</p>
+                        <p><strong>מדוע:</strong> מדובר ב-Top 5 ספקים - דירוג קלאסי. עמודות אופקיות מאפשרות הצגה נוחה של שמות ספקים ארוכים. מיון יורד מדגיש מיד מי הספק הדומיננטי.</p>
+                        <p><strong>ב-Tableau:</strong> גרור "Supplier Name" ל-Rows, "Purchase Volume" ל-Columns. Sort descending. Filter → Top 5.</p>
+                    </div>
+                    <div id="sc2" class="sb-result">
+                        <p><strong>גרף נכון: Scatter Plot (גרף פיזור)</strong></p>
+                        <p><strong>סוג שאלה:</strong> קשר בין משתנים (Relationship / Correlation)</p>
+                        <p><strong>מדוע:</strong> רוצים לבדוק קורלציה בין שני משתנים מספריים: תקציב קמפיין (ציר X) ומספר לידים (ציר Y). כל נקודה = קמפיין אחד. קו מגמה (Trend Line) יראה אם יש קשר חיובי.</p>
+                        <p><strong>ב-Tableau:</strong> גרור "Budget" ל-Columns, "Leads" ל-Rows. Marks → Circle. הוסף Trend Line: Analytics tab → Trend Line.</p>
+                    </div>
+                    <div id="sc3" class="sb-result">
+                        <p><strong>גרף נכון: Heatmap (מפת חום)</strong></p>
+                        <p><strong>סוג שאלה:</strong> התפלגות דו-ממדית (Distribution across two dimensions)</p>
+                        <p><strong>מדוע:</strong> יש לנו שני ממדים (יום בשבוע, שעה ביום) ומדד אחד (כמות לקוחות). Heatmap מציגה את העוצמה בצבע: כהה = עמוס, בהיר = שקט. מנהל הסניף רואה מיד מתי לתגבר צוות.</p>
+                        <p><strong>ב-Tableau:</strong> גרור "Day of Week" ל-Columns, "Hour" ל-Rows. Marks → Square. גרור "Number of Customers" ל-Color.</p>
+                    </div>
+                    <div id="sc4" class="sb-result">
+                        <p><strong>גרף נכון: Waterfall Chart (גרף מפל)</strong></p>
+                        <p><strong>סוג שאלה:</strong> ניתוח מרכיבי שינוי (Component Analysis / Bridge)</p>
+                        <p><strong>מדוע:</strong> ה-CFO רוצה לראות את ה"גשר" בין ₪8M ל-₪3M: מה כל סעיף הוצאה "אכל" מהרווח. כל מדרגה = סעיף (עלות חומרים ↓₪2M, שכר ↑₪0.5M, שיווק ↓₪1.5M, חד-פעמיים ↓₪2M).</p>
+                        <p><strong>ב-Tableau:</strong> Waterfall Chart type (או: Gantt Bar + Running Total calculation). ב-Power BI: Built-in Waterfall visual.</p>
+                    </div>
+                    <div id="sc5" class="sb-result">
+                        <p><strong>גרף נכון: היסטוגרמה (Histogram)</strong></p>
+                        <p><strong>סוג שאלה:</strong> התפלגות (Distribution)</p>
+                        <p><strong>מדוע:</strong> "ותק" הוא משתנה רציף שמחולק לטווחים (Bins). היסטוגרמה מציגה כמה עובדים נופלים בכל טווח. מנהלת ה-HR רואה מיד אם יש ריכוז חריג (למשל: הרבה עובדים חדשים ומעט ותיקים).</p>
+                        <p><strong>ב-Tableau:</strong> לחיצה ימנית על "Tenure" → Create → Bins (הגדרת רוחב טווח). גרור את ה-Bin ל-Columns ו-COUNT ל-Rows.</p>
+                    </div>
+                    <div id="sc6" class="sb-result">
+                        <p><strong>גרף נכון: Line Chart עם שתי סדרות (Dual Line)</strong></p>
+                        <p><strong>סוג שאלה:</strong> מגמה + השוואה תקופתית (Trend + Period-over-Period Comparison)</p>
+                        <p><strong>מדוע:</strong> גרף קו עם ציר X = חודש (ינואר-דצמבר), קו כחול = שנה נוכחית, קו אפור מקווקו = שנה קודמת. מאפשר לזהות עונתיות, שיפור/הידרדרות, ונקודות חיתוך.</p>
+                        <p><strong>ב-Tableau:</strong> גרור "Month" ל-Columns, "Revenue" ל-Rows, "Year" ל-Color. או: Dual Axis עם Previous Year calculated field.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>תרגיל מקיף: בנה דשבורד לסמנכ"ל תפעול</h3>
+            <div class="practical-box">
+                <h4><i class="fas fa-hammer"></i> תיאור הסיטואציה</h4>
+                <p>את/ה אנליסט BI ברשת בתי מלון בישראל (5 בתי מלון: תל אביב, ירושלים, אילת, חיפה, ים המלח). סמנכ"ל התפעול מבקש דשבורד שיענה על השאלות הבאות:</p>
+                <ol>
+                    <li>"מה שיעור התפוסה <span class="en-term">Occupancy Rate</span> בכל מלון השבוע?"</li>
+                    <li>"מהי מגמת שיעור התפוסה ב-6 החודשים האחרונים?"</li>
+                    <li>"מה ההכנסה הממוצעת לחדר <span class="en-term">RevPAR - Revenue Per Available Room</span>?"</li>
+                    <li>"באילו ימים בשבוע יש שיא הזמנות?"</li>
+                    <li>"מה הפילוח של ההזמנות לפי ערוץ (אתר ישיר, Booking.com, סוכן נסיעות)?"</li>
+                </ol>
+            </div>
+            <div class="exercise-container">
+                <h3>פתרון מוצע: מבנה הדשבורד</h3>
+                <button class="btn-reveal" onclick="toggleAnswer('full-exercise')">הצג פתרון מלא</button>
+                <div id="full-exercise" class="answer-panel" style="background:#F0F9FF;border-right-color:#3282B8;">
+                    <p><strong>שורה עליונה - 4 KPI Cards:</strong></p>
+                    <ul class="bullet-list">
+                        <li><strong>Occupancy Rate (כלל הרשת):</strong> KPI Card - "78% תפוסה" עם חץ ירוק ↑3% מהשבוע הקודם.</li>
+                        <li><strong>RevPAR:</strong> KPI Card - "₪420" עם השוואה ליעד (₪400 = ירוק).</li>
+                        <li><strong>ADR (Average Daily Rate):</strong> "₪540" - מחיר ממוצע ללילה.</li>
+                        <li><strong>Total Revenue (הכנסות שבועיות):</strong> "₪1.2M".</li>
+                    </ul>
+                    <p><strong>שורה שנייה:</strong></p>
+                    <ul class="bullet-list">
+                        <li><strong>גרף קו (Line Chart):</strong> מגמת Occupancy Rate ב-6 חודשים × 5 מלונות (5 קווים). X=חודש, Y=% תפוסה. → עונה על שאלה 2.</li>
+                        <li><strong>גרף עמודות (Column Chart):</strong> Occupancy Rate השבוע לפי מלון. → עונה על שאלה 1. Conditional Formatting: ירוק מעל 75%, צהוב 60-75%, אדום מתחת ל-60%.</li>
+                    </ul>
+                    <p><strong>שורה שלישית:</strong></p>
+                    <ul class="bullet-list">
+                        <li><strong>Heatmap:</strong> הזמנות לפי יום בשבוע × מלון. → עונה על שאלה 4.</li>
+                        <li><strong>גרף טבעת (Donut):</strong> פילוח הזמנות לפי ערוץ (Booking.com 45%, אתר ישיר 30%, סוכן 25%). → עונה על שאלה 5. במרכז: סך הזמנות.</li>
+                    </ul>
+                    <p><strong>פילטרים:</strong> תאריך (שבוע/חודש), מלון ספציפי, סוג חדר.</p>
+                    <p><strong>אינטראקטיביות:</strong> Cross-Filter - לחיצה על מלון בעמודות מסננת את כל הגרפים לאותו מלון.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             CHAPTER 6: COMMON MISTAKES
+             ======================================== -->
+        <div class="section-card" id="ch6">
+            <h2>פרק 6: טעויות נפוצות בוויזואליזציה וכיצד להימנע מהן</h2>
+            <p>גם אנליסטים מנוסים נופלים לפעמים במלכודות ויזואליות. מודעות לטעויות הנפוצות תהפוך אתכם לאנליסטים טובים יותר.</p>
+
+            <h3>טעות 1: גרף עוגה עם יותר מדי פרוסות</h3>
+            <div class="vs-container">
+                <div class="vs-panel vs-bad">
+                    <h4>❌ כך לא</h4>
+                    <p>גרף עוגה עם 12 מוצרים. פרוסות של 7%, 8%, 9% - כמעט בלתי אפשרי להבדיל ביניהן.</p>
+                    <p style="font-size:0.9rem;color:#991B1B;margin-top:8px;"><em>"פיצה עם 12 תוספות - לא טעים ולא מובן."</em></p>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="vs-panel vs-good">
+                    <h4>✅ כך כן</h4>
+                    <p>Treemap שמציג את כל 12 המוצרים בצורה קריאה. או: Bar Chart ממויין. או: עוגה עם Top 4 + "אחר".</p>
+                </div>
+            </div>
+
+            <h3>טעות 2: ציר Y חתוך בגרף עמודות</h3>
+            <div class="vs-container">
+                <div class="vs-panel vs-bad">
+                    <h4>❌ כך לא</h4>
+                    <p>ציר Y מתחיל מ-90 (במקום 0). עמודה של 95 נראית כפולה מעמודה של 92, למרות שההבדל רק 3%. <strong>מטעה!</strong></p>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="vs-panel vs-good">
+                    <h4>✅ כך כן</h4>
+                    <p>ציר Y מתחיל מ-0. ההבדל נראה מינורי (כפי שהוא באמת). אם רוצים להדגיש שינוי קטן - השתמש בגרף קו (שם חיתוך ציר מקובל יותר, עם ציון מפורש).</p>
+                </div>
+            </div>
+
+            <h3>טעות 3: צבעים ללא משמעות</h3>
+            <div class="vs-container">
+                <div class="vs-panel vs-bad">
+                    <h4>❌ כך לא</h4>
+                    <p>כל עמודה בצבע אחר (אדום, כחול, ירוק, צהוב, סגול) ללא סיבה. הצבעים לא מייצגים שום ממד - רק "דקורציה".</p>
+                </div>
+                <div class="vs-divider">→</div>
+                <div class="vs-panel vs-good">
+                    <h4>✅ כך כן</h4>
+                    <p>צבע אחד (כחול) לכל העמודות, <strong>חוץ</strong> מהעמודה שמתחת ליעד (אדום). הצבע מעביר מסר: "שימו לב לבעיה כאן".</p>
+                </div>
+            </div>
+
+            <h3>טעות 4: "Chart Junk" - עודף עיטורים</h3>
+            <div class="warning-box">
+                <h4><i class="fas fa-ban"></i> המונח של Tufte: Chart Junk</h4>
+                <p>כל אלמנט ויזואלי שלא תורם להבנת הנתונים הוא "זבל גרפי". דוגמאות:</p>
+                <ul class="bullet-list">
+                    <li><strong>אפקט 3D</strong> על עמודות או עוגה - מעוות את התפיסה.</li>
+                    <li><strong>תמונות רקע</strong> מאחורי גרף - מפריעות לקריאה.</li>
+                    <li><strong>קווי רשת כבדים</strong> - צריכים להיות עדינים או להיעלם.</li>
+                    <li><strong>מסגרות ובורדרים</strong> מיותרים סביב כל גרף.</li>
+                    <li><strong>אנימציות מוגזמות</strong> שמאטות את ההבנה.</li>
+                </ul>
+                <p><strong>כלל האצבע:</strong> אם תוכל למחוק אלמנט והגרף עדיין מובן - מחק אותו.</p>
+            </div>
+
+            <h3>טעות 5: גרף לא מתאים לשאלה</h3>
+            <table>
+                <tr>
+                    <th>הטעות</th>
+                    <th>דוגמה</th>
+                    <th>הפתרון</th>
+                </tr>
+                <tr>
+                    <td>גרף קו ללא ציר זמן</td>
+                    <td>גרף קו של פדיון לפי סניפים (סניפים הם קטגוריות, לא זמן)</td>
+                    <td>Bar Chart</td>
+                </tr>
+                <tr>
+                    <td>עוגה להשוואת שנתיים</td>
+                    <td>שתי עוגות זו לצד זו - קשה להשוות פרוסות</td>
+                    <td>Grouped Bar Chart</td>
+                </tr>
+                <tr>
+                    <td>Scatter למעט נקודות</td>
+                    <td>3 נקודות בלבד בגרף פיזור - חסר משמעות סטטיסטית</td>
+                    <td>טבלה פשוטה</td>
+                </tr>
+                <tr>
+                    <td>KPI Card לנתון שדורש הקשר</td>
+                    <td>"רווח: ₪2M" - בלי לדעת אם זה טוב או רע</td>
+                    <td>KPI Card + חץ מגמה + % מיעד</td>
+                </tr>
+                <tr>
+                    <td>Heatmap על מעט נתונים</td>
+                    <td>2×3 תאים - אין מספיק מגוון לזהות דפוס</td>
+                    <td>טבלה או Bar Chart</td>
+                </tr>
+            </table>
+
+            <h3>טעות 6: התעלמות מנגישות <span class="en-term">Accessibility</span></h3>
+            <div class="concept-box">
+                <h4><i class="fas fa-universal-access"></i> עיצוב נגיש בדשבורד BI</h4>
+                <ul class="bullet-list">
+                    <li><strong>עיוורון צבעים:</strong> כ-8% מהגברים סובלים מעיוורון צבעים. אל תסתמך רק על אדום/ירוק - הוסף גם אייקונים (✓/✗) או דפוסים. ב-Tableau: השתמש ב-Color Blind palette.</li>
+                    <li><strong>גודל פונט:</strong> מינימום 12px לטקסט רגיל, 14-16px לתוויות גרפים.</li>
+                    <li><strong>ניגודיות:</strong> ודא ניגודיות מספקת בין טקסט לרקע (יחס 4.5:1 לפחות).</li>
+                    <li><strong>Alt Text:</strong> הוסף תיאור טקסטואלי לגרפים עבור קוראי מסך.</li>
+                </ul>
+            </div>
+
+            <div class="question-bank">
+                <h3><i class="fas fa-tasks"></i> תרגול ובחן את עצמך: פרק 6</h3>
+                <div class="question">
+                    <p class="question-text">1. אנליסט בנה גרף קו של "פדיון לפי קטגוריית מוצר" (ציר X: אלקטרוניקה, ביגוד, מזון; ציר Y: פדיון). מה הבעיה?</p>
+                    <ul class="options">
+                        <li>א. אין בעיה - זה גרף מצוין.</li>
+                        <li>ב. גרף קו מתאים לציר זמן (רציף), לא לקטגוריות. הקו "מחבר" בין קטגוריות שאין ביניהן המשכיות. יש להשתמש ב-Bar Chart.</li>
+                        <li>ג. צריך להוסיף אפקט 3D כדי שייראה יותר מקצועי.</li>
+                        <li>ד. הבעיה היא שאין מספיק צבעים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a6-1')">הצג פתרון</button>
+                    <div id="a6-1" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסבר: קו מרמז על המשכיות וזרימה בין הנקודות. אין "המשכיות" בין אלקטרוניקה לביגוד - הן קטגוריות נפרדות. Bar Chart מציג כל קטגוריה בנפרד ומאפשר השוואה ברורה.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">2. מנהל מבקש דשבורד עם 15 גרפים שונים על מסך אחד כדי "לראות הכל". מה תגיד לו?</p>
+                    <ul class="options">
+                        <li>א. "בהחלט, נבנה דשבורד ענק עם הכל."</li>
+                        <li>ב. "15 גרפים על מסך אחד יגרמו לעומס קוגניטיבי. אציע לפצל ל-2-3 דשבורדים ממוקדים: סקירה כללית, ניתוח מכירות, וניתוח תפעולי. כל דשבורד יכיל 5-7 גרפים."</li>
+                        <li>ג. "אי אפשר - Tableau תומך במקסימום 6 גרפים."</li>
+                        <li>ד. "נשתמש בגופן קטן יותר כדי שהכל ייכנס."</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a6-2')">הצג פתרון</button>
+                    <div id="a6-2" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסبر: חלק מתפקיד האנליסט הוא <strong>לנהל את הציפיות</strong> של הלקוח. דשבורד צפוף פוגע ביעילות - מנהל לא יסתכל על 15 גרפים. עדיף מעט גרפים איכותיים עם Drill-Down, מאשר הרבה גרפים שטחיים.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">3. אמת או שקר: "Chart Junk" הוא מונח של Edward Tufte המתאר אלמנטים ויזואליים שאינם תורמים להבנת הנתונים ויש להסיר אותם.</p>
+                    <ul class="options">
+                        <li>א. אמת</li>
+                        <li>ב. שקר</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a6-3')">הצג פתרון</button>
+                    <div id="a6-3" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: אמת (א)</p>
+                        <p>הסبר: Tufte טבע את המונח בספרו האגדי. דוגמאות ל-Chart Junk: אפקטי 3D, תמונות רקע, קווי רשת כבדים, מסגרות מיותרות, ועיטורים דקורטיביים. כל פיקסל צריך "לעבוד" - להעביר מידע.</p>
+                    </div>
+                </div>
+                <div class="question">
+                    <p class="question-text">4. מדוע חשוב להשתמש בפלטת צבעים ידידותית לעיוורי צבעים בדשבורדים?</p>
+                    <ul class="options">
+                        <li>א. זה לא חשוב - עיוורון צבעים הוא נדיר ביותר.</li>
+                        <li>ב. כי כ-8% מהגברים סובלים מעיוורון צבעים, והסתמכות על אדום/ירוק בלבד עלולה לגרום לחלק מהמשתמשים לפספס מידע קריטי.</li>
+                        <li>ג. כי זה חוק מדינה בלבד, ולא רלוונטי בפועל.</li>
+                        <li>ד. כי Tableau לא תומך בצבעים רגילים.</li>
+                    </ul>
+                    <button class="btn-reveal" onclick="toggleAnswer('a6-4')">הצג פתרון</button>
+                    <div id="a6-4" class="answer-panel">
+                        <p class="correct-opt">תשובה נכונה: ב'</p>
+                        <p>הסбр: אם 8% מהגברים (ובארגון עם 500 עובדים = כ-20 גברים) לא מבדילים בין אדום לירוק, הדשבורד שלך לא עובד עבורם. הפתרון: שלב צבעים עם אייקונים (✓, ✗, ↑, ↓), השתמש בפלטת "Color Blind Safe" ב-Tableau, ובדוק עם כלים כמו Color Oracle.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ========================================
+             SUMMARY
+             ======================================== -->
+        <div class="section-card">
+            <h2>סיכום ההרצאה: מהנתון לגרף לתובנה</h2>
+            <table>
+                <tr>
+                    <th>נושא</th>
+                    <th>תובנה מרכזית</th>
+                </tr>
+                <tr>
+                    <td><strong>למה ויזואליזציה?</strong></td>
+                    <td>המוח מעבד תמונות מהר פי 60,000 מטקסט. Pre-Attentive Processing מאפשר זיהוי חריגות במבט.</td>
+                </tr>
+                <tr>
+                    <td><strong>בחירת גרף</strong></td>
+                    <td>השאלה קובעת: השוואה→Bar, מגמה→Line, הרכב→Pie/Treemap, קשר→Scatter, התפלגות→Histogram.</td>
+                </tr>
+                <tr>
+                    <td><strong>עיצוב דשבורד</strong></td>
+                    <td>כלל 5 שניות. KPIs למעלה, מגמות באמצע, פרטים למטה. מקסימום 7-8 גרפים.</td>
+                </tr>
+                <tr>
+                    <td><strong>Tableau</strong></td>
+                    <td>Dimension (לפי מה) × Measure (כמה). Show Me לבחירת גרף. Dual Axis ל-Combo.</td>
+                </tr>
+                <tr>
+                    <td><strong>טעויות נפוצות</strong></td>
+                    <td>ציר חתוך, עוגה עם 10+ פרוסות, Chart Junk, קו ללא ציר זמן, צבע ללא משמעות.</td>
+                </tr>
+            </table>
+
+            <div class="practical-box">
+                <h4 style="color:#065F46;"><i class="fas fa-laptop-code"></i> מטלה לשיעור הבא</h4>
+                <ol>
+                    <li>הורד והתקן את <strong>Tableau Public</strong> (חינם): <span class="en-term">public.tableau.com</span></li>
+                    <li>הורד את קובץ ה-<strong>Sample Superstore</strong> (מובנה ב-Tableau) או מ-Kaggle.</li>
+                    <li>בנה 3 גרפים: (א) Bar Chart - מכירות לפי קטגוריה, (ב) Line Chart - מגמת רווח חודשי, (ג) Map - מכירות לפי מדינה/אזור.</li>
+                    <li>הרכב את 3 הגרפים לדשבורד אחד עם פילטר תאריכים.</li>
+                    <li>שמור ופרסם ב-Tableau Public. הבא קישור לשיעור.</li>
+                </ol>
+            </div>
+        </div>
+
+    </div> <!-- End Container -->
+
+    <footer class="page-footer">
+        <p><strong>קורס: מבוא לבינה עסקית</strong> | ד"ר שי צבאן | מערך שיעור מקיף - הרצאה 2</p>
+        <p style="margin-top:5px;font-size:0.9rem;">© כל הזכויות שמורות. חומר זה מיועד לסטודנטים הרשומים לקורס בלבד.</p>
+    </footer>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === "block" ? "none" : "block";
+        }
+
+        function switchTab(event, tabId) {
+            const container = event.target.closest('.tabs-container');
+            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function toggleCollapsible(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        function toggleScenario(id) {
+            const el = document.getElementById(id);
+            // close all others
+            document.querySelectorAll('.sb-result').forEach(r => {
+                if (r.id !== id) { r.classList.remove('show'); }
+            });
+            el.classList.toggle('show');
+        }
+
+        // Smooth scroll for TOC
+        document.querySelectorAll('.toc-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
