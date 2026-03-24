@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור 3: מנתונים גולמיים לתובנות עסקיות | ד"ר שי צבאן</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 5rem 2rem;
+            border-radius: 0 0 3rem 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon fill="rgba(255,255,255,0.05)" points="0,100 100,0 100,100"/></svg>');
+            background-size: cover;
+            pointer-events: none;
+        }
+        .module-header {
+            background-color: #ffffff;
+            border-right: 8px solid #0d6efd;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2.5rem;
+        }
+        .concept-box {
+            background-color: #e8f4fd;
+            border: 1px solid #b6d4fe;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .qa-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffe69c;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .qa-box:hover {
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+        }
+        .mcq-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .graph-section {
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+        }
+        .tableau-instruction {
+            background-color: #f8f9fa;
+            border-right: 4px solid #fd7e14; /* Tableau Orange */
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.25rem;
+        }
+        .tableau-term {
+            background-color: #e9ecef;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-weight: bold;
+            color: #d35400;
+        }
+        .graph-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background-color: #fff5eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            color: #fd7e14;
+            font-size: 2.5rem;
+        }
+        .task-box {
+            background: linear-gradient(to right, #e0f8e9, #ffffff);
+            border-right: 8px solid #198754;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .lecturer-note {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            color: #6c757d;
+            border-top: 2px dashed #dee2e6;
+        }
+        .highlight-text {
+            color: #d63384;
+            font-weight: bold;
+        }
+        .alert-custom {
+            background-color: #e2e3e5;
+            border-right: 5px solid #6c757d;
+            color: #383d41;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-center">
+        <div class="container position-relative" style="z-index: 1;">
+            <span class="badge bg-light text-primary mb-3 fs-6 px-3 py-2 rounded-pill">מבוא למערכות מידע</span>
+            <h1 class="display-3 fw-bold mb-3">בינה עסקית ב-Tableau: הלכה למעשה</h1>
+            <p class="lead fs-4 mb-4">מאיסוף נתונים לבניית דשבורדים, חקר נתונים ופתרון בעיות עסקיות מורכבות.</p>
+            <p class="fs-5 opacity-75">מרצה: ד"ר שי צבאן</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- ==========================================
+             Module 1: Recap & Context
+        =========================================== -->
+        <div class="module-header">
+            <h2 class="h3 mb-0"><i class="bi bi-arrow-clockwise text-primary me-2"></i> מודול 1: רענון המושגים הבסיסיים</h2>
+        </div>
+        
+        <div class="card p-4">
+            <p class="fs-5">ברוכים הבאים לשיעור השלישי. בשיעורים הקודמים הבנו שארגונים מודרניים אוספים המון נתונים, אך המטרה שלנו כאנליסטים היא להפוך את אוסף הנתונים הזה ל<strong>תובנות עסקיות</strong> פשוטות וברורות שיעזרו למנהלים לקבל החלטות.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="concept-box h-100">
+                        <h4 class="text-primary"><i class="bi bi-database"></i> נתונים גולמיים (Data)</h4>
+                        <p>שברי מידע חסרי הקשר. למשל: "1000", "ישראל", "15/03/2026". כשלעצמם, הם לא עוזרים למנכ"ל לקבל החלטה כי קשה לקרוא אלפי שורות של טקסט ומספרים מתוך טבלה אינסופית.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="concept-box h-100" style="background-color: #e8fdf2; border-color: #a3e6cd;">
+                        <h4 class="text-success"><i class="bi bi-lightbulb"></i> תובנה עסקית (Insight)</h4>
+                        <p>המשמעות שאנו גוזרים מהנתונים לאחר שהצגנו אותם בגרף ברור. למשל: "מכירות המוצר בישראל ירדו ב-15% ברבעון האחרון בגלל כניסת מתחרה חדש".</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            
+            <h3 class="mb-4 text-primary"><i class="bi bi-diagram-2"></i> יסודות ה-BI: מה ההבדל בין ממד (Dimension) למדד (Measure)?</h3>
+            <p class="fs-5">אחד מעמודי התווך של כל כלי בינה עסקית (ובמיוחד Tableau) הוא ההבנה של סוגי הנתונים. כדי שהתוכנה תדע איך לצייר לנו גרפים, היא מחלקת את הנתונים לשני סוגים בלבד. חובה להבין את ההבדל מאפס:</p>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="p-3 bg-white rounded border border-primary shadow-sm h-100">
+                        <h4 class="text-primary fw-bold">ממד (Dimension) - תגית כחולה</h4>
+                        <p class="fs-5">עונה על השאלות: <strong>מי? מה? מתי? איפה?</strong></p>
+                        <p>אלו נתונים טקסטואליים/קטגוריאליים. הפרוסות שלפיהן נחתוך את המידע (אזור, קטגוריה, תאריך). הם מייצרים כותרות. יופיעו עם תגית <span class="text-primary fw-bold">כחולה</span>.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 bg-white rounded border border-success shadow-sm h-100">
+                        <h4 class="text-success fw-bold">מדד (Measure) - תגית ירוקה</h4>
+                        <p class="fs-5">עונה על השאלה: <strong>כמה?</strong></p>
+                        <p>אלו נתונים מספריים שניתן לעשות עליהם פעולות חשבון (סכום, ממוצע). הם מייצרים ציר מספרי. יופיעו עם תגית <span class="text-success fw-bold">ירוקה</span>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q&A Module 1 -->
+            <hr class="my-4">
+            <h4 class="mb-3 text-primary"><i class="bi bi-patch-question"></i> בחן את עצמך - סיכום מודול 1</h4>
+            <div class="qa-box">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">שאלה: קיבלתם קובץ ובו עמודת "מספר טלפון של הלקוח". האם זהו ממד (Dimension) או מדד (Measure)?</h5>
+                    <button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#mod1q1" aria-expanded="false">
+                        הצג תשובה <i class="bi bi-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse mt-3" id="mod1q1">
+                    <div class="card card-body border-warning bg-white fs-5">
+                        <strong>ממד (Dimension)!</strong> למרות שמדובר בספרות, אין שום משמעות מתמטית לחיבור מספרי טלפון. זהו נתון קטגוריאלי (זיהוי לקוח).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             Module 2: Data Sources & Questionnaires
+        =========================================== -->
+        <div class="module-header mt-5">
+            <h2 class="h3 mb-0"><i class="bi bi-ui-checks-grid text-primary me-2"></i> מודול 2: מאיפה מגיעים הנתונים? איסוף אמפירי לעומת שאלונים</h2>
+        </div>
+
+        <div class="card p-4">
+            <p class="fs-5">עד עכשיו דיברנו על ניתוח נתונים, אבל רגע – מאיפה הנתונים האלו בכלל מגיעים למערכת שלנו? בעולם העסקי קיימים שני מקורות עיקריים לאיסוף מידע:</p>
+
+            <div class="row mt-4 mb-4">
+                <div class="col-md-6">
+                    <h4 class="text-primary"><i class="bi bi-hdd-network"></i> 1. נתונים אמפיריים (ממערכות תפעוליות)</h4>
+                    <p>אלו נתונים שנאספים באופן אוטומטי על ידי המערכות של הארגון בזמן אמת. למשל:</p>
+                    <ul>
+                        <li>לקוח העביר כרטיס אשראי בקופה? המערכת רושמת שורת מכירה.</li>
+                        <li>משתמש לחץ על כפתור באפליקציה? המערכת רושמת אירוע (Event).</li>
+                        <li>חיישן במפעל מודד טמפרטורה כל דקה.</li>
+                    </ul>
+                    <p class="text-muted small">יתרון: נתונים אובייקטיביים, מדויקים ובהיקפים עצומים (Big Data).</p>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text-success"><i class="bi bi-card-checklist"></i> 2. נתונים מבוססי שאלונים (סקרים ומחקרי שוק)</h4>
+                    <p>בהרבה מאוד מקרים – במיוחד כשאנחנו מאפיינים מוצר חדש (כחלק מכתיבת מסמך PRD), בונים אפליקציה מאפס, או רוצים להבין <strong>למה</strong> לקוחות נוטשים אותנו – אין לנו נתונים אמפיריים במערכת. המערכת יודעת שהלקוח עזב, אבל היא לא יודעת מה הוא מרגיש.</p>
+                    <p>במקרים אלו, האנליסטים ומנהלי המוצר צריכים לייצר את הנתונים בעצמם באמצעות <strong>שאלון עמדות מובנה</strong>.</p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-light rounded border border-info mb-4">
+                <h4 class="fw-bold text-info"><i class="bi bi-pen"></i> אומנות בניית השאלון לאפיון מוצר (לפרויקט שלכם)</h4>
+                <p>כשאנחנו בונים שאלון (כמו זה שנדרש בנספח ג' לפרויקט הגמר), מטרת המחקר היא לאסוף מידע מעמיק על העדפות, דפוסי שימוש וציפיות. השאלון חייב להיות מתוכנן בקפידה ולכלול את הרבדים הבאים:</p>
+                
+                <ol class="fs-5">
+                    <li class="mb-3">
+                        <strong>שאלות דמוגרפיות:</strong> (גיל, מגדר, מיקום גיאוגרפי, רמת השכלה, רמת הכנסה).<br>
+                        <em>המטרה:</em> להבין את הרקע הכללי של המשתמשים ולזהות פילוחים סטטיסטיים. אלו יהפכו לרוב ל<strong>ממדים (Dimensions)</strong> החותכים את המידע בדשבורד.
+                    </li>
+                    <li class="mb-3">
+                        <strong>שאלות פסיכוגרפיות:</strong> (ערכים, תפיסות עולם, מוטיבציות, סגנון חיים).<br>
+                        <em>המטרה:</em> לזהות קהל יעד דומה מבחינה פסיכולוגית והתנהגותית. למשל: האם המשתמש מונע מהרצון לחסוך זמן או לחסוך כסף?
+                    </li>
+                    <li class="mb-3">
+                        <strong>שאלות התנהגותיות ומצב קיים:</strong> (שימוש במוצרים מתחרים, הרגלי שימוש באפליקציות דומות, נכונות לאימוץ פתרונות חדשים).<br>
+                        <em>המטרה:</em> להבין את דפוסי השימוש היום כדי לאתר חסמים ונקודות כאב (Pain Points) במוצרים הקיימים, ולהגדיר את הייחודיות של המוצר שלנו.
+                    </li>
+                    <li class="mb-3">
+                        <strong>סולמות מדידה כמותיים (Likert):</strong> שימוש בדירוג (למשל 1 עד 5) עבור שאלות כמו "נכונות לשלם", "דירוג חשיבות של פיצ'ר", או "שביעות רצון מפתרון נוכחי".<br>
+                        <em>המטרה:</em> לייצר <strong>מדדים (Measures)</strong> שיאפשרו לנו לבצע ניתוח סטטיסטי באמצעות Tableau או Python. זה קריטי כדי שנוכל לחשב ממוצעים ולהריץ מודלים מתקדמים (כמו רגרסיות OLS) כדי לנבא מה משפיע על כוונת השימוש או המחיר המקסימלי שהלקוח ישלם.
+                    </li>
+                </ol>
+            </div>
+
+            <div class="alert custom-alert alert-warning">
+                <h5 class="fw-bold"><i class="bi bi-people-fill"></i> תצפיות: כמה אנשים צריכים לענות על השאלון?</h5>
+                <p>כל אדם שעונה על השאלון מהווה <strong>תצפית (Observation)</strong> או שורה אחת בקובץ הנתונים שלנו. אז כמה צריך?</p>
+                <ul>
+                    <li><strong>מינימום סטטיסטי:</strong> בעולם הסטטיסטיקה מקובל שמינימום של <strong>30 תצפיות</strong> נדרש כדי להתחיל לראות התפלגות נורמלית ולהסיק מסקנות בסיסיות (משפט הגבול המרכזי). פחות מזה – זהו אוסף של דעות אקראיות ולא מחקר.</li>
+                    <li><strong>הסטנדרט בתעשייה:</strong> בפועל, כאשר מאפיינים מוצר טכנולוגי, אנו שואפים לקבל <strong>בין 100 ל-400 תצפיות</strong>. מדוע? משום שאנו רוצים לא רק את הממוצע הכללי, אלא את היכולת לסנן (למשל, לראות מה ענו <em>רק</em> נשים בנות 25-34). אם יהיו לנו רק 30 משיבים בסך הכל, כשנסנן לפי גיל ומגדר נישאר עם 2-3 אנשים, וזה לא ייצוגי כלל.</li>
+                </ul>
+            </div>
+            
+            <p class="mt-4">במודול הבא נראה כיצד לנתח נתונים. במקרה שלנו, הנתונים הם <strong>אמפיריים</strong> – הם נשלפו ישירות ממערכת המכירות (קופות הרושמות) של חברה קמעונאית גדולה.</p>
+
+            <!-- Q&A Module 2 -->
+            <hr class="my-4">
+            <h4 class="mb-3 text-primary"><i class="bi bi-patch-question"></i> בחן את עצמך - סיכום מודול 2 (תכנון מחקר ואפיון דרישות)</h4>
+            
+            <div class="mcq-box">
+                <p class="fw-bold mb-2">שאלה 1: בשאלון עמדות לאפיון מוצר חדש, הוספתם סדרת שאלות לגבי "ערכים, תפיסות עולם וסגנון חיים". לאיזה סוג של שאלות אלו משתייכות ומהי מטרתן העיקרית באפיון?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q1" id="m2q1a">
+                    <label class="form-check-label" for="m2q1a">א. שאלות דמוגרפיות - מטרתן להבין את הרקע היבש של הלקוח כמו אזור מגורים והשכלה.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q1" id="m2q1b">
+                    <label class="form-check-label" for="m2q1b">ב. שאלות התנהגותיות - מטרתן לברר אם הלקוח משתמש היום באפליקציות מתחרות.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q1" id="m2q1c">
+                    <label class="form-check-label" for="m2q1c">ג. שאלות פסיכוגרפיות - מטרתן לזהות קהל יעד דומה מבחינה פסיכולוגית ולהבין את המוטיבציות העמוקות שלו לאימוץ המוצר.</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#ans_m2q1" aria-expanded="false">בדוק תשובה</button>
+                <div class="collapse mt-2" id="ans_m2q1">
+                    <div class="alert alert-success mb-0 p-2"><strong>התשובה הנכונה היא ג'.</strong> בניגוד לדמוגרפיה שמספקת נתונים "יבשים", הפסיכוגרפיה מסבירה *למה* משתמש פועל בדרך מסוימת ומסייעת לאפיין פיצ'רים שיתאימו לסגנון החיים שלו.</div>
+                </div>
+            </div>
+
+            <div class="mcq-box">
+                <p class="fw-bold mb-2">שאלה 2: בעת ניתוח נתוני הסקר (Tableau / Python), מדוע דרישות הפרויקט ממליצות להשתמש בסולמות דירוג מובנים (כגון מ-1 עד 5) לשאלות העוסקות בכוונת שימוש ונכונות לתשלום?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q2" id="m2q2a">
+                    <label class="form-check-label" for="m2q2a">א. כדי לחסוך זמן בעיצוב טופס ה-Google Forms למשתמש קצה.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q2" id="m2q2b">
+                    <label class="form-check-label" for="m2q2b">ב. כי סולמות דירוג הופכים דעות כמותיות ל"מדדים" (Measures) שעליהם ניתן לבצע סטטיסטיקה תיאורית והסקתית מתקדמת, דוגמת מציאת קורלציות או הרצת מודל רגרסיה (OLS) על מחיר מקסימלי.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q2" id="m2q2c">
+                    <label class="form-check-label" for="m2q2c">ג. משום שסולמות דירוג מזוהים ב-Tableau תמיד כ"ממדים" (Dimensions) בצבע כחול המשמשים לכותרות.</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#ans_m2q2" aria-expanded="false">בדוק תשובה</button>
+                <div class="collapse mt-2" id="ans_m2q2">
+                    <div class="alert alert-success mb-0 p-2"><strong>התשובה הנכונה היא ב'.</strong> טקסט חופשי קשה מאוד לכימות. סולמות מספריים מוגדרים מאפשרים לחוקר להפעיל כלים אנליטיים (ממוצע, סטיית תקן, רגרסיות) כדי לנבא ולהוכיח קשרים בין משתנים שונים (למשל השפעת שביעות הרצון על הנכונות להמליץ).</div>
+                </div>
+            </div>
+
+            <div class="mcq-box">
+                <p class="fw-bold mb-2">שאלה 3: לאחר איסוף הנתונים, יצירת הדשבורד וניתוח העמדות (נספח ד'), מהי התוצאה האופרטיבית העיקרית שצריכה להשתקף במסמך ה-PRD (דרישות המוצר)?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q3" id="m2q3a">
+                    <label class="form-check-label" for="m2q3a">א. הגדרת שינויים קונקרטיים ודרישות פונקציונליות חדשות למוצר, המתבססות על זיהוי חולשות ונקודות הכאב של המשתמשים בפתרונות הקיימים בשוק.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q3" id="m2q3b">
+                    <label class="form-check-label" for="m2q3b">א. הצגת גרפי עוגה דמוגרפיים יפים כדי שהמסמך יראה מקצועי וארוך יותר להנהלה.</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m2q3" id="m2q3c">
+                    <label class="form-check-label" for="m2q3c">ג. איסוף רשימות התפוצה של המשיבים לטובת מנהלי השיווק בחברה.</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#ans_m2q3" aria-expanded="false">בדוק תשובה</button>
+                <div class="collapse mt-2" id="ans_m2q3">
+                    <div class="alert alert-success mb-0 p-2"><strong>התשובה הנכונה היא א'.</strong> מחקר נתונים שאינו מתורגם לפעולה שווה מעט מאוד. המטרה של שאלון ומחקר שוק באפיון מוצר היא לחדד את הייחודיות של המוצר שלנו ולהכתיב אילו פיצ'רים יפותחו (למשל הוספת ממשקי שפה, יצירת מסלול פרימיום או שינוי עיצובי).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             Module 3: The Business Case (Empirical Data)
+        =========================================== -->
+        <div class="module-header mt-5">
+            <h2 class="h3 mb-0"><i class="bi bi-briefcase text-primary me-2"></i> מודול 3: מקרה הבוחן - התעלומה של חברת TechNova (שנת 2026)</h2>
+        </div>
+
+        <div class="card p-4 border-primary" style="border-width: 2px;">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="mb-3">הרקע העסקי</h3>
+                    <p>הכירו את <strong>TechNova Retail</strong>, רשת קמעונאית למוצרי אלקטרוניקה. שנת המכירות 2026 בעיצומה, ומחלקות המכירות חוגגות: שורת ההכנסות (Sales) נמצאת בשיא של כל הזמנים.</p>
+                    <p>אבל, בישיבת ההנהלה, מנהל הכספים מציג בעיה חמורה: למרות שההכנסות גבוהות מאי פעם, <strong>הרווח הנקי (Profit) של החברה נמצא בירידה</strong>, ובחודשים האחרונים החברה אף מפסידה כסף. כלומר, מוכרים הרבה - אבל מפסידים על המכירות.</p>
+                    <p class="highlight-text fs-5">המשימה שלכם כצוות אנליסטים: לקחת את נתוני הגלם של שנת 2026 אל תוך מערכת Tableau, לבנות גרפים פשוטים, ולגלות היכן בדיוק נוצרים ההפסדים ולמה.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-4 bg-light rounded-3 border">
+                        <h5 class="mb-3 text-primary">שליפת הנתונים מהמערכת</h5>
+                        <p class="small text-muted mb-3">לחיצה על הכפתור תייצר עבורכם קובץ CSV עם 1,000 תצפיות של נתוני אמת משנת 2026.</p>
+                        <button id="downloadBtn" class="btn btn-primary w-100 shadow">
+                            <i class="bi bi-cloud-arrow-down-fill me-2"></i> הורד נתוני מכירות
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-danger mt-4 mb-0 border-danger shadow-sm">
+                <strong><i class="bi bi-exclamation-triangle-fill"></i> שימו לב - נתונים ייחודיים!</strong> 
+                <p class="mb-0 mt-2">הכפתור מעלה אינו מוריד קובץ סטטי, אלא מפעיל סקריפט מורכב שמחולל נתונים בזמן אמת. <strong>כל סטודנט שיורד את הקובץ יקבל סט נתונים שונה במקצת!</strong> אם לחבר/ה שיושב/ת לידכם יש הכנסות של 1.2 מיליון ולכם יש 1.15 מיליון – זה תקין לחלוטין. אל תיבהלו, המגמות המרכזיות והתעלומה העסקית יישארו זהות אצל כולם.</p>
+            </div>
+            
+            <div class="alert alert-info mt-3 mb-0">
+                <strong><i class="bi bi-info-circle"></i> הנחיה לביצוע:</strong> פתחו כעת את תוכנת <strong>Tableau</strong>, לחצו על חיבור לקובץ טקסט (Text file), ובחרו את הקובץ שהורדתם כעת. לחצו על "Sheet 1" בתחתית המסך כדי להתחיל לעבוד.
+            </div>
+
+            <!-- Q&A Module 3 -->
+            <hr class="my-4">
+            <h4 class="mb-3 text-primary"><i class="bi bi-patch-question"></i> בחן את עצמך - סיכום מודול 3</h4>
+            <div class="qa-box bg-light border-secondary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">שאלה: מהי בעצם "התעלומה העסקית" שאנו עומדים לחקור עכשיו ב-Tableau?</h5>
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#mod3q1" aria-expanded="false">
+                        הצג תשובה <i class="bi bi-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse mt-3" id="mod3q1">
+                    <div class="card card-body border-secondary bg-white fs-5">
+                        אנו עומדים לחקור פרדוקס (סתירה) בנתונים: שורת ההכנסות של החברה מזנקת לשיאים, אך במקביל שורת הרווח צונחת להפסדים. עלינו לגלות באיזה אזור ובאילו מוצרים זה קורה, ומהו גורם השורש שמוביל לכך.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             Module 4: The Investigation (Graphs in Tableau)
+        =========================================== -->
+        <div class="module-header mt-5">
+            <h2 class="h3 mb-0"><i class="bi bi-search text-primary me-2"></i> מודול 4: בנייה מודרכת ב-Tableau</h2>
+        </div>
+
+        <div class="card p-4 border-0 bg-transparent shadow-none">
+            <p class="fs-5 mb-4 text-center">כעת נבנה 4 ויזואליזציות ברורות ב-Tableau. לכל גרף יש מטרה ספציפית לענות על שאלת מחקר אחרת.</p>
+
+            <!-- Graph 1 -->
+            <div class="graph-section shadow-sm">
+                <div class="graph-icon-wrapper"><i class="bi bi-graph-up"></i></div>
+                <h3 class="text-center text-primary mb-4">גרף 1: תרשים קווים (Line Chart) – מתי התחילה הבעיה?</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold"><i class="bi bi-tools text-secondary"></i> פעולות ב-Tableau:</h5>
+                        <div class="tableau-instruction">
+                            <ol>
+                                <li class="mb-2">גררו את המשתנה <span class="tableau-term">Date</span> לאזור ה-<span class="tableau-term">Columns</span> (עמודות למעלה).</li>
+                                <li class="mb-2">כדי לראות נתונים לפי חודש, לחצו על סמל ה-<span class="fw-bold">+</span> הקטן ליד שנת 2026, ואז על ה-<span class="fw-bold">+</span> ליד הרבעון, כך שיוצג לכם חודש (Month).</li>
+                                <li class="mb-2">גררו את המשתנה <span class="tableau-term">Sales</span> (מכירות) לאזור ה-<span class="tableau-term">Rows</span> (שורות למעלה). תקבלו קו ראשון.</li>
+                                <li>כדי לראות במקביל את הרווח, גררו את המשתנה <span class="tableau-term">Profit</span> (רווח) לאזור ה-<span class="tableau-term">Rows</span>, ממש ליד המשתנה הקודם.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light border border-primary rounded-3 h-100">
+                            <h5 class="fw-bold text-primary"><i class="bi bi-lightbulb-fill text-warning"></i> התובנה העסקית:</h5>
+                            <p>בחצי הראשון של השנה, ההכנסות והרווחים עולים בהתאמה. אבל מחודש יולי ואילך, קו ההכנסות (Sales) מזנק למעלה, בעוד שקו הרווח (Profit) צונח בחדות אל מתחת לאפס (הפסד כספי).</p>
+                            <p class="mb-0 fw-bold">מסקנה 1: הבעיה התחילה בחציון השני של השנה. מישהו מוכר הרבה, אך בהפסד.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graph 2 -->
+            <div class="graph-section shadow-sm">
+                <div class="graph-icon-wrapper"><i class="bi bi-bar-chart-fill"></i></div>
+                <h3 class="text-center text-primary mb-4">גרף 2: תרשים עמודות (Bar Chart) – איפה הבעיה?</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold"><i class="bi bi-tools text-secondary"></i> פעולות ב-Tableau:</h5>
+                        <p>פתחו גיליון חדש (Sheet 2).</p>
+                        <div class="tableau-instruction">
+                            <ol>
+                                <li class="mb-2">גררו את המשתנה <span class="tableau-term">Region</span> (אזור) לאזור ה-<span class="tableau-term">Columns</span> (עמודות).</li>
+                                <li class="mb-2">גררו את המשתנה <span class="tableau-term">Sales</span> לאזור ה-<span class="tableau-term">Rows</span> (שורות).</li>
+                                <li><strong>שדרוג חזותי:</strong> גררו את המשתנה <span class="tableau-term">Profit</span> אל תוך ריבוע ה-<span class="tableau-term">Color</span> שנמצא בתוך כרטיסיית ה-<span class="tableau-term">Marks</span> בצד שמאל.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light border border-primary rounded-3 h-100">
+                            <h5 class="fw-bold text-primary"><i class="bi bi-lightbulb-fill text-warning"></i> התובנה העסקית:</h5>
+                            <p>בגרף תראו שאזור דרום (<strong>South</strong>) מציג עמודת מכירות גבוהה, אבל הצבע שלה יהיה שונה לחלוטין (כתום כהה), המייצג רווח שלילי.</p>
+                            <p class="mb-0 fw-bold">מסקנה 2: אזור דרום גורם להפסדים של החברה.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graph 3 -->
+            <div class="graph-section shadow-sm" style="border: 2px solid #ffc107;">
+                <div class="graph-icon-wrapper text-warning bg-dark"><i class="bi bi-scatter-chart"></i></div>
+                <h3 class="text-center text-warning mb-4">גרף 3: תרשים פיזור (Scatter Plot) – למה זה קורה?</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold"><i class="bi bi-tools text-secondary"></i> פעולות ב-Tableau:</h5>
+                        <p>פתחו גיליון חדש (Sheet 3).</p>
+                        <div class="tableau-instruction">
+                            <ol>
+                                <li class="mb-2">גררו את משתנה ההנחה <span class="tableau-term">Discount</span> לעמודות <span class="tableau-term">Columns</span>.</li>
+                                <li class="mb-2">גררו את משתנה הרווח <span class="tableau-term">Profit</span> לשורות <span class="tableau-term">Rows</span>. כרגע תראו נקודה אחת.</li>
+                                <li class="mb-2">גררו את <span class="tableau-term">OrderID</span> (מספר הזמנה) אל תוך ריבוע ה-<span class="tableau-term">Detail</span> בכרטיסיית ה-<span class="tableau-term">Marks</span>.</li>
+                                <li>גררו את <span class="tableau-term">Region</span> אל תוך ריבוע ה-<span class="tableau-term">Color</span> כדי להבדיל בין האזורים.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                         <div class="p-3 bg-white border border-warning rounded-3 shadow-sm h-100">
+                            <h5 class="fw-bold text-danger"><i class="bi bi-lightning-charge-fill"></i> התובנה העסקית הסופית:</h5>
+                            <p>תרשים פיזור מציג קורלציה. בבירור ניתן לראות שברגע שאחוז ההנחה (ציר X) עובר את ה-20% (0.2), כל העסקאות נופלות אל מתחת לקו האפס בציר ה-Y (הפסד).</p>
+                            <p class="mb-0 fw-bold">מסקנה סופית: מנהל אזור "דרום" מחלק הנחות ענק של 30%-50% בחציון השני של השנה כדי לנפח את מספרי המכירות שלו, אך הוא מתמחר את המוצרים בהפסד לחברה.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graph 4 -->
+            <div class="graph-section shadow-sm">
+                <div class="graph-icon-wrapper"><i class="bi bi-table"></i></div>
+                <h3 class="text-center text-primary mb-4">גרף 4: טבלת נתונים (Text Table) – הצגת מספרים מדויקים</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold"><i class="bi bi-tools text-secondary"></i> פעולות ב-Tableau:</h5>
+                        <div class="tableau-instruction">
+                            <ol>
+                                <li class="mb-2">גררו את המשתנה <span class="tableau-term">Region</span> לאזור ה-<span class="tableau-term">Rows</span>.</li>
+                                <li class="mb-2">גררו את קטגוריית המוצר <span class="tableau-term">ProductCategory</span> לאזור ה-<span class="tableau-term">Rows</span>, <strong>מימין</strong> למשתנה הקודם.</li>
+                                <li>לסיום, גררו את המכירות <span class="tableau-term">Sales</span> אל תוך ריבוע ה-<span class="tableau-term">Text</span> בתוך כרטיסיית ה-<span class="tableau-term">Marks</span> כדי למלא את הטבלה במספרים.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light border border-primary rounded-3 h-100">
+                            <h5 class="fw-bold text-primary"><i class="bi bi-exclamation-circle"></i> שאלת חשיבה לכיתה:</h5>
+                            <p>ראינו שגרפים צבעוניים הרבה יותר מהירים להבנה מאשר טבלאות. <strong>אם כך, מתי בכל זאת נבחר להשתמש בטבלת טקסט בדשבורד שלנו?</strong></p>
+                            <p class="text-muted small">תשובה: כאשר מנהל צריך לראות את המספר המדויק לצורך דיווח רשמי (למשל, כדי להקריא נתון בישיבת דירקטוריון או לבצע אליו Drill Down לפרטי פרטים).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q&A Module 4 -->
+            <hr class="my-4">
+            <h4 class="mb-3 text-primary"><i class="bi bi-patch-question"></i> בחן את עצמך - סיכום מודול 4 (סוגי תרשימים)</h4>
+            
+            <div class="mcq-box">
+                <p class="fw-bold mb-2">1. כדי לחפש "קורלציה" (מתאם) בין אחוז ההנחה לבין הרווח, באיזה תרשים נשתמש ב-Tableau?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m4q1" id="m4q1a">
+                    <label class="form-check-label" for="m4q1a">א. תרשים פיזור (Scatter Plot).</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m4q1" id="m4q1b">
+                    <label class="form-check-label" for="m4q1b">ב. תרשים עמודות מקובץ.</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#ans_m4q1" aria-expanded="false">בדוק תשובה</button>
+                <div class="collapse mt-2" id="ans_m4q1">
+                    <div class="alert alert-success mb-0 p-2"><strong>התשובה הנכונה היא א'.</strong> תרשים פיזור הוא היחיד שמאפשר להציב שני מדדים מספריים זה מול זה לבדיקת קשר/מתאם על גבי מערכת צירים מתמטית.</div>
+                </div>
+            </div>
+
+            <div class="mcq-box">
+                <p class="fw-bold mb-2">2. המנכ"ל מבקש לראות גרף המציג את "סך המכירות לפי אזור". כיצד נגרור זאת למסך ב-Tableau?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m4q2" id="m4q2a">
+                    <label class="form-check-label" for="m4q2a">א. שניהם יוצגו כמדדים (Measures ירוקים).</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="m4q2" id="m4q2b">
+                    <label class="form-check-label" for="m4q2b">ב. אזור הוא ממד (Dimension כחול) וסך המכירות הוא מדד (Measure ירוק).</label>
+                </div>
+                <button class="btn btn-sm btn-outline-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#ans_m4q2" aria-expanded="false">בדוק תשובה</button>
+                <div class="collapse mt-2" id="ans_m4q2">
+                    <div class="alert alert-success mb-0 p-2"><strong>התשובה הנכונה היא ב'.</strong> האזור מחלק לנו את הנתונים לקטגוריות (ממד), ואילו המכירות נסכמות מתמטית עבור כל אזור (מדד).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             Module 5: The Lab (Hands On)
+        =========================================== -->
+        <div class="module-header mt-5">
+            <h2 class="h3 mb-0"><i class="bi bi-laptop text-success me-2"></i> מודול 5: תרגול אישי - הוספת אינטראקטיביות (סינונים)</h2>
+        </div>
+
+        <div class="task-box mb-5">
+            <h3 class="text-success mb-3">הנחיות לתרגול העצמאי במעבדה:</h3>
+            <p class="fs-5">כעת שיש לכם גרפים, אנו רוצים להפוך את המידע לאינטראקטיבי עבור המשתמש קצה. נלמד כיצד להוסיף <strong>סינון (Filter)</strong> כדי שהמשתמש יוכל לחתוך את הנתונים בלחיצת כפתור.</p>
+            
+            <h5 class="fw-bold mt-4">חלק א' - הוספת סינון ב-Tableau:</h5>
+            <div class="tableau-instruction bg-white mb-4 border-success">
+                <ol class="fs-5 mb-0">
+                    <li class="mb-2">חזרו לגיליון של "גרף 2" (תרשים העמודות של האזורים).</li>
+                    <li class="mb-2">אנו רוצים לסנן את הגרף לפי קבוצת הגיל של הלקוחות. קחו את המשתנה <span class="tableau-term">CustomerAgeGroup</span> וגררו אותו אל מדף הסינונים הנקרא <span class="tableau-term">Filters</span> (מעל כרטיסיית ה-Marks).</li>
+                    <li class="mb-2">יקפוץ חלון קטן. סמנו את הקופסה העליונה של <span class="fw-bold">All</span> (הכל) ולחצו על OK.</li>
+                    <li>כדי שהסינון יופיע בצד המסך והמשתמש יוכל ללחוץ עליו: לחצו קליק ימני (Right-Click) על המשתנה שהוספתם בתוך ה-Filters, ובחרו <span class="fw-bold text-success">Show Filter</span> (הצג סינון).</li>
+                </ol>
+            </div>
+            
+            <h5 class="fw-bold mt-5">חלק ב' - סיכום למנכ"ל:</h5>
+            <div class="p-3 bg-white rounded border border-success">
+                <p>פתחו מסמך והגישו <strong>שני משפטים פשוטים בלבד</strong> למנכ"ל החברה המבוססים על מה שגיליתם:</p>
+                <ul class="mb-0">
+                    <li>משפט 1: מה גורם להפסדים של החברה ואיפה הבעיה מתרחשת.</li>
+                    <li>משפט 2: מה הפעולה המיידית שאתם ממליצים לעשות כדי לעצור את ההפסד הכספי החל ממחר בבוקר.</li>
+                </ul>
+            </div>
+            
+            <!-- Q&A Module 5 -->
+            <hr class="my-4">
+            <h4 class="mb-3 text-primary"><i class="bi bi-patch-question"></i> בחן את עצמך - סיכום מודול 5 (אינטראקטיביות)</h4>
+            <div class="qa-box bg-light border-success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">שאלה: מה קורה מאחורי הקלעים בתוכנה ברגע שמשתמש הקצה מפעיל סינון (Filter) ולוחר באזור "דרום"?</h5>
+                    <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#mod5q1" aria-expanded="false">
+                        הצג תשובה <i class="bi bi-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse mt-3" id="mod5q1">
+                    <div class="card card-body border-success bg-white fs-5">
+                        הסינון (Filter) פועל כמו משפך. התוכנה מעלימה באופן זמני מהזיכרון את כל השורות בקובץ שאינן שייכות לאזור דרום, ומחשבת את הגרפים (סכומים, ממוצעים) מחדש <strong>רק עבור השורות הרלוונטיות</strong>. זהו כוחה של האינטראקטיביות!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             Module 6: Summary & MCQ
+        =========================================== -->
+        <div class="module-header mt-5">
+            <h2 class="h3 mb-0"><i class="bi bi-check2-all text-primary me-2"></i> מודול 6: סיכום שיעור</h2>
+        </div>
+
+        <div class="card p-4">
+            <p class="fs-5 mb-4">היום עברנו תהליך שלם ומרתק של אנליסט נתונים מודרני:</p>
+            
+            <ul class="fs-5 lh-lg mb-4">
+                <li>התחלנו ב<strong>הבנת המקורות</strong> (מתי נשתמש בנתוני מערכות תפעוליות ומתי ניצור שאלון ייעודי לאפיון אפליקציה).</li>
+                <li>חידדנו את ה<strong>תשתיות</strong>: הבנו מדוע ממדים (Dimensions כחולים) מפלחים נתונים ומייצרים כותרות, ומדדים (Measures ירוקים) מכמתים אותם על ציר.</li>
+                <li>התמודדנו עם <strong>תעלומה עסקית אמיתית</strong> (הכנסות עולות, רווח יורד).</li>
+                <li>בנינו <strong>מסלול חקירה</strong> מובנה ב-Tableau: החל מתרשים קווים לזיהוי "מתי", עברנו לתרשים עמודות לזיהוי "איפה", וסיימנו בפריצת הדרך בתרשים הפיזור (Scatter) שענה על השאלה "למה".</li>
+                <li>ולבסוף, הוספנו <strong>אינטראקטיביות</strong> בעזרת סינונים (Filters) כדי לאפשר שקיפות ארגונית וחקר נתונים עצמאי.</li>
+            </ul>
+
+            <div class="alert alert-success d-flex align-items-center mb-0 mt-3 border-success shadow-sm">
+                <i class="bi bi-trophy-fill fs-1 me-4 text-success"></i>
+                <div>
+                    <h4 class="alert-heading fw-bold mb-1">כל הכבוד!</h4>
+                    <p class="mb-0 fs-5">השלמתם בהצלחה סדנת BI מעשית ומקיפה. אתם מוכנים כעת לקחת נתונים גולמיים ולהפוך אותם לסיפור עסקי מנצח.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lecturer-note">
+            <h5 class="fw-bold">קורס מבוא למערכות מידע ובינה עסקית בסביבת Tableau</h5>
+            <p class="mb-0">נכתב, עובד ופותח ע"י ד"ר שי צבאן. מותאם אקדמית לשנת 2026.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript to generate 1000 rows on-the-fly for year 2026 -->
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // Change button state to show processing
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> שולף נתונים (1,000 תצפיות) למערכת שלך...';
+            this.disabled = true;
+
+            setTimeout(() => {
+                const headers = "OrderID,Date,Region,ProductCategory,Sales,Profit,Discount,CustomerAgeGroup";
+                let rows = [headers];
+                
+                const regions = ["North", "South", "East", "West"];
+                const categories = ["Laptops", "Smartphones", "Tablets", "Accessories"];
+                const ageGroups = ["18-24", "25-34", "35-44", "45-54", "55+"];
+
+                // Base variance for each student (adds uniqueness to the data set)
+                const studentVariance = 0.85 + (Math.random() * 0.3); // Between 0.85 and 1.15 multiplier
+
+                // Generate 1000 observations (rows)
+                for(let i=1; i<=1000; i++) {
+                    let orderId = 10000 + i;
+                    
+                    // Generate random date in 2026
+                    let start = new Date(2026, 0, 1);
+                    let end = new Date(2026, 11, 31);
+                    let date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+                    
+                    // Format date nicely to YYYY-MM-DD
+                    let d = date.getDate().toString().padStart(2, '0');
+                    let m = (date.getMonth() + 1).toString().padStart(2, '0');
+                    let y = date.getFullYear(); // Will be 2026
+                    let dateStr = `${y}-${m}-${d}`;
+                    
+                    let month = date.getMonth() + 1;
+
+                    let region = regions[Math.floor(Math.random() * regions.length)];
+                    let category = categories[Math.floor(Math.random() * categories.length)];
+                    
+                    let age = ageGroups[Math.floor(Math.random() * ageGroups.length)];
+
+                    // Base price logic (multiplied by student specific variance)
+                    let baseSales = 0;
+                    if(category === "Laptops") baseSales = (Math.floor(Math.random() * 800) + 1000) * studentVariance;
+                    else if(category === "Smartphones") baseSales = (Math.floor(Math.random() * 500) + 600) * studentVariance;
+                    else if(category === "Tablets") baseSales = (Math.floor(Math.random() * 300) + 300) * studentVariance;
+                    else baseSales = (Math.floor(Math.random() * 150) + 50) * studentVariance;
+
+                    let discount = 0;
+                    
+                    // THE BUSINESS PROBLEM LOGIC:
+                    // South region gives massive discounts from July (Month 7) onwards to boost sales numbers
+                    if (region === "South" && month >= 7) {
+                        const extremeDiscounts = [0.3, 0.35, 0.4, 0.45, 0.5];
+                        discount = extremeDiscounts[Math.floor(Math.random() * extremeDiscounts.length)];
+                    } else {
+                        // Normal operations
+                        const normalDiscounts = [0.0, 0.0, 0.0, 0.05, 0.1, 0.15];
+                        discount = normalDiscounts[Math.floor(Math.random() * normalDiscounts.length)];
+                    }
+
+                    // Calculate final sales after discount
+                    let sales = Math.round(baseSales * (1 - discount));
+                    
+                    // Assume base profit margin is 25%. 
+                    // Profit = BaseSales * 0.25 - (BaseSales * discount)
+                    let profit = Math.round(baseSales * (0.25 - discount));
+
+                    rows.push(`${orderId},${dateStr},${region},${category},${sales},${profit},${discount},${age}`);
+                }
+
+                const csvContent = rows.join("\n");
+
+                // Create and trigger download
+                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('href', url);
+                a.setAttribute('download', 'TechNova_Data_2026.csv');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                // Restore button
+                this.innerHTML = '<i class="bi bi-check-circle-fill"></i> הנתונים (הייחודיים שלך) נשלפו בהצלחה!';
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-2"></i> שלוף קובץ נתונים מחדש';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-primary');
+                    this.disabled = false;
+                }, 4500);
+
+            }, 800);
+        });
+    </script>
+</body>
+</html>
