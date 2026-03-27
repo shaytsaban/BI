@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בחינת ידע – Tableau & ויזואליזציה של נתונים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #f8f9fc;
+    --surface3: #eef1f7;
+    --border: #dde2ee;
+    --accent: #2563eb;
+    --accent2: #16a34a;
+    --accent3: #dc2626;
+    --accent4: #d97706;
+    --text: #1a1f36;
+    --text-muted: #4a5270;
+    --text-dim: #9ba3c0;
+    --correct: #f0fdf4;
+    --correct-border: #86efac;
+    --correct-text: #15803d;
+    --wrong: #fff1f0;
+    --wrong-border: #fca5a5;
+    --wrong-text: #b91c1c;
+    --selected: #eff6ff;
+    --selected-border: #2563eb;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* HERO HEADER */
+  .hero {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #bfdbfe;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    color: #ffffff;
+  }
+  .hero p {
+    font-size: 16px;
+    color: #dbeafe;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #bfdbfe;
+  }
+  .stat-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .stat-dot.green { background: var(--accent2); }
+  .stat-dot.orange { background: var(--accent4); }
+
+  /* PROGRESS */
+  .progress-section {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .progress-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .progress-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .score-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 28px;
+  }
+  .section-divider-label {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+    animation: slideIn 0.4s ease both;
+    overflow: hidden;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-card:hover {
+    border-color: #3d444d;
+  }
+  .question-card.answered {
+    border-color: var(--border);
+  }
+
+  .question-header {
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .question-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* CLAIMS */
+  .claims-block {
+    margin: 16px 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .claim-row {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .claim-row:last-child { border-bottom: none; }
+  .claim-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    min-width: 70px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+  .claim-text {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* OPTIONS */
+  .options-block {
+    padding: 4px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: right;
+    direction: rtl;
+    transition: all 0.18s;
+    font-family: 'Heebo', sans-serif;
+    width: 100%;
+    color: var(--text);
+  }
+  .option-btn:hover:not(:disabled) {
+    background: var(--surface3);
+    border-color: #3d444d;
+    transform: translateX(-2px);
+  }
+  .option-btn:disabled { cursor: default; }
+
+  .option-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: all 0.18s;
+    margin-top: 1px;
+  }
+  .option-btn:hover:not(:disabled) .option-circle {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .option-text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  /* States */
+  .option-btn.selected {
+    background: var(--selected);
+    border-color: var(--selected-border);
+  }
+  .option-btn.selected .option-circle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .option-btn.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option-btn.correct .option-circle {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+  .option-btn.correct .option-text { color: var(--correct-text); }
+  .option-btn.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option-btn.wrong .option-circle {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: #fff;
+  }
+  .option-btn.wrong .option-text { color: var(--wrong-text); }
+  .option-btn.dimmed { opacity: 0.4; }
+
+  /* CHECK BUTTON */
+  .check-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 24px 20px auto;
+    background: linear-gradient(135deg, var(--accent), #1f6feb);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 22px;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: 'Heebo', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(88,166,255,0.2);
+  }
+  .check-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(88,166,255,0.35);
+  }
+  .check-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+  }
+  .check-btn-wrap {
+    padding: 0 24px 20px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  /* EXPLANATION */
+  .explanation-block {
+    margin: 0 24px 24px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    animation: expandIn 0.35s ease both;
+  }
+  @keyframes expandIn {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 1000px; }
+  }
+  .explanation-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .explanation-header.correct-header {
+    background: rgba(63,185,80,0.15);
+    color: var(--correct-text);
+    border-bottom: 1px solid rgba(63,185,80,0.2);
+  }
+  .explanation-header.wrong-header {
+    background: rgba(247,129,102,0.15);
+    color: var(--wrong-text);
+    border-bottom: 1px solid rgba(247,129,102,0.2);
+  }
+  .explanation-body {
+    background: var(--surface2);
+    padding: 16px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+  .explanation-body strong { color: var(--text); font-weight: 700; }
+  .explanation-body .concept-tag {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.25);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 1px 8px;
+    border-radius: 4px;
+    margin: 2px 2px;
+  }
+  .explanation-body ul {
+    padding-right: 18px;
+    margin-top: 8px;
+  }
+  .explanation-body li { margin-bottom: 5px; }
+
+  /* FINAL SCORE */
+  .final-score {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px 36px;
+    text-align: center;
+    margin-top: 48px;
+    display: none;
+    animation: slideIn 0.5s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-score::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(37,99,235,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .final-score.show { display: block; }
+  .score-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    position: relative;
+    background: #fff;
+  }
+  .score-ring::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent2) var(--pct, 0%), var(--surface3) 0%);
+    z-index: -1;
+  }
+  .score-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score-total {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .final-score h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .final-score p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+  .reset-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Heebo', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover {
+    background: var(--surface3);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 20px 36px; }
+    .progress-section { padding: 12px 20px; }
+    .main { padding: 28px 14px 60px; }
+    .question-header, .options-block, .check-btn-wrap, .explanation-block { padding-left: 16px; padding-right: 16px; }
+    .claims-block { margin-left: 16px; margin-right: 16px; }
+    .stats-bar { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">📊 Tableau Public · BI · ויזואליזציה</div>
+  <h1>מבחן ידע מקיף<br>מושגי יסוד ב-Tableau</h1>
+  <p>כל שאלה מציגה מספר טענות – עליך לזהות אילו מהן נכונות. לחץ "בדוק אותי" לאחר כל בחירה לקבלת הסבר מפורט.</p>
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-dot"></span>25 שאלות</div>
+    <div class="stat-item"><span class="stat-dot green"></span>פורמט טענות מרובות</div>
+    <div class="stat-item"><span class="stat-dot orange"></span>הסבר מפורט לכל תשובה</div>
+  </div>
+</div>
+
+<div class="progress-section">
+  <span class="progress-label">התקדמות</span>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <span class="score-display" id="scoreDisplay">0 / 25</span>
+</div>
+
+<div class="main" id="quizMain">
+  <!-- Questions injected by JS -->
+  <div class="final-score" id="finalScore">
+    <div class="score-ring" id="scoreRing">
+      <span class="score-number" id="finalNum">0</span>
+      <span class="score-total" id="finalTotal">/ 25</span>
+    </div>
+    <h2 id="finalTitle">סיימת את המבחן! 🎉</h2>
+    <p id="finalMsg">כל הכבוד על ההתמדה. עיין בהסברים למטה כדי לחזק את הנושאים שלא צלחו.</p>
+    <button class="reset-btn" onclick="resetQuiz()">🔄 התחל מחדש</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    section: "יסודות ויזואליזציה ו-Tableau",
+    text: "לגבי מהות הויזואליזציה ותפקיד Tableau, הביטו בטענות הבאות:",
+    claims: [
+      ["טענה א", "ויזואליזציה היא כלי טכני בלבד שמטרתו לייצר גרפים יפים מבלי לשנות את ההבנה של הנתונים."],
+      ["טענה ב", "ויזואליזציה מאפשרת לגלות מגמות נסתרות בנתונים ולקבל החלטות מושכלות יותר."],
+      ["טענה ג", "Tableau Public היא גרסה בתשלום שמיועדת לעסקים גדולים בלבד."],
+      ["טענה ד", "Tableau מצטיין בממשק גרירה-ושחרור (drag-and-drop) אינטואיטיבי המאפשר בניית דשבורדים ביעילות."]
+    ],
+    options: [
+      "טענות א ו-ג נכונות בלבד",
+      "טענה ב בלבד נכונה",
+      "טענות ב ו-ד נכונות בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "כל הטענות נכונות"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות ב ו-ד נכונות בלבד.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>שגויה.</strong> ויזואליזציה אינה כלי טכני בלבד; מטרתה העיקרית היא להפוך נתונים לתובנות מובנות, לגלות מגמות ולסייע בקבלת החלטות.
+        <span class="concept-tag">מטרת ויזואליזציה</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> זוהי אחת המטרות המרכזיות: מגמות נסתרות וקבלת החלטות חכמות יותר.
+        <span class="concept-tag">BI</span></li>
+        <li>טענה ג – <strong>שגויה.</strong> Tableau Public היא גרסה <em>חינמית</em> הפתוחה לכולם, עם כל הכלים הדרושים ללמידה ויצירת דשבורדים.
+        <span class="concept-tag">Tableau Public</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> הממשק האינטואיטיבי הוא אחת הסיבות לפופולריות של Tableau.
+        <span class="concept-tag">drag-and-drop</span></li>
+      </ul>`
+  },
+  {
+    section: "יסודות ויזואליזציה ו-Tableau",
+    text: "לגבי הגרסה המומלצת לשימוש בקורס ואופן הורדתה:",
+    claims: [
+      ["טענה א", "יש להיכנס לכתובת public.tableau.com ולהוריד את הגרסה החינמית Tableau Public."],
+      ["טענה ב", "לאחר הלחיצה על Download מתחת ל-Create, יש למלא פרטים ולוודא שמורידים את הגרסה המתאימה למערכת ההפעלה (Windows / Mac Intel / Mac החדש)."],
+      ["טענה ג", "ניתן להשתמש ב-Tableau Public גם ללא הורדה כלל – הכל עובד ישירות בדפדפן בלי כל התקנה."],
+      ["טענה ד", "לאחר הורדת התוכנה יש להתקין אותה בכלים הרגילים כמו כל תוכנה אחרת."]
+    ],
+    options: [
+      "טענות א ו-ב ו-ד נכונות",
+      "כל הטענות נכונות",
+      "טענות א ו-ג בלבד נכונות",
+      "טענה ב בלבד נכונה",
+      "טענות א ו-ד בלבד נכונות"
+    ],
+    answer: 0,
+    explanation: `<strong>טענות א, ב ו-ד נכונות בלבד.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> הכניסה לאתר public.tableau.com היא נקודת ההתחלה להורדה.
+        <span class="concept-tag">Tableau Public</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> יש להקפיד להוריד את הגרסה המתאימה למחשב: Windows, Mac Intel, או Mac החדש.
+        <span class="concept-tag">התקנה</span></li>
+        <li>טענה ג – <strong>שגויה.</strong> קיימת אמנם אפשרות של Web Authoring (עריכה בדפדפן), אך הקורס מתבסס על הורדה והתקנה של Desktop Public Edition.
+        <span class="concept-tag">Desktop vs Web</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> לאחר הורדת קובץ ההתקנה, מתקינים אותו כמו כל תוכנה רגילה.
+        <span class="concept-tag">התקנה</span></li>
+      </ul>`
+  },
+  {
+    section: "חיבור לנתונים וסביבת העבודה",
+    text: "לגבי חיבור לקובץ נתונים ב-Tableau ותצוגת ה-Data Source:",
+    claims: [
+      ["טענה א", "לחיבור קובץ CSV יש לבחור ב-'Text file' בתפריט Connect, שכן CSV הוא סוג של קובץ טקסט."],
+      ["טענה ב", "כאשר מחברים קובץ, ניתן לראות ב-Connections את שם הקובץ וסוג הקובץ."],
+      ["טענה ג", "אזור ה-Database הוא המקום שבו מוגדרים הגרפים עצמם ואופן ההצגה שלהם."],
+      ["טענה ד", "בחלק התחתון ימין של המסך מוצגת טבלת תצוגה מקדימה של הנתונים הנכללים בקובץ."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענה א בלבד נכונה",
+      "טענות ב ו-ג נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "טענות א ו-ג בלבד נכונות"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות בלבד.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> CSV הוא קובץ טקסט, לכן נבחר Text file בתפריט Connect. הדרך הרגילה בקורס תהיה חיבור ל-Text או Excel.
+        <span class="concept-tag">CSV · Text file · Connect</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> ב-Connections בחלק העליון רואים את שם הקובץ וסוגו.
+        <span class="concept-tag">Connections</span></li>
+        <li>טענה ג – <strong>שגויה.</strong> אזור ה-Database (Database Design Area) מיועד ליצירת בסיס נתונים ולצירוף טבלאות – <em>לא</em> לבניית גרפים. הגרפים נבנים ב-Sheet.
+        <span class="concept-tag">Database Area</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> הטבלה בתחתית הימנית מציגה תצוגה מקדימה של השורות הראשונות בנתונים.
+        <span class="concept-tag">Data Preview</span></li>
+      </ul>`
+  },
+  {
+    section: "חיבור לנתונים וסביבת העבודה",
+    text: "לגבי סוגי המשתנים (Fields) שנראים לאחר חיבור קובץ הנתונים:",
+    claims: [
+      ["טענה א", "סימון '#' (האש) ליד שם שדה מעיד שמדובר בשדה עם ערכים מספריים."],
+      ["טענה ב", "סימון 'Abc' ליד שם שדה מעיד שמדובר בשדה עם ערך טקסטואלי."],
+      ["טענה ג", "ה-Field Name הוא שם המשתנה / כותרת העמודה / שם השדה כפי שהוא מופיע בנתונים."],
+      ["טענה ד", "ניתן לשנות את השם המוצג של שדה ב-Tableau, אך שינוי זה ישנה גם את שם השדה בקובץ המקורי."]
+    ],
+    options: [
+      "טענות א ו-ב בלבד נכונות",
+      "טענות א, ב ו-ג נכונות",
+      "כל הטענות נכונות",
+      "טענות ב ו-ג בלבד נכונות",
+      "טענה ג בלבד נכונה"
+    ],
+    answer: 1,
+    explanation: `<strong>טענות א, ב ו-ג נכונות בלבד.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> # מציין ערכים מספריים (מכירות, שנים, וכד').
+        <span class="concept-tag">Field Type · Numeric</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Abc מציין ערך טקסטואלי (שם משחק, ז'אנר, מו"ל וכד').
+        <span class="concept-tag">Field Type · Text</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Field Name הוא שם השדה/עמודה שמגיע ישירות מהנתונים.
+        <span class="concept-tag">Field Name</span></li>
+        <li>טענה ד – <strong>שגויה.</strong> שינוי שם שדה ב-Tableau הוא שינוי <em>מקומי</em> בלבד בתוך Tableau ואינו משנה את הקובץ המקורי.
+        <span class="concept-tag">Field Rename</span></li>
+      </ul>`
+  },
+  {
+    section: "Columns, Rows וציר X/Y",
+    text: "לגבי הגיון ה-Columns ו-Rows בבניית גרף ב-Tableau:",
+    claims: [
+      ["טענה א", "משתנים שגוררים לאזור Columns ייגצו על ציר X (האופקי)."],
+      ["טענה ב", "משתנים שגוררים לאזור Rows ייגצו על ציר Y (האנכי)."],
+      ["טענה ג", "כאשר גוררים שנה ל-Columns ומכירות ל-Rows מתקבל גרף קלאסי של מכירות לאורך זמן."],
+      ["טענה ד", "ניתן להציב משתנה אחד בלבד בכל אחד מאזורי Columns ו-Rows – אין אפשרות להוסיף יותר ממשתנה אחד."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות א, ב ו-ג נכונות",
+      "טענות ב ו-ד נכונות",
+      "טענה ג בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Columns = ציר X אופקי. זה הלוגיק הבסיסי של Tableau.
+        <span class="concept-tag">Columns · ציר X</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Rows = ציר Y אנכי.
+        <span class="concept-tag">Rows · ציר Y</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> זוהי הדוגמה הקלאסית: שנה על X, מכירות על Y = גרף מגמה.
+        <span class="concept-tag">Sales by Year</span></li>
+        <li>טענה ד – <strong>שגויה.</strong> ניתן להוסיף מספר משתנים לכל אזור (Columns/Rows), מה שיוצר גרפים מורכבים יותר עם פיצולים.
+        <span class="concept-tag">Multiple Fields</span></li>
+      </ul>`
+  },
+  {
+    section: "Columns, Rows וציר X/Y",
+    text: "לגבי ה-SUM שמופיע אוטומטית כשגוררים שדה מספרי ל-Rows:",
+    claims: [
+      ["טענה א", "Tableau מסיקה אוטומטית שהמשתמש רוצה לסכום (SUM) את הנתונים לפי כל שנה, ולכן כותבת SUM(Global Sales)."],
+      ["טענה ב", "לא ניתן לשנות את פונקציית האגרגציה מ-SUM לפונקציה אחרת כמו ממוצע (AVG) או מינימום (MIN)."],
+      ["טענה ג", "Tableau עובדת אוטומטית לפי עקרון שבו היא מנסה להסיק מה הכי הגיוני לחשב על בסיס הערכים שנגרר."],
+      ["טענה ד", "SUM הוא פונקציית ברירת המחדל עבור שדות מספריים כשמחוברים לציר."]
+    ],
+    options: [
+      "טענות ב ו-ד נכונות",
+      "טענה א בלבד",
+      "כל הטענות נכונות",
+      "טענות א, ג ו-ד נכונות",
+      "טענות א ו-ב בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ג ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Tableau מסיקה אוטומטית שיש לסכום את המכירות לכל שנה.
+        <span class="concept-tag">Aggregation · SUM</span></li>
+        <li>טענה ב – <strong>שגויה!</strong> בהחלט ניתן לשנות את האגרגציה ל-AVG, COUNT, MIN, MAX ועוד. לוחצים על השדה ב-Rows ומשנים.
+        <span class="concept-tag">AVG · COUNT · Aggregation</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> זו אחת מנקודות החוזק של Tableau – חשיבה אוטומטית חכמה.
+        <span class="concept-tag">Smart Defaults</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> SUM היא ברירת המחדל לשדות מספריים.
+        <span class="concept-tag">SUM Default</span></li>
+      </ul>`
+  },
+  {
+    section: "Marks – ניהול סוג הגרף",
+    text: "לגבי תיבת Marks ותפקידה ב-Tableau:",
+    claims: [
+      ["טענה א", "תיבת Marks קובעת את סוג הגרף (קו, עמודות, עיגול, שטח, טקסט ועוד)."],
+      ["טענה ב", "כאשר Marks מוגדר כ-Automatic, Tableau בוחרת את סוג הגרף הטוב ביותר לפי דעתה על בסיס המשתנים."],
+      ["טענה ג", "לא ניתן לשנות את סוג הגרף ידנית – Tableau קובעת תמיד אוטומטית."],
+      ["טענה ד", "גרירת שדה נוסף ל-Color ב-Marks תגרום לפיצול הגרף לפי ערכי אותו שדה, כל ערך בצבע שונה."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ג נכונות",
+      "טענות ב ו-ג נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "טענה א בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> ב-Marks ניתן לבחור: Bar, Line, Area, Circle, Square, Shape, Text, Map, Pie, Gantt ועוד.
+        <span class="concept-tag">Chart Types</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Automatic = Tableau בוחרת את הגרף המתאים ביותר לפי הנתונים.
+        <span class="concept-tag">Automatic</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> ניתן לשנות את הגרף ידנית בכל עת דרך הרשימה הנפתחת ב-Marks.
+        <span class="concept-tag">Manual Chart Selection</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> גרירה ל-Color יוצרת פיצול צבעוני לפי ערכי השדה – כלי מרכזי לניתוח נתונים.
+        <span class="concept-tag">Color · Sub-breakdown</span></li>
+      </ul>`
+  },
+  {
+    section: "Marks – ניהול סוג הגרף",
+    text: "לגבי הכלים הנמצאים בתוך Marks (Color, Size, Label, Detail, Tooltip):",
+    claims: [
+      ["טענה א", "Color ב-Marks מאפשר לפצל ולהבדיל בין ערכים שונים של שדה באמצעות צבעים."],
+      ["טענה ב", "Size ב-Marks קובע את גודל הסמנים/אלמנטים בגרף – שימושי בגרפי בועות."],
+      ["טענה ג", "Tooltip הוא ההסבר שמופיע כשמרחפים מעל נקודה בגרף."],
+      ["טענה ד", "Label ב-Marks מוסיף תוויות טקסט ישירות על הגרף, כגון ערכי המכירות על כל עמודה."]
+    ],
+    options: [
+      "טענות א ו-ב בלבד",
+      "טענות א, ג ו-ד בלבד",
+      "טענה ג בלבד",
+      "כל הטענות נכונות",
+      "טענות ב ו-ד בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>כל הטענות נכונות!</strong><br><br>
+      כל ארבעת הכלים ב-Marks הם אמיתיים ומדויקים:
+      <ul>
+        <li><strong>Color</strong> – פיצול ויזואלי לפי צבע. <span class="concept-tag">Color</span></li>
+        <li><strong>Size</strong> – שליטה בגודל הסמנים, קריטי לגרפי בועות (Bubble charts). <span class="concept-tag">Size</span></li>
+        <li><strong>Tooltip</strong> – הפופ-אפ האינפורמטיבי שמופיע בריחוף. <span class="concept-tag">Tooltip</span></li>
+        <li><strong>Label</strong> – הצגת ערכים כתוויות ישירות על הגרף. <span class="concept-tag">Label</span></li>
+      </ul>
+      אלו הם הכלים הבסיסיים ב-Marks שכדאי לשנן.`
+  },
+  {
+    section: "Continuous vs Discrete",
+    text: "לגבי ההבדל בין משתנה Continuous לבין Discrete:",
+    claims: [
+      ["טענה א", "Continuous (רציף) הוא משתנה שנמדד ללא הגדרה של ערכים שלמים – הוא מתוחם על ציר רציף."],
+      ["טענה ב", "Discrete (דידב) הוא משתנה שבנוי בערכים שלמים נפרדים, וכאשר מוגדר כך כל ערך מוצג בנפרד."],
+      ["טענה ג", "כאשר שדה Year מוגדר כ-Continuous, Tableau תציג גרף קו כברירת מחדל."],
+      ["טענה ד", "שינוי Year מ-Continuous ל-Discrete אינו משפיע על סוג הגרף המוצג – תמיד יהיה גרף קו."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות א, ב ו-ג נכונות",
+      "טענה ג בלבד",
+      "טענות ב ו-ד נכונות"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Continuous = מדיד ברציפות, ללא הפרדה בין ערכים שלמים. Tableau מתייחסת אליו כציר זמן/ערך רציף.
+        <span class="concept-tag">Continuous</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Discrete = כל ערך בנפרד, כמו קטגוריות. שנה דידב = כל שנה עמודה נפרדת.
+        <span class="concept-tag">Discrete</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Year כ-Continuous → Tableau בוחרת גרף קו כברירת מחדל (Automatic) כי זה הכי הגיוני לנתוני זמן רציפים.
+        <span class="concept-tag">Automatic · Line Chart</span></li>
+        <li>טענה ד – <strong>שגויה!</strong> שינוי Year ל-Discrete ישנה את הגרף מקו לעמודות, כי כל שנה הופכת לקטגוריה נפרדת.
+        <span class="concept-tag">Discrete → Bar Chart</span></li>
+      </ul>`
+  },
+  {
+    section: "Continuous vs Discrete",
+    text: "לגבי השינוי המעשי בין Continuous ל-Discrete עבור שדה Year:",
+    claims: [
+      ["טענה א", "כדי לשנות את סוג המשתנה מ-Continuous ל-Discrete, לוחצים על החץ ימין לשם המשתנה ובוחרים Discrete."],
+      ["טענה ב", "שינוי Year ל-Discrete יגרום לכך שכל שנה תוצג כעמודה נפרדת בגרף."],
+      ["טענה ג", "שינוי Year ל-Discrete יכול לשנות את הגרף לעמודות גם אם Marks עדיין מוגדר כ-Automatic."],
+      ["טענה ד", "שינוי מ-Continuous ל-Discrete אפשרי רק אם המשתנה הוא מסוג מספרי (#)."]
+    ],
+    options: [
+      "טענות א, ב ו-ג נכונות",
+      "כל הטענות נכונות",
+      "טענות ב ו-ג בלבד",
+      "טענה א בלבד",
+      "טענות א ו-ד בלבד"
+    ],
+    answer: 0,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> הדרך הנכונה: לחיצה על החץ שמופיע ימין לשם המשתנה ← בחירה ב-Discrete.
+        <span class="concept-tag">Discrete Selection</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> כל שנה נפרדת → עמודה נפרדת בגרף.
+        <span class="concept-tag">Bar Chart per Year</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> גם עם Automatic, שינוי ל-Discrete ישנה את הגרף לעמודות כי Tableau מזהה ששינה הפכה לדידבת.
+        <span class="concept-tag">Automatic Response</span></li>
+        <li>טענה ד – <strong>שגויה.</strong> שינוי Continuous/Discrete רלוונטי גם לשדות תאריך ושדות מספריים אחרים – לא רק מספריים (#).
+        <span class="concept-tag">Date Fields</span></li>
+      </ul>`
+  },
+  {
+    section: "Dimensions ו-Measures",
+    text: "לגבי ההבדל בין Dimension למשתנה Measure:",
+    claims: [
+      ["טענה א", "Measure הוא משתנה שאנחנו מודדים אותו – ערכו נקבע על ידי אירוע חיצוני או פנימי שנמדד."],
+      ["טענה ב", "Dimension הוא משתנה שערכו מתקבל כנתון או נקבע ישירות על ידי הגורם המדווח."],
+      ["טענה ג", "בדאטה-סט של vgsales, שם המשחק (Name) הוא Measure, ואילו המכירות הגלובליות (Global Sales) הן Dimension."],
+      ["טענה ד", "ב-Tableau, כל המשתנים שמופיעים מעל שורת Measure Names הם Dimensions, ואלו שמתחת הם Measures."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות ג ו-ד נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "טענה ד בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Measure = ערך שנמדד. מחיר, מכירות, זמן המתנה – כולם דוגמאות למדדים.
+        <span class="concept-tag">Measure</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Dimension = קטגוריה/מאפיין שקבוע ומתקבל כנתון. שם המשחק, פלטפורמה, ז'אנר – דימנשנים.
+        <span class="concept-tag">Dimension</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> שם המשחק הוא Dimension (מאפיין קבוע), ואילו Global Sales הוא Measure (ערך שנמדד).
+        <span class="concept-tag">vgsales Dataset</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> ב-Tableau, המשתנים מסודרים: מעל Measure Names → Dimensions; מתחת → Measures.
+        <span class="concept-tag">Tables Panel</span></li>
+      </ul>`
+  },
+  {
+    section: "Dimensions ו-Measures",
+    text: "הביטו בדוגמאות הבאות וקבעו מה נכון לגבי סיווגן כ-Dimension או Measure:",
+    claims: [
+      ["טענה א", "הנשה שבה שוחרר קחשמ היא Dimension – ערך קבוע שאינו נמדד על ידי הגורם המדווח."],
+      ["טענה ב", "מחיר הקנייה של מוצר בעסקה הוא Measure – ערך שנמדד ומתועד בכל עסקה."],
+      ["טענה ג", "גיל של עובד הוא Dimension – מפני שהוא ערך מספרי."],
+      ["טענה ד", "ז'אנר של משחק מחשב (Action, Sports, Racing...) הוא Dimension – מאפיין קבוע שהחברה מגדירה."]
+    ],
+    options: [
+      "טענות א ו-ב נכונות",
+      "טענות ב ו-ד נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "כל הטענות נכונות",
+      "טענה ב בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> שנת שחרור = נתון קבוע שלא "נמדד" על ידי אף אחד. הגורם המדווח (החברה) קובע אותו. → Dimension.
+        <span class="concept-tag">Release Year · Dimension</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> המחיר הוא אירוע חיצוני שנמדד בכל עסקה. → Measure.
+        <span class="concept-tag">Price · Measure</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> גיל עובד הוא Measure (נמדד ומשתנה עם הזמן) ולא Dimension. היותו מספרי אינה מספיקה להגדיר Dimension.
+        <span class="concept-tag">Age · Measure</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> ז'אנר = מאפיין קטגוריאלי קבוע שהחברה מגדירה. → Dimension.
+        <span class="concept-tag">Genre · Dimension</span></li>
+      </ul>
+      <strong>כלל אצבע:</strong> שאל את עצמך – "מי קובע את קיום הערך הזה?" אם גורם חיצוני → Measure; אם הנתון קבוע/מתקבל כנתון → Dimension.`
+  },
+  {
+    section: "פיצול לפי צבע (Color Breakdown)",
+    text: "לגבי שימוש ב-Color ב-Marks לפיצול גרף לפי Genre:",
+    claims: [
+      ["טענה א", "גרירת Genre לאזור הנתונים שמתחת ל-Marks, ואז לחיצה על ה-Color, תפצל את הגרף לפי סוג משחק."],
+      ["טענה ב", "פיצול לפי Genre צובע כל ז'אנר בצבע אחר ומוסיף מקרא (Legend) אוטומטית בצד ימין."],
+      ["טענה ג", "פיצול לפי צבע מחייב פתיחת גרפים נוספים וחלונות נפרדים – לא ניתן לראות הכל בגרף אחד."],
+      ["טענה ד", "גרף עם פיצול צבעוני מאפשר להשוות בין ביצועי קטגוריות שונות באותה תקופת זמן."]
+    ],
+    options: [
+      "טענות א ו-ב בלבד",
+      "טענות ב ו-ג בלבד",
+      "כל הטענות נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "טענה ד בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> הדרך הנכונה: גרירת Genre ל-Marks → לחיצה על הנקודות שמצד שמאל לו → בחירת Color.
+        <span class="concept-tag">Color Breakdown</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Tableau מוסיפה מקרא אוטומטי בצד ימין שמסביר מה מייצג כל צבע.
+        <span class="concept-tag">Legend · Auto</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> זה בדיוק היתרון של פיצול צבעוני – הכל בגרף <em>אחד</em> ללא פתיחת גרפים נוספים.
+        <span class="concept-tag">Single Chart View</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> ניתן להשוות קטגוריות שונות (Action vs Sports וכד') על פני ציר הזמן.
+        <span class="concept-tag">Comparative Analysis</span></li>
+      </ul>`
+  },
+  {
+    section: "Pages – ניווט דינמי",
+    text: "לגבי תיבת Pages ואופן פעולתה:",
+    claims: [
+      ["טענה א", "תיבת Pages מאפשרת לגרור שדה ולפצל את הגרף לדפים נפרדים, אחד לכל ערך של אותו שדה."],
+      ["טענה ב", "לאחר גרירת Genre ל-Pages, יופיע בצד ימין תפריט ניווט עם חצים ל-ימין ושמאל."],
+      ["טענה ג", "Pages ו-Filters הם אותו הדבר בדיוק – שניהם מסננים את הנתונים באופן זהה."],
+      ["טענה ד", "Pages שימושי כאשר רוצים לדמות 'ספר' עם מצגת דינמית שניתן לדפדף בה בין ערכים שונים."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות ב ו-ד נכונות",
+      "טענות א ו-ג נכונות",
+      "טענות א, ב ו-ד נכונות",
+      "טענה א בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Pages = חלוקה לדפים לפי ערכי שדה. כל ערך מקבל גרף נפרד שניתן לנווט אליו.
+        <span class="concept-tag">Pages</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> תפריט הניווט מופיע אוטומטית בצד ימין עם חצי ניווט ואפשרות Play אוטומטי.
+        <span class="concept-tag">Navigation Panel</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> Pages ו-Filters שונים מהותית: Pages יוצר "ספר דפדפן" עם גרף לכל ערך, בעוד Filters מסנן נתונים ומחביא אותם.
+        <span class="concept-tag">Pages vs Filters</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> ניתן אפילו להפעיל Play אוטומטי ולראות את השינוי לאורך זמן.
+        <span class="concept-tag">Dynamic Presentation</span></li>
+      </ul>`
+  },
+  {
+    section: "Filters – סינון נתונים",
+    text: "לגבי שימוש ב-Filters ב-Tableau:",
+    claims: [
+      ["טענה א", "כדי לסנן נתונים, גוררים את השדה הרלוונטי לאזור Filters."],
+      ["טענה ב", "לאחר גרירת שדה ל-Filters, נפתח אוטומטית חלון Pop-Up להגדרת הסינון."],
+      ["טענה ג", "אפשרות Top ב-Filters מאפשרת לראות רק את N הערכים הגבוהים (Top) או הנמוכים (Bottom) ביותר."],
+      ["טענה ד", "כאשר מגדירים Bottom 5 ב-Filters לפי JP Sales, מקבלים את 5 הז'אנרים עם מכירות יפן הנמוכות ביותר."]
+    ],
+    options: [
+      "טענות א ו-ב בלבד",
+      "טענה ג בלבד",
+      "טענות ב ו-ד בלבד",
+      "כל הטענות נכונות",
+      "טענות א ו-ג בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>כל הטענות נכונות!</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> גרירה לאזור Filters = הפעלת סינון.
+        <span class="concept-tag">Filters Area</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Pop-Up מופיע אוטומטית עם טאבים: General, Wildcard, Condition, Top.
+        <span class="concept-tag">Filter Pop-Up</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Top/Bottom N הוא אחד הכלים החזקים ביותר ב-Filters.
+        <span class="concept-tag">Top N Filter</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> זוהי בדיוק הדוגמה שנלמדה: Bottom 5 by JP Sales = 5 הז'אנרים עם הביצועים הנמוכים ביותר ביפן.
+        <span class="concept-tag">Bottom 5 · JP Sales</span></li>
+      </ul>`
+  },
+  {
+    section: "Dashboard – לוח מחוונים",
+    text: "לגבי יצירת Dashboard ב-Tableau:",
+    claims: [
+      ["טענה א", "Dashboard הוא מסך אחד שמציג מספר גרפים מרכזיים יחד בצורה נגישה ונוחה."],
+      ["טענה ב", "כדי לפתוח Dashboard חדש, ניתן ללחוץ על 'New Dashboard' בתפריט העליון או התחתון."],
+      ["טענה ג", "מומלץ לשנות את גודל ה-Dashboard מ-Range ל-Automatic בתחילת הבנייה."],
+      ["טענה ד", "Dashboard יכיל רק גרף אחד בלבד – כדי לראות מספר גרפים יש ליצור Dashboards נפרדים."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א, ב ו-ג נכונות",
+      "טענות ב ו-ד בלבד",
+      "טענות א ו-ג בלבד",
+      "טענה א בלבד"
+    ],
+    answer: 1,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> מטרת Dashboard = ריכוז כל המידע הרלוונטי למקבל ההחלטות במסך אחד נוח.
+        <span class="concept-tag">Dashboard Purpose</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> ניתן גם מהתפריט העליון (כפתור +) וגם מתפריט ה-Worksheet.
+        <span class="concept-tag">New Dashboard</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Automatic מאפשר לגרפים להתאים את עצמם לגודל המסך.
+        <span class="concept-tag">Size · Automatic</span></li>
+        <li>טענה ד – <strong>שגויה!</strong> Dashboard יכול להכיל <em>מספר</em> גרפים. זהו בדיוק יתרונו – ריכוז כל המידע בצפייה אחת.
+        <span class="concept-tag">Multiple Charts</span></li>
+      </ul>`
+  },
+  {
+    section: "שמירה ופרסום ב-Tableau Public",
+    text: "לגבי שמירה ופרסום של עבודה ב-Tableau Public:",
+    claims: [
+      ["טענה א", "כדי לפרסם את הדשבורד, בוחרים File → Save to Tableau Public."],
+      ["טענה ב", "לאחר השמירה נוצר קישור URL שניתן להטמיע באתר אינטרנט."],
+      ["טענה ג", "הפרסום מחייב הרשמה (חשבון) ב-Tableau Public ואישור הרשמה בדוא\"ל."],
+      ["טענה ד", "הדשבורד שנשמר ב-Tableau Public נגיש רק למחבר ואינו ניתן לשיתוף ציבורי."]
+    ],
+    options: [
+      "טענות א, ב ו-ג נכונות",
+      "טענה א בלבד",
+      "כל הטענות נכונות",
+      "טענות ב ו-ד נכונות",
+      "טענות א ו-ד נכונות"
+    ],
+    answer: 0,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> File → Save to Tableau Public היא הדרך לפרסם ולקבל קישור לשיתוף.
+        <span class="concept-tag">Save to Tableau Public</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> נוצר קישור URL ייחודי + Embed Code להטמעה באתרים.
+        <span class="concept-tag">Share Link · Embed Code</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> נדרש חשבון Tableau Public ואישור בדוא"ל לפני הפרסום.
+        <span class="concept-tag">Account · Registration</span></li>
+        <li>טענה ד – <strong>שגויה!</strong> Tableau Public הוא ציבורי לחלוטין – כל מי שיש לו את הקישור יכול לראות את הדשבורד.
+        <span class="concept-tag">Public Access</span></li>
+      </ul>`
+  },
+  {
+    section: "יצירת נתונים עם ChatGPT",
+    text: "לגבי שימוש ב-ChatGPT ליצירת נתונים פיקטיביים לצורך לימוד:",
+    claims: [
+      ["טענה א", "ניתן לבקש מ-ChatGPT לייצר קובץ Excel עם נתונים פיקטיביים ואז לחבר אותו ל-Tableau."],
+      ["טענה ב", "מומלץ לבחור נושא שמעניין אישית כי ייצא מוצר שיותר מתאים ויהיה קל יותר לנתח אותו."],
+      ["טענה ג", "הדרך היחידה ליצור נתונים ל-Tableau היא להשתמש ב-ChatGPT – אין אפשרות אחרת."],
+      ["טענה ד", "לאחר קבלת קובץ ה-Excel מ-ChatGPT, מחברים אותו ב-Tableau דרך Microsoft Excel בתפריט Connect."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ד בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "טענות ב ו-ג בלבד",
+      "טענה א בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> ChatGPT יכול לייצר קובץ Excel עם נתונים מדומים בהתאם להוראות.
+        <span class="concept-tag">ChatGPT · Data Generation</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> ד"ר נאבצ' ממליץ לבחור נושא אישי ומעניין – התוצאה תהיה רלוונטית וקל יותר לנתח.
+        <span class="concept-tag">Personalization</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> ניתן ליצור נתונים בדרכים רבות: Excel ידני, CSV, מסדי נתונים אמיתיים, נתוני open data ועוד.
+        <span class="concept-tag">Data Sources</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> קובץ Excel מחובר דרך Microsoft Excel בתפריט Connect (לא Text file).
+        <span class="concept-tag">Excel Connection</span></li>
+      </ul>`
+  },
+  {
+    section: "שאלות אנליטיות מעמיקות",
+    text: "לגבי הגרף 'מכירות לאורך שנים' שנוצר מ-vgsales, אילו תובנות ניתן להסיק ממנו:",
+    claims: [
+      ["טענה א", "גרף מכירות גלובליות לאורך שנים יכול לגלות שנים שבהן ענף משחקי הווידאו פרח או נפל."],
+      ["טענה ב", "הוספת פיצול לפי Genre מאפשרת לראות באיזה ז'אנר היה הצמיחה החזקה ביותר בכל שנה."],
+      ["טענה ג", "גרף עם נתונים על תחום אחד בלבד מאפשר תמיד להסיק מסקנות מלאות ונכונות לחלוטין על כל שוק."],
+      ["טענה ד", "משתנה ה-'1 null' שמופיע בגרף מסמן שורות בנתונים שחסרה בהן ערך שנה."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "טענות ב ו-ג בלבד",
+      "טענה ד בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> גרף מכירות לאורך זמן מגלה בבירור מגמות עלייה וירידה בענף.
+        <span class="concept-tag">Trend Analysis</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> פיצול Color לפי Genre מגלה ז'אנרים דומיננטיים בכל תקופה (Action, Sports וכד').
+        <span class="concept-tag">Genre Analysis</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> ניתוח נתוני vgsales מגבלות: ייתכנו פערים בנתונים, חוסר מידע על מדינות מסוימות, ועוד. לא ניתן להסיק מסקנות מלאות.
+        <span class="concept-tag">Data Limitations</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> ה-'1 null' שמופיע בגרפים של vgsales מסמן שורות שבהן חסר ערך שנה.
+        <span class="concept-tag">Null Values</span></li>
+      </ul>`
+  },
+  {
+    section: "שאלות אנליטיות מעמיקות",
+    text: "לגבי ההבדל בין גרף קו לגרף עמודות ומתי כל אחד עדיף:",
+    claims: [
+      ["טענה א", "גרף קו מתאים בעיקר להצגת מגמות ושינויים לאורך ציר זמן רציף."],
+      ["טענה ב", "גרף עמודות מתאים להשוואה בין קטגוריות נפרדות (שנים כ-Discrete, ז'אנרים, פלטפורמות)."],
+      ["טענה ג", "גרף עמודות הוא תמיד עדיף על גרף קו לכל סוג נתונים ובכל מצב."],
+      ["טענה ד", "ב-Tableau, הגרף שנבחר אוטומטית (Automatic) לנתוני זמן רציפים הוא גרף קו."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות ב ו-ג בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "טענה ד בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> קו = מגמות ורציפות. מתאים לנתוני זמן רציף.
+        <span class="concept-tag">Line Chart · Trends</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> עמודות = השוואה בין קטגוריות. מתאים כשיש ערכים דידביים.
+        <span class="concept-tag">Bar Chart · Categories</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> אין גרף "תמיד עדיף". הבחירה תלויה בסוג הנתונים ובשאלה שרוצים לענות עליה.
+        <span class="concept-tag">Chart Selection Logic</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> Tableau בוחרת קו כברירת מחדל לנתוני זמן רציפים כי זה הכי הגיוני.
+        <span class="concept-tag">Automatic · Line Default</span></li>
+      </ul>`
+  },
+  {
+    section: "קובץ vgsales והנתונים בו",
+    text: "לגבי מבנה קובץ vgsales.csv ותוכנו:",
+    claims: [
+      ["טענה א", "הקובץ מכיל נתוני מכירות של משחקי וידאו, כולל מכירות בצפון אמריקה (NA Sales), אירופה (EU Sales), יפן (JP Sales) וגלובלי (Global Sales)."],
+      ["טענה ב", "שדה ה-Rank מציין את הדירוג של המשחק לפי מכירות גלובליות – משחק 1 הוא הנמכר ביותר."],
+      ["טענה ג", "שדה ה-Platform הוא Measure מכיוון שמדובר בפלטפורמה שאפשר למדוד אותה."],
+      ["טענה ד", "Wii Sports היה המשחק הנמכר ביותר בצפון אמריקה בקובץ זה."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ד בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "טענות ב ו-ג נכונות",
+      "טענה א בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> vgsales מכיל נתוני מכירות לפי אזורים גיאוגרפיים + גלובלי.
+        <span class="concept-tag">vgsales Structure</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Rank 1 = המשחק הנמכר ביותר גלובלית (Wii Sports).
+        <span class="concept-tag">Rank Field</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> Platform (Wii, NES, PS2...) הוא Dimension – מאפיין קבוע שמגדיר את סוג הקונסולה. לא ניתן "למדוד" פלטפורמה.
+        <span class="concept-tag">Platform · Dimension</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> לפי הנתונים בקובץ, Wii Sports עם 41.49M מכירות בNA היה המוביל.
+        <span class="concept-tag">Wii Sports · NA Sales</span></li>
+      </ul>`
+  },
+  {
+    section: "Sheet, Dashboard ותזרים העבודה",
+    text: "לגבי תהליך העבודה בסיסי ב-Tableau מחיבור נתונים עד Dashboard:",
+    claims: [
+      ["טענה א", "השלב הראשון הוא חיבור לנתונים, לאחר מכן בניית Sheets (גרפים בודדים), ורק אז יצירת Dashboard."],
+      ["טענה ב", "כל Sheet ב-Tableau מכיל גרף אחד. ה-Dashboard מאחד מספר Sheets לתצוגה אחת."],
+      ["טענה ג", "ניתן ליצור Sheet חדש בלחיצה על כפתור '+' ליד ה-Sheet האחרון בתחתית המסך."],
+      ["טענה ד", "ה-Dashboard הוא שלב ביניים בלבד – אי אפשר לשתף אותו או לפרסמו."]
+    ],
+    options: [
+      "טענות א ו-ג בלבד",
+      "כל הטענות נכונות",
+      "טענות א, ב ו-ג נכונות",
+      "טענות ב ו-ד בלבד",
+      "טענה ב בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> זהו התזרים הנכון: חיבור נתונים → Sheet (גרפים) → Dashboard.
+        <span class="concept-tag">Workflow</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> כל Sheet = גרף אחד; Dashboard = אוסף Sheets.
+        <span class="concept-tag">Sheet vs Dashboard</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> כפתור '+' בתחתית או New Worksheet בתפריט – שתי הדרכים נכונות.
+        <span class="concept-tag">New Sheet</span></li>
+        <li>טענה ד – <strong>שגויה!</strong> Dashboard הוא המוצר הסופי – ניתן ובדרך כלל מפרסמים אותו ב-Tableau Public ומשתפים קישור.
+        <span class="concept-tag">Dashboard Publishing</span></li>
+      </ul>`
+  },
+  {
+    section: "שאלות אינטגרציה ויישום",
+    text: "מנהל שיווק רוצה להבין מה הז'אנרים עם הביצועים הנמוכים ביותר ביפן, כדי להחליט היכן להשקיע. איזה מסלול עבודה ב-Tableau יענה על הצורך שלו בצורה הטובה ביותר?",
+    claims: [
+      ["טענה א", "גרור Genre ל-Rows וגרור JP Sales ל-Columns, אז הוסף Filter על Genre ובחר Bottom 5 לפי JP Sales."],
+      ["טענה ב", "שנה את סוג הגרף ל-Bar כדי שיהיה קל להשוות בין הז'אנרים."],
+      ["טענה ג", "הוספת Label על הגרף (מתוך Marks → Label) תוסיף ערכי מכירות ישירות על העמודות."],
+      ["טענה ד", "אין צורך בגרף – מספיק לראות את הטבלה ב-Data Source ולמצוא ידנית את הנמוכים."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות א, ב ו-ג נכונות",
+      "טענות ג ו-ד בלבד",
+      "טענה ד בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ג נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> זהו הפתרון הנכון: גרירת המשתנים הנכונים + Filter → Bottom 5 → By JP Sales.
+        <span class="concept-tag">Filter · Bottom N</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> גרף עמודות מתאים להשוואה בין קטגוריות (ז'אנרים) – ניתן לראות בבירור מי נמוך יותר.
+        <span class="concept-tag">Bar Chart · Comparison</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Label = תוויות ערך על העמודות לבהירות מקסימלית.
+        <span class="concept-tag">Label · Marks</span></li>
+        <li>טענה ד – <strong>שגויה!</strong> מדובר במאות/אלפי שורות. חיפוש ידני יהיה בזבוז זמן וגורם לטעויות. זה בדיוק מה שויזואליזציה נועדה לפתור.
+        <span class="concept-tag">Why Visualization</span></li>
+      </ul>`
+  },
+  {
+    section: "שאלות אינטגרציה ויישום",
+    text: "לגבי היתרונות של שימוש ב-Tableau ב-BI ארגוני, לעומת Excel רגיל:",
+    claims: [
+      ["טענה א", "Tableau מאפשר יצירת דשבורדים אינטראקטיביים שמשתמשים יכולים לסנן ולחקור בעצמם."],
+      ["טענה ב", "Tableau מתחבר למגוון מקורות נתונים: CSV, Excel, מסדי נתונים, שרתים ועוד."],
+      ["טענה ג", "Excel ו-Tableau זהים לחלוטין ביכולות הויזואליזציה – אין כל הבדל ביניהם."],
+      ["טענה ד", "ממשק הגרירה-ושחרורה של Tableau מהיר ואינטואיטיבי יותר לבניית גרפים מורכבים בהשוואה לאקסל."]
+    ],
+    options: [
+      "כל הטענות נכונות",
+      "טענות א ו-ב בלבד",
+      "טענות א, ב ו-ד נכונות",
+      "טענות ב ו-ד בלבד",
+      "טענה ג בלבד"
+    ],
+    answer: 2,
+    explanation: `<strong>טענות א, ב ו-ד נכונות.</strong><br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> אינטראקטיביות היא אחת מנקודות החוזק המרכזיות של Tableau.
+        <span class="concept-tag">Interactivity</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Tableau תומך במגוון עצום של מקורות נתונים.
+        <span class="concept-tag">Data Sources</span></li>
+        <li>טענה ג – <strong>שגויה!</strong> Excel ו-Tableau שונים מאוד. Tableau עדיף ב: אינטראקטיביות, חיבורים מרובים, מגמות, מפות, גודל נתונים, פרסום ועוד.
+        <span class="concept-tag">Tableau vs Excel</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> הממשק האינטואיטיבי של Tableau מאפשר בניית גרפים מורכבים במהירות.
+        <span class="concept-tag">Drag-and-Drop</span></li>
+      </ul>`
+  },
+  {
+    section: "שאלות אינטגרציה ויישום",
+    text: "סיכום – לגבי עקרונות הליבה של Tableau שנלמדו, אילו מהטענות הבאות נכונות:",
+    claims: [
+      ["טענה א", "Tableau בוחרת אוטומטית את סוג הגרף הכי הגיוני, אך תמיד ניתן לשנות ידנית דרך Marks."],
+      ["טענה ב", "Columns = ציר X; Rows = ציר Y – זהו הכלל הבסיסי ביותר לבניית כל גרף."],
+      ["טענה ג", "פיצול לפי Color, שימוש ב-Filter, ותיבת Pages – כולם כלים לניתוח מעמיק יותר של הנתונים בגרף בודד."],
+      ["טענה ד", "לאחר בניית Sheets וה-Dashboard, שומרים ל-Tableau Public ומקבלים קישור URL ייחודי לשיתוף."]
+    ],
+    options: [
+      "טענות א ו-ב בלבד",
+      "טענות ב, ג ו-ד בלבד",
+      "טענות א, ב ו-ד בלבד",
+      "כל הטענות נכונות",
+      "טענות א ו-ד בלבד"
+    ],
+    answer: 3,
+    explanation: `<strong>כל הטענות נכונות!</strong> זה שאלת סיכום ממצה.<br><br>
+      <ul>
+        <li>טענה א – <strong>נכונה.</strong> Automatic + שינוי ידני דרך Marks = שילוב מנצח.
+        <span class="concept-tag">Automatic · Marks</span></li>
+        <li>טענה ב – <strong>נכונה.</strong> Columns=X, Rows=Y – כלל אצבע שלא נשכח.
+        <span class="concept-tag">Columns · Rows</span></li>
+        <li>טענה ג – <strong>נכונה.</strong> Color, Filter, Pages – שלושה כלי ניתוח ב-Sheet בודד.
+        <span class="concept-tag">Color · Filter · Pages</span></li>
+        <li>טענה ד – <strong>נכונה.</strong> תהליך הפרסום: Dashboard → Save to Tableau Public → URL.
+        <span class="concept-tag">Publishing Workflow</span></li>
+      </ul>
+      🎉 אם ענית נכון על שאלה זו, סיכמת היטב את הנושאים שנלמדו!`
+  }
+];
+
+// ─── State ───────────────────────────────────────────────────────
+let answered = new Array(questions.length).fill(false);
+let correct = new Array(questions.length).fill(false);
+let totalAnswered = 0;
+let totalCorrect = 0;
+
+// ─── Build Quiz ───────────────────────────────────────────────────
+function buildQuiz() {
+  const main = document.getElementById('quizMain');
+  const finalScore = document.getElementById('finalScore');
+  main.innerHTML = '';
+  main.appendChild(finalScore);
+
+  let currentSection = '';
+
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q${qi}`;
+    card.style.animationDelay = `${qi * 0.04}s`;
+
+    // Section divider
+    if (q.section !== currentSection) {
+      currentSection = q.section;
+      const div = document.createElement('div');
+      div.className = 'section-divider';
+      div.innerHTML = `<div class="section-divider-line"></div>
+        <div class="section-icon">📌</div>
+        <span class="section-divider-label">${q.section}</span>
+        <div class="section-divider-line"></div>`;
+      main.insertBefore(div, finalScore);
+    }
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'question-header';
+    hdr.innerHTML = `<span class="q-number">שאלה ${qi + 1}</span>
+      <div class="question-text">${q.text}</div>`;
+    card.appendChild(hdr);
+
+    // Claims
+    const claimsBlock = document.createElement('div');
+    claimsBlock.className = 'claims-block';
+    q.claims.forEach(([label, text]) => {
+      const row = document.createElement('div');
+      row.className = 'claim-row';
+      row.innerHTML = `<span class="claim-label">${label}:</span><span class="claim-text">${text}</span>`;
+      claimsBlock.appendChild(row);
+    });
+    card.appendChild(claimsBlock);
+
+    // Options
+    const optsBlock = document.createElement('div');
+    optsBlock.className = 'options-block';
+    const optLetters = ['א', 'ב', 'ג', 'ד', 'ה'];
+    let selected = -1;
+
+    q.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.id = `q${qi}_o${oi}`;
+      btn.innerHTML = `<span class="option-circle">${optLetters[oi]}</span><span class="option-text">${opt}</span>`;
+      btn.addEventListener('click', () => {
+        if (answered[qi]) return;
+        selected = oi;
+        optsBlock.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        checkBtn.disabled = false;
+      });
+      optsBlock.appendChild(btn);
+    });
+    card.appendChild(optsBlock);
+
+    // Check button
+    const checkWrap = document.createElement('div');
+    checkWrap.className = 'check-btn-wrap';
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'check-btn';
+    checkBtn.textContent = '🔍 בדוק אותי';
+    checkBtn.disabled = true;
+    checkBtn.addEventListener('click', () => {
+      if (answered[qi] || selected === -1) return;
+      answered[qi] = true;
+      totalAnswered++;
+      const isCorrect = selected === q.answer;
+      if (isCorrect) { correct[qi] = true; totalCorrect++; }
+
+      // Style options
+      optsBlock.querySelectorAll('.option-btn').forEach((b, oi) => {
+        b.disabled = true;
+        if (oi === q.answer) { b.classList.remove('selected'); b.classList.add('correct'); }
+        else if (oi === selected && !isCorrect) { b.classList.remove('selected'); b.classList.add('wrong'); }
+        else { b.classList.add('dimmed'); }
+      });
+
+      // Explanation
+      const expBlock = document.createElement('div');
+      expBlock.className = 'explanation-block';
+      const isC = isCorrect;
+      expBlock.innerHTML = `
+        <div class="explanation-header ${isC ? 'correct-header' : 'wrong-header'}">
+          ${isC ? '✅ תשובה נכונה!' : '❌ לא בדיוק – הנה ההסבר:'}
+        </div>
+        <div class="explanation-body">${q.explanation}</div>`;
+      card.appendChild(expBlock);
+      card.classList.add('answered');
+      checkBtn.disabled = true;
+      checkBtn.textContent = isC ? '✅ נכון!' : '❌ שגוי';
+      checkBtn.style.background = isC ? 'linear-gradient(135deg,#2ea043,#1a6e32)' : 'linear-gradient(135deg,#da3633,#9c1a18)';
+
+      updateProgress();
+      if (totalAnswered === questions.length) {
+        setTimeout(showFinalScore, 600);
+      }
+    });
+
+    checkWrap.appendChild(checkBtn);
+    card.appendChild(checkWrap);
+    main.insertBefore(card, finalScore);
+  });
+}
+
+function updateProgress() {
+  const pct = (totalAnswered / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('scoreDisplay').textContent = `${totalCorrect} / ${questions.length}`;
+}
+
+function showFinalScore() {
+  const el = document.getElementById('finalScore');
+  el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('finalNum').textContent = totalCorrect;
+  document.getElementById('finalTotal').textContent = `/ ${questions.length}`;
+
+  const pct = Math.round((totalCorrect / questions.length) * 100);
+  document.getElementById('scoreRing').style.setProperty('--pct', `${pct}%`);
+
+  let title, msg;
+  if (pct >= 90) { title = 'מצוין! שולט בחומר 🏆'; msg = 'ביצועים מרשימים מאוד. אתה שולט היטב בכלים ומושגי Tableau. המשך כך לקראת הקורס!'; }
+  else if (pct >= 70) { title = 'טוב מאוד! 👍'; msg = 'הבנה טובה של הבסיס. כדאי לחזור על הנושאים שלא עברו כדי לחזק את ההבנה לקראת ביצוע מעשי.'; }
+  else if (pct >= 50) { title = 'בסדר, עוד מקום לשיפור 📚'; msg = 'קיים בסיס, אך חשוב לחזור על חומר השיעורים ולהתאמן בפועל ב-Tableau. ההסברים למעלה יעזרו מאוד.'; }
+  else { title = 'כדאי לחזור על החומר 💪'; msg = 'אל תתייאש! חזור על הטענות וההסברים, ונסה שוב. התרגול המעשי ב-Tableau הוא המפתח להבנה.'; }
+
+  document.getElementById('finalTitle').textContent = title;
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  correct = new Array(questions.length).fill(false);
+  totalAnswered = 0;
+  totalCorrect = 0;
+  document.getElementById('finalScore').classList.remove('show');
+  updateProgress();
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
