@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מאינטואיציה לדאטה - המדריך המלא לבניית שאלון מחקר כמותי</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-dark: #0c1222;
+            --brand-primary: #4f46e5;
+            --brand-secondary: #06b6d4;
+            --brand-accent: #f59e0b;
+            --brand-light: #f8fafc;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --emerald: #059669;
+            --rose: #e11d48;
+            --surface: #ffffff;
+            --surface-alt: #f1f5f9;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--brand-light);
+            color: var(--text-main);
+            line-height: 1.75;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Utility ── */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .narrow { max-width: 860px; margin: 0 auto; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── Reveal animation ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* ── Hero ── */
+        .hero {
+            position: relative;
+            background: var(--brand-dark);
+            color: #fff;
+            padding: 6rem 0 5rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 40px,
+                rgba(255,255,255,.015) 40px,
+                rgba(255,255,255,.015) 80px
+            );
+        }
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            mix-blend-mode: screen;
+            opacity: .45;
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        .hero-blob--a { width: 500px; height: 500px; background: var(--brand-primary); top: -15%; left: -10%; }
+        .hero-blob--b { width: 400px; height: 400px; background: var(--brand-secondary); bottom: -20%; right: -8%; animation-delay: 3s; }
+        @keyframes pulse { 0%{transform:scale(1)} 100%{transform:scale(1.15)} }
+        .hero-content { position: relative; z-index: 2; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.15);
+            padding: .4rem 1.1rem;
+            border-radius: 100px;
+            font-size: .85rem;
+            font-weight: 600;
+            margin-bottom: 1.8rem;
+        }
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 span {
+            background: linear-gradient(90deg, #67e8f9, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            max-width: 720px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* ── Nav dots (sticky) ── */
+        .side-nav {
+            position: fixed;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+        }
+        .side-nav a {
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            display: block;
+            transition: all .3s;
+            border: 2px solid transparent;
+        }
+        .side-nav a:hover, .side-nav a.active {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            transform: scale(1.3);
+        }
+        @media(max-width:900px){ .side-nav { display:none; } }
+
+        /* ── Section styling ── */
+        section { padding: 5rem 0; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: .4rem;
+            font-size: .78rem; font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--brand-primary);
+            margin-bottom: .8rem;
+        }
+        .section-tag i { font-size: .7rem; }
+        .section-title {
+            font-size: clamp(1.7rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: .6rem;
+        }
+        .section-sub {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+            transition: transform .3s, box-shadow .3s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.06); }
+        .card-icon {
+            width: 52px; height: 52px;
+            border-radius: .75rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+        }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: .5rem; }
+        .card p, .card li { font-size: .92rem; color: var(--text-secondary); }
+
+        /* ── Grid helpers ── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+        @media(max-width:900px){
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* ── Step boxes ── */
+        .step-box {
+            background: var(--surface);
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .step-header {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, #eef2ff, #ecfeff);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .step-num {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            color: #fff;
+            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .step-header h3 { font-size: 1.15rem; font-weight: 700; }
+        .step-body { padding: 2rem; }
+        .step-body p, .step-body li { font-size: .93rem; color: var(--text-secondary); line-height: 1.8; }
+        .step-body li { margin-bottom: .5rem; }
+        .step-body ul { padding-right: 1.2rem; }
+
+        /* ── Tip / Warning boxes ── */
+        .tip-box {
+            border-radius: .75rem;
+            padding: 1.2rem 1.5rem;
+            margin: 1.2rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .tip-box i { margin-top: .25rem; flex-shrink: 0; font-size: 1.1rem; }
+        .tip-box p { font-size: .9rem; margin: 0; }
+        .tip-box--green { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+        .tip-box--amber { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .tip-box--red   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .tip-box--blue  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+
+        /* ── Inline code ── */
+        code {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: .1rem .4rem;
+            border-radius: .25rem;
+            font-size: .88em;
+            font-family: 'Heebo', monospace;
+        }
+
+        /* ── Details / FAQ ── */
+        details { border: 1px solid #e2e8f0; border-radius: .75rem; overflow: hidden; }
+        details + details { margin-top: .6rem; }
+        details summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            transition: background .2s;
+        }
+        details summary:hover { background: #f8fafc; }
+        details summary::-webkit-details-marker { display: none; }
+        details summary .chevron { transition: transform .3s; color: var(--brand-primary); }
+        details[open] summary .chevron { transform: rotate(180deg); }
+        details .faq-body {
+            padding: 0 1.5rem 1.5rem;
+            font-size: .93rem;
+            color: var(--text-secondary);
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* ── Comparison table ── */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .9rem;
+            margin: 1.5rem 0;
+        }
+        .compare-table th, .compare-table td {
+            padding: .8rem 1rem;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .compare-table thead th {
+            background: #f1f5f9;
+            font-weight: 700;
+            font-size: .82rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+        .compare-table tbody tr:hover { background: #fafbfc; }
+        .badge {
+            display: inline-block;
+            padding: .15rem .55rem;
+            border-radius: 100px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+        .badge--green { background: #dcfce7; color: #166534; }
+        .badge--amber { background: #fef3c7; color: #92400e; }
+        .badge--blue  { background: #dbeafe; color: #1e40af; }
+        .badge--purple { background: #ede9fe; color: #5b21b6; }
+
+        /* ── Google Forms walkthrough ── */
+        .gf-step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .gf-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .gf-step-badge {
+            flex-shrink: 0;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: #fff;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .85rem;
+        }
+        .gf-step h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: .3rem; }
+        .gf-step p { font-size: .9rem; color: var(--text-secondary); margin: 0; }
+
+        /* ── Mock screenshot panels ── */
+        .mock-screen {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: .75rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .mock-screen-bar {
+            background: #e2e8f0;
+            padding: .4rem .8rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .mock-dot--r { background: #f87171; }
+        .mock-dot--y { background: #fbbf24; }
+        .mock-dot--g { background: #34d399; }
+        .mock-screen-body {
+            padding: 1.2rem;
+            font-size: .85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ── Bright accent section (was dark) ── */
+        .dark-section {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+            color: var(--text-main);
+            position: relative;
+            border-top: 1px solid #c7d2fe;
+            border-bottom: 1px solid #c7d2fe;
+        }
+        .dark-section::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 60px,
+                rgba(79,70,229,.03) 60px,
+                rgba(79,70,229,.03) 61px
+            );
+        }
+        .dark-section .section-tag { color: var(--brand-primary); }
+
+        /* ── CTA section ── */
+        .gradient-section {
+            background: linear-gradient(135deg, #eef2ff 0%, #ecfeff 50%, #fefce8 100%);
+            border-top: 1px solid #c7d2fe;
+            border-bottom: 1px solid #c7d2fe;
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--brand-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 3rem 0;
+            font-size: .9rem;
+        }
+
+        /* ── Numbered list with circles ── */
+        .numbered-list { counter-reset: nlist; list-style: none; padding: 0; }
+        .numbered-list li {
+            counter-increment: nlist;
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem;
+            margin-bottom: 1rem;
+            font-size: .93rem;
+            color: var(--text-secondary);
+        }
+        .numbered-list li::before {
+            content: counter(nlist);
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: #eef2ff;
+            color: var(--brand-primary);
+            font-weight: 700;
+            font-size: .78rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ── Split layout ── */
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+        @media(max-width:900px){ .split { grid-template-columns: 1fr; } }
+
+        /* ── Do / Don't ── */
+        .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.2rem 0; }
+        @media(max-width:600px){ .do-dont { grid-template-columns: 1fr; } }
+        .do-col, .dont-col {
+            border-radius: .75rem;
+            padding: 1.2rem;
+            font-size: .88rem;
+        }
+        .do-col {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
+        .do-col h5 { color: #065f46; margin-bottom: .6rem; }
+        .dont-col {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        .dont-col h5 { color: #991b1b; margin-bottom: .6rem; }
+        .do-col li, .dont-col li {
+            margin-bottom: .4rem;
+            font-size: .88rem;
+            line-height: 1.6;
+        }
+
+        /* ── Likert demo ── */
+        .likert-demo {
+            display: flex;
+            justify-content: space-between;
+            gap: .4rem;
+            margin-top: .8rem;
+        }
+        .likert-demo span {
+            flex: 1;
+            text-align: center;
+            padding: .5rem .2rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: .4rem;
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .likert-demo span:hover { background: #eef2ff; border-color: var(--brand-primary); color: var(--brand-primary); }
+        .likert-demo span.selected { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+
+        /* ── Progress bar ── */
+        .progress-track {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 100px;
+            overflow: hidden;
+            margin-top: .5rem;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+        }
+
+        /* ── Checklist ── */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            display: flex; align-items: flex-start; gap: .6rem;
+            margin-bottom: .6rem;
+            font-size: .9rem;
+            color: var(--text-secondary);
+        }
+        .checklist li i { color: var(--emerald); margin-top: .3rem; flex-shrink: 0; }
+
+        /* ── Anchor offset ── */
+        section[id] { scroll-margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║            SIDE NAV DOTS             ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<nav class="side-nav" id="sideNav">
+    <a href="#hero" title="מבוא"></a>
+    <a href="#what" title="מה זה שאלון כמותי"></a>
+    <a href="#mindset" title="חשיבה"></a>
+    <a href="#process" title="תהליך"></a>
+    <a href="#types" title="סוגי שאלות"></a>
+    <a href="#google-forms" title="Google Forms"></a>
+    <a href="#design" title="עיצוב שאלון"></a>
+    <a href="#pilot" title="פיילוט"></a>
+    <a href="#distribute" title="הפצה"></a>
+    <a href="#analyze" title="ניתוח"></a>
+    <a href="#validation" title="תיקוף"></a>
+    <a href="#mistakes" title="טעויות"></a>
+    <a href="#faq" title="FAQ"></a>
+    <a href="#sample" title="שאלון לדוגמה"></a>
+</nav>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║               HERO                  ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<header class="hero" id="hero">
+    <div class="hero-blob hero-blob--a"></div>
+    <div class="hero-blob hero-blob--b"></div>
+    <div class="hero-content container">
+        <div class="hero-badge">
+            <i class="fas fa-chart-pie" style="color:var(--brand-accent)"></i>
+            קורס בינה עסקית — ד״ר שי צבאן
+        </div>
+        <h1>
+            המדריך המלא לבניית<br>
+            <span>שאלון מחקר כמותי</span>
+        </h1>
+        <p style="font-size:.95rem;color:#94a3b8;margin-bottom:.8rem">מאינטואיציה לדאטה — מהדורה מורחבת | במסגרת קורס <strong style="color:var(--text-main)">בינה עסקית (Business Intelligence)</strong> בהנחיית <strong style="color:var(--text-main)">ד״ר שי צבאן</strong></p>
+        <p>
+            אין לכם ניסיון קודם? אין בעיה. המדריך הזה לוקח אתכם מאפס מוחלט — דרך ניסוח שאלות, בניית טופס ב-Google Forms, הפצה לקהל היעד — ועד ניתוח הנתונים שתקבלו. צעד-אחרי-צעד, בעברית, בלי ז'רגון מיותר.
+        </p>
+    </div>
+</header>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║     SECTION 0 — WHAT IS THIS?       ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="what" style="background:var(--surface)">
+    <div class="container narrow reveal">
+        <div class="section-tag"><i class="fas fa-circle"></i> רגע, מה זה בכלל?</div>
+        <h2 class="section-title">מה זה שאלון מחקר כמותי ולמה צריך אחד?</h2>
+        <p class="section-sub" style="margin-bottom:2rem">לפני שמתחילים — בואו נוודא שכולנו מדברים באותה שפה.</p>
+
+        <div class="grid-2" style="margin-bottom:2rem">
+            <div class="card">
+                <div class="card-icon" style="background:#eef2ff;color:var(--brand-primary)"><i class="fas fa-poll"></i></div>
+                <h3>מחקר כמותי (Quantitative)</h3>
+                <p>שואלים <strong>הרבה אנשים</strong> שאלות סגורות (מספרים, דירוגים, בחירה מתוך אפשרויות). התוצאה = נתונים מספריים שאפשר לנתח בטבלה, לחשב ממוצעים, לראות מגמות. זה מה שנלמד כאן.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon" style="background:#fef3c7;color:#b45309"><i class="fas fa-comments"></i></div>
+                <h3>מחקר איכותני (Qualitative)</h3>
+                <p>שואלים <strong>מעט אנשים</strong> שאלות פתוחות וארוכות (ראיונות, קבוצות מיקוד). התוצאה = הבנה עמוקה של חוויות ורגשות, אבל קשה לכמת ולהכליל. לא זה המיקוד שלנו כאן.</p>
+            </div>
+        </div>
+
+        <div class="tip-box tip-box--blue">
+            <i class="fas fa-lightbulb"></i>
+            <p><strong>למה אנחנו צריכים את זה?</strong> — אחרי שאפיינתם מוצר (אפליקציה, שירות, מערכת), אתם צריכים <em>הוכחות אמיתיות מהשוק</em> שהבעיה קיימת, שהפתרון שלכם רלוונטי, ושאנשים מוכנים לשלם עליו. שאלון כמותי נותן לכם נתונים מספריים שאי אפשר להתווכח איתם.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║    SECTION 1 — THE MINDSET          ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="mindset" style="background:var(--surface-alt)">
+    <div class="container">
+        <div class="narrow reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 1 — חשיבה</div>
+            <h2 class="section-title text-gradient">החשיבה שמאחורי השאלון (The Mindset)</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">שאלון גרוע ייתן לכם את התשובות שאתם <em>רוצים</em> לשמוע. שאלון מצוין ייתן לכם את התשובות שאתם <em>צריכים</em> לשמוע. המטרה היא לא לאשש את האפיון, אלא להעמיד אותו במבחן ריסוק.</p>
+        </div>
+
+        <div class="grid-3 reveal">
+            <div class="card">
+                <div class="card-icon" style="background:#fef3c7;color:#b45309"><i class="fas fa-bullseye"></i></div>
+                <h3>חפשו התנהגות עבר — לא כוונות עתיד</h3>
+                <p>אנשים גרועים בלנבא מה הם יעשו. במקום "האם תשתמש באפליקציה?" — שאלו: "כמה פעמים בחודש האחרון חווית את הבעיה, ואיך פתרת אותה?"</p>
+                <div class="do-dont" style="margin-top:1rem">
+                    <div class="do-col">
+                        <h5><i class="fas fa-check-circle"></i> כן</h5>
+                        <ul style="padding-right:1rem"><li>"מתי בפעם האחרונה חיפשת חניה במרכז העיר?"</li></ul>
+                    </div>
+                    <div class="dont-col">
+                        <h5><i class="fas fa-times-circle"></i> לא</h5>
+                        <ul style="padding-right:1rem"><li>"האם היית רוצה אפליקציה שתמצא לך חניה?"</li></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon" style="background:#ecfeff;color:#0e7490"><i class="fas fa-balance-scale"></i></div>
+                <h3>בודדו משתנים — שאלה אחת, נושא אחד</h3>
+                <p>אם המוצר פותר בעיית אמון <em>וגם</em> בעיית מחיר — אל תשאלו עליהן יחד. הפרידו שאלות כדי לדעת איזה חסם חשוב יותר ולתעדף את ה-MVP בהתאם.</p>
+                <div class="do-dont" style="margin-top:1rem">
+                    <div class="do-col">
+                        <h5><i class="fas fa-check-circle"></i> כן</h5>
+                        <ul style="padding-right:1rem"><li>שאלה 1: "עד כמה אתה סומך על זרים באינטרנט?" שאלה 2: "מהו המחיר שתהיה מוכן לשלם?"</li></ul>
+                    </div>
+                    <div class="dont-col">
+                        <h5><i class="fas fa-times-circle"></i> לא</h5>
+                        <ul style="padding-right:1rem"><li>"עד כמה היית סומך על מישהו באינטרנט ומוכן לשלם לו?"</li></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon" style="background:#fce7f3;color:#be185d"><i class="fas fa-filter"></i></div>
+                <h3>שאלות סינון (Screening) — רק קהל יעד אמיתי</h3>
+                <p>הדאטה שווה משהו רק אם הגיע מהאנשים הנכונים. התחילו בשאלות סינון: "האם יש לך כלב?", "האם אתה מנהל צוות?". מי שלא מתאים — הודעת תודה וסיום.</p>
+                <div class="tip-box tip-box--green" style="margin-top:1rem">
+                    <i class="fas fa-check"></i>
+                    <p>ב-Google Forms אפשר לנתב משיבים לסעיפים שונים לפי התשובה — כך מי שלא מתאים מועבר אוטומטית לעמוד "תודה רבה".</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║   SECTION 2 — THE FULL PROCESS      ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="process" style="background:var(--surface)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 2 — מבט-על</div>
+            <h2 class="section-title">תהליך העבודה — 7 שלבים מהרעיון עד לדו"ח</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">כל סקר מוצלח עובר את אותם שלבים. הנה המפה המלאה:</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">1</div><h3>הגדרת שאלת המחקר</h3></div>
+                <div class="step-body">
+                    <p>מה אנחנו <strong>חייבים</strong> לדעת כדי שהמוצר יצליח? איזה נתון, אם נגלה אותו, ישנה את כל האפיון?</p>
+                    <p style="margin-top:.5rem">רשמו 2-4 שאלות מחקר ברורות. לדוגמה:</p>
+                    <ul class="checklist" style="margin-top:.8rem">
+                        <li><i class="fas fa-check-circle"></i> האם קיימת נכונות לשלם עבור שירות חניות P2P?</li>
+                        <li><i class="fas fa-check-circle"></i> מהו הפיצ'ר הקריטי ביותר לאימהות שמחפשות בייביסיטר?</li>
+                        <li><i class="fas fa-check-circle"></i> האם אנשי HR רואים ערך בכלי אוטומטי לניהול זמן?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">2</div><h3>בחירת סוגי השאלות והסולמות</h3></div>
+                <div class="step-body">
+                    <p>תרגמו את המטרות לשאלות כמותיות: ליקרט, בחירה מרובה, דירוג, נכונות לשלם. (פירוט מלא בהמשך.)</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">3</div><h3>בניית השאלון בכלי טכני (למשל Google Forms)</h3></div>
+                <div class="step-body">
+                    <p>הקמה טכנית של השאלון — כולל סעיפים, ניתוב, עיצוב, והגדרת שדות חובה. (מדריך מפורט בהמשך!)</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">4</div><h3>עיצוב חוויית המשיב (UX של הסקר)</h3></div>
+                <div class="step-body">
+                    <p>כתיבת מבוא ברור, סדר שאלות הגיוני, אורך מאוזן, ודאו שהחוויה נעימה וקצרה.</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">5</div><h3>פיילוט (ניסוי מקדים) על 5-10 אנשים</h3></div>
+                <div class="step-body">
+                    <p>אל תפיצו לפני שבדקתם! תנו ל-5-10 אנשים למלא, שאלו אותם מה לא הבינו, מה ארוך מדי, מה מבלבל.</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">6</div><h3>הפצה לקהל היעד (Data Collection)</h3></div>
+                <div class="step-body">
+                    <p>שליחת הלינק לאנשים הנכונים — דרך Swappa, קבוצות פייסבוק, לינקדאין, רשימות דיוור ועוד.</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">7</div><h3>ניתוח נתונים והסקת מסקנות</h3></div>
+                <div class="step-body">
+                    <p>ייצוא ל-Excel/Sheets, חישוב ממוצעים ותדירויות, בניית גרפים, וזיהוי תובנות שישפיעו על המוצר.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║   SECTION 3 — QUESTION TYPES        ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="types" style="background:var(--surface-alt)">
+    <div class="container">
+        <div class="narrow reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 3 — סוגי שאלות</div>
+            <h2 class="section-title">הארגז כלים: כל סוגי השאלות שתצטרכו</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">כל סוג שאלה נותן לכם מידע אחר. הנה הסוגים העיקריים עם דוגמאות מפרויקטים אמיתיים.</p>
+        </div>
+
+        <div class="grid-2 reveal">
+            <!-- Likert -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#312e81">סולם ליקרט (Likert Scale)</h3>
+                    <span class="badge badge--purple">הכי נפוץ</span>
+                </div>
+                <p>מדידת <strong>עוצמת עמדה</strong> — עד כמה מסכימים, שבעי רצון, חוששים. בדרך כלל 5 או 7 דרגות.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.8rem">"באיזו מידה אימות זהות (KYC) יגרום לך להרגיש בטוח להשתמש באפליקציה להזמנת שמרטף?"</p>
+                    <div class="likert-demo">
+                        <span>1<br>כלל לא</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span class="selected">5<br>מאוד</span>
+                    </div>
+                </div>
+                <div class="tip-box tip-box--blue" style="margin-top:1rem">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>ב-Google Forms:</strong> השתמשו בסוג "סולם לינארי" (Linear Scale) — בחרו 1 עד 5, ורשמו תווית לקצוות.</p>
+                </div>
+            </div>
+
+            <!-- Multiple Choice -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#164e63">ריבוי ברירות (Multiple Choice)</h3>
+                    <span class="badge badge--blue">איתור חסמים</span>
+                </div>
+                <p>בחינת הסיבות <strong>מדוע</strong> אנשים מתנהגים בדרך מסוימת. מתאים להבנת הרגלים קיימים.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.6rem">"מהי הסיבה העיקרית שמונעת ממך לתעד משימות ביומן?"</p>
+                    <div style="font-size:.85rem;color:var(--text-secondary)">
+                        <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9">○ &nbsp;זה לוקח יותר מדי זמן</div>
+                        <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9;font-weight:600;color:#0e7490">● &nbsp;חשש לפרטיות (מנהלים רואים על מה אני עובד)</div>
+                        <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9">○ &nbsp;אני משתמש בכלי אחר</div>
+                        <div style="padding:.4rem 0">○ &nbsp;אחר...</div>
+                    </div>
+                </div>
+                <div class="tip-box tip-box--blue" style="margin-top:1rem">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>ב-Google Forms:</strong> סוג "בחירה מרובה" (Multiple choice). תמיד הוסיפו "אחר" כדי שלא תפספסו תשובות שלא חשבתם עליהן.</p>
+                </div>
+            </div>
+
+            <!-- Ranking -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#78350f">דירוג עדיפויות (Ranking)</h3>
+                    <span class="badge badge--amber">תיעדוף פיצ'רים</span>
+                </div>
+                <p>אל תשאלו "האם הפיצ'ר הזה טוב?" (הכול טוב). <strong>הכריחו את המשתמש לבחור</strong> על מה לוותר.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.6rem">"דרגו מ-1 (חשוב ביותר) עד 4:"</p>
+                    <div style="font-size:.85rem">
+                        <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0"><span style="background:#f59e0b;color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">1</span> קרבה ליעד</div>
+                        <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">2</span> מחיר זול</div>
+                        <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">3</span> הזמנה מראש</div>
+                        <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">4</span> חניה מקורה</div>
+                    </div>
+                </div>
+                <div class="tip-box tip-box--amber" style="margin-top:1rem">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p><strong>ב-Google Forms:</strong> אין דירוג גרירה מובנה. הפתרון: השתמשו ב"רשת בחירה מרובה" (Multiple choice grid) — שורות = פיצ'רים, עמודות = 1 עד 4, סמנו "Limit to one response per column".</p>
+                </div>
+            </div>
+
+            <!-- WTP -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#065f46">נכונות לשלם (Willingness to Pay)</h3>
+                    <span class="badge badge--green">מודל עסקי</span>
+                </div>
+                <p>שיטה מבוססת Van Westendorp. לא שואלים "כמה תשלם?" — אלא מציגים <strong>תרחישים עם מחירים</strong> ושואלים מה הרגשתם.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.6rem">"עבור אינסטלטור תוך 30 דק' בלילה/חג:"</p>
+                    <div style="font-size:.85rem;color:var(--text-secondary)">
+                        <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9">○ &nbsp;150 ₪ תוספת — מצוין, אשלם בשמחה</div>
+                        <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9;font-weight:600;color:#065f46">● &nbsp;250 ₪ תוספת — יקר, אבל אשלם כי זה חירום</div>
+                        <div style="padding:.4rem 0">○ &nbsp;350 ₪ תוספת — יקר מדי, אעדיף לחכות</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkboxes -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#7c2d12">תיבות סימון (Checkboxes)</h3>
+                    <span class="badge badge--amber">בחירה מרובה</span>
+                </div>
+                <p>כשרוצים שהמשיב יוכל לבחור <strong>כמה תשובות</strong> (לא רק אחת). מתאים לזיהוי כל הערוצים / הבעיות שחווים.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.6rem">"באילו פלטפורמות אתה מחפש שירותי בית כיום? (סמנו את כל המתאימות)"</p>
+                    <div style="font-size:.85rem;color:var(--text-secondary)">
+                        <div style="padding:.3rem 0">☑ &nbsp;קבוצות פייסבוק / ווטסאפ</div>
+                        <div style="padding:.3rem 0">☑ &nbsp;המלצות מחברים</div>
+                        <div style="padding:.3rem 0">☐ &nbsp;אפליקציות ייעודיות</div>
+                        <div style="padding:.3rem 0">☐ &nbsp;אתרי אינטרנט</div>
+                    </div>
+                </div>
+                <div class="tip-box tip-box--blue" style="margin-top:1rem">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>ב-Google Forms:</strong> סוג "תיבות סימון" (Checkboxes). ההבדל מ-Multiple Choice: כאן אפשר לסמן יותר מתשובה אחת.</p>
+                </div>
+            </div>
+
+            <!-- Open ended -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h3 style="color:#1e3a5f">שאלה פתוחה (Open-ended)</h3>
+                    <span class="badge badge--blue">זהירות</span>
+                </div>
+                <p>שאלה שהמשיב כותב תשובה חופשית. השתמשו <strong>במשורה</strong> — מקסימום 1-2 בסקר כולו. קשה לנתח כמותית, אבל יכולה לחשוף דברים שלא חשבתם עליהם.</p>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin-top:1rem">
+                    <p style="font-weight:600;font-size:.9rem;margin-bottom:.6rem">"האם יש משהו נוסף שתרצה לספר לנו על החוויה שלך עם מציאת חניה בעיר?"</p>
+                    <div style="height:3rem;background:#fff;border:1px solid #d1d5db;border-radius:.4rem;margin-top:.5rem"></div>
+                </div>
+                <div class="tip-box tip-box--amber" style="margin-top:1rem">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>שאלות פתוחות מורידות אחוזי השלמה. שימו אותן תמיד כ"לא חובה" ורק בסוף הסקר.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 4 — GOOGLE FORMS GUIDE     ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="google-forms" class="dark-section" style="padding:5rem 0">
+    <div class="container" style="position:relative;z-index:2">
+        <div class="narrow reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 4 — בנייה טכנית</div>
+            <h2 class="section-title text-gradient">מדריך צעד-אחרי-צעד: בניית שאלון ב-Google Forms</h2>
+            <p style="color:var(--text-secondary);margin-bottom:.5rem">הכלי החינמי הנפוץ ביותר — מתאים לרוב המחקרים. הנה בדיוק איך לעשות את זה:</p>
+        </div>
+
+        <div class="narrow" style="margin-top:2.5rem">
+            <!-- GF Step 1 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">1</div>
+                <div>
+                    <h4 style="color:var(--text-main)">כניסה ויצירת טופס חדש</h4>
+                    <p>היכנסו ל-<strong style="color:var(--brand-primary)">forms.google.com</strong> עם חשבון Google (כל חשבון Gmail רגיל מתאים). לחצו על הסימן <strong>+</strong> (טופס ריק) או בחרו תבנית מוכנה. ייפתח לכם עורך חדש.</p>
+                </div>
+            </div>
+
+            <!-- GF Step 2 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">2</div>
+                <div>
+                    <h4 style="color:var(--text-main)">כותרת ותיאור הסקר</h4>
+                    <p>בראש הטופס — כתבו <strong>כותרת ברורה</strong> (למשל: "סקר: חוויית חיפוש חניה בעיר") ומתחתיה <strong>תיאור קצר</strong> שכולל: מי אתם, למה הסקר, כמה זמן ייקח (למשל "2-3 דקות"), והבטחה לאנונימיות. זה קריטי — אנשים צריכים לדעת למה הם מוותרים מזמנם.</p>
+                    <div class="mock-screen" style="margin-top:1rem">
+                        <div class="mock-screen-bar"><span class="mock-dot mock-dot--r"></span><span class="mock-dot mock-dot--y"></span><span class="mock-dot mock-dot--g"></span></div>
+                        <div class="mock-screen-body" style="text-align:right">
+                            <div style="font-size:1.1rem;font-weight:700;color:var(--text-main);margin-bottom:.3rem">📋 סקר: חוויית חיפוש חניה בעיר</div>
+                            <div style="font-size:.82rem;color:#64748b">שלום! אנחנו סטודנטים לניהול טכנולוגיה ובוחנים פתרון חדשני לחיפוש חניות במרכז העיר. הסקר אנונימי לחלוטין ויימשך כ-3 דקות בלבד. תודה רבה על הזמן שלכם!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GF Step 3 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">3</div>
+                <div>
+                    <h4 style="color:var(--text-main)">הוספת סעיפים (Sections) — חלוקה לחלקים</h4>
+                    <p>לחצו על האייקון <strong>"שתי שורות אופקיות"</strong> בסרגל הכלים הצדדי כדי להוסיף סעיף חדש. חלקו את הסקר ל:</p>
+                    <ul style="color:var(--text-secondary);font-size:.9rem;padding-right:1.2rem;margin-top:.5rem">
+                        <li><strong style="color:var(--brand-primary)">חלק 1:</strong> שאלות סינון (מי אתה? האם אתה בקהל היעד?)</li>
+                        <li><strong style="color:var(--brand-primary)">חלק 2:</strong> חוויה נוכחית (איך אתה מתמודד היום עם הבעיה?)</li>
+                        <li><strong style="color:var(--brand-primary)">חלק 3:</strong> עמדות כלפי הפתרון המוצע (נכונות, חששות, תמחור)</li>
+                        <li><strong style="color:var(--brand-primary)">חלק 4:</strong> שאלות דמוגרפיות (גיל, מגדר, אזור — תמיד בסוף!)</li>
+                    </ul>
+                    <div class="tip-box tip-box--green" style="margin-top:1rem">
+                        <i class="fas fa-check"></i>
+                        <p>חלוקה לסעיפים מציגה את הסקר עמוד-אחר-עמוד ולא ככתב יד ארוך, מה שמקטין נטישה דרמטית.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GF Step 4 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">4</div>
+                <div>
+                    <h4 style="color:var(--text-main)">הוספת שאלות — בחירת סוג לכל שאלה</h4>
+                    <p>לחצו <strong>+</strong> להוספת שאלה. אז בחרו את הסוג מהתפריט הנפתח:</p>
+                    <table style="width:100%;border-collapse:collapse;margin-top:.8rem;font-size:.85rem">
+                        <thead>
+                            <tr style="border-bottom:1px solid #e2e8f0">
+                                <th style="text-align:right;padding:.5rem;color:var(--brand-primary)">הסוג ב-Forms</th>
+                                <th style="text-align:right;padding:.5rem;color:var(--brand-primary)">מתי להשתמש</th>
+                            </tr>
+                        </thead>
+                        <tbody style="color:var(--text-secondary)">
+                            <tr style="border-bottom:1px solid #f1f5f9">
+                                <td style="padding:.5rem">בחירה מרובה (Multiple choice)</td>
+                                <td style="padding:.5rem">תשובה אחת מתוך רשימה</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9">
+                                <td style="padding:.5rem">תיבות סימון (Checkboxes)</td>
+                                <td style="padding:.5rem">כמה תשובות מתוך רשימה</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9">
+                                <td style="padding:.5rem">סולם לינארי (Linear scale)</td>
+                                <td style="padding:.5rem">ליקרט — דירוג 1-5 או 1-7</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9">
+                                <td style="padding:.5rem">רשת בחירה מרובה (Multiple choice grid)</td>
+                                <td style="padding:.5rem">דירוג כמה פריטים באותו סולם</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9">
+                                <td style="padding:.5rem">תשובה קצרה (Short answer)</td>
+                                <td style="padding:.5rem">מספר, שם, או תשובה קצרה חופשית</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.5rem">פסקה (Paragraph)</td>
+                                <td style="padding:.5rem">שאלה פתוחה ארוכה (לא חובה)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GF Step 5 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">5</div>
+                <div>
+                    <h4 style="color:var(--text-main)">הגדרת "חובה" (Required) ולוגיקת ניתוב (Skip Logic)</h4>
+                    <p><strong>חובה:</strong> בתחתית כל שאלה יש מתג "חובה" — הפעילו אותו לשאלות הסינון ולשאלות הליבה. שאלות דמוגרפיות ופתוחות — השאירו כ"לא חובה".</p>
+                    <p style="margin-top:.5rem"><strong>ניתוב (Go to section based on answer):</strong> לחצו על שלוש הנקודות (⋮) בשאלת בחירה מרובה → "מעבר לסעיף על סמך תשובה". כך מי שעונה "לא, אין לי כלב" מועבר ישר לעמוד "תודה" ולא ממשיך לסקר.</p>
+                    <div class="tip-box tip-box--amber" style="margin-top:1rem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p><strong>חשוב:</strong> ניתוב עובד רק בשאלות "בחירה מרובה" (Multiple Choice) ורק ברמת סעיף (Section). תכננו מראש את מבנה הסעיפים!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GF Step 6 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">6</div>
+                <div>
+                    <h4 style="color:var(--text-main)">עיצוב והתאמה אישית</h4>
+                    <p>לחצו על <strong>אייקון הפלטה 🎨</strong> בראש הטופס כדי:</p>
+                    <ul style="color:var(--text-secondary);font-size:.9rem;padding-right:1.2rem;margin-top:.5rem">
+                        <li>לבחור צבע נושא (בחרו משהו מקצועי ונקי)</li>
+                        <li>להוסיף תמונת כותרת (header image) — אופציונלי אבל מוסיף אמינות</li>
+                        <li>לבחור גופן (ברירת המחדל טובה לעברית)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GF Step 7 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">7</div>
+                <div>
+                    <h4 style="color:var(--text-main)">הגדרות הטופס (Settings ⚙️)</h4>
+                    <p>לחצו על <strong>⚙️ הגדרות</strong> בראש הטופס. ודאו:</p>
+                    <ul style="color:var(--text-secondary);font-size:.9rem;padding-right:1.2rem;margin-top:.5rem">
+                        <li>❌ <strong>כבו</strong> "הגבלה לתגובה אחת" (אלא אם אתם בטוחים שכולם מחוברים ל-Google)</li>
+                        <li>❌ <strong>כבו</strong> "איסוף כתובות דוא"ל" (כדי לשמור על אנונימיות)</li>
+                        <li>✅ <strong>הפעילו</strong> "שליחת סיכום לאחר שליחה" (מנימוס)</li>
+                        <li>✅ הגדירו "הודעת אישור" — למשל: "תודה רבה! התשובות שלך חשובות לנו מאוד 🙏"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GF Step 8 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">8</div>
+                <div>
+                    <h4 style="color:var(--text-main)">תצוגה מקדימה ושליחה</h4>
+                    <p>לחצו על <strong>אייקון העין 👁</strong> כדי לראות את הסקר בדיוק כמו שהמשיבים יראו אותו. עברו על כל שאלה, בדקו ניתובים, ונסו למלא בעצמכם.</p>
+                    <p style="margin-top:.5rem">כשהכול מוכן — לחצו <strong>"שלח" (Send)</strong> בפינה העליונה ובחרו:</p>
+                    <ul style="color:var(--text-secondary);font-size:.9rem;padding-right:1.2rem;margin-top:.5rem">
+                        <li>📧 <strong>אימייל</strong> — שליחה ישירה</li>
+                        <li>🔗 <strong>לינק</strong> — העתקת קישור (הכי נפוץ! אפשר לקצר אותו עם "שורטן URL")</li>
+                        <li>📱 <strong>הטמעה</strong> — הוספה לאתר או עמוד HTML</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GF Step 9 -->
+            <div class="gf-step reveal">
+                <div class="gf-step-badge">9</div>
+                <div>
+                    <h4 style="color:var(--text-main)">מעקב אחרי תגובות וייצוא נתונים</h4>
+                    <p>חזרו לטופס ולחצו על <strong>לשונית "תגובות" (Responses)</strong>. תראו:</p>
+                    <ul style="color:var(--text-secondary);font-size:.9rem;padding-right:1.2rem;margin-top:.5rem">
+                        <li><strong>סיכום:</strong> גרפים אוטומטיים לכל שאלה (עוגות, עמודות)</li>
+                        <li><strong>שאלה:</strong> תגובות מפורטות לכל שאלה בנפרד</li>
+                        <li><strong>בודד:</strong> מעבר על תגובה של משיב ספציפי</li>
+                    </ul>
+                    <p style="margin-top:.5rem">לייצוא ל-Excel: לחצו על <strong>הסמל הירוק של Sheets</strong> — ייווצר אוטומטית Google Sheet עם כל הנתונים. משם אפשר להוריד כ-.xlsx או .csv.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 5 — SURVEY DESIGN UX       ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="design" style="background:var(--surface-alt)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 5 — עיצוב חוויית הסקר</div>
+            <h2 class="section-title">איך לגרום לאנשים <em>לסיים</em> את הסקר שלכם</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">סקר שאנשים נוטשים באמצע הוא גרוע יותר מסקר שלא נבנה כלל — כי הנתונים מוטים לטובת אלו שלא התעצלו.</p>
+        </div>
+
+        <div class="grid-2 reveal">
+            <div class="card">
+                <h3><i class="fas fa-clock" style="color:var(--brand-primary);margin-left:.4rem"></i> אורך — עד 5 דקות, מקסימום 15 שאלות</h3>
+                <p>כלל אצבע: כל שאלה = ~20 שניות. 15 שאלות = 5 דקות. מעבר לזה — אחוזי נטישה קופצים דרמטית. אם אתם חייבים יותר, הפרידו ל-2 סקרים.</p>
+                <div class="progress-track" style="margin-top:1rem">
+                    <div class="progress-fill" style="width:65%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-secondary);margin-top:.3rem">
+                    <span>0 דק'</span>
+                    <span style="color:var(--emerald);font-weight:600">5 דק' — אידיאלי ✓</span>
+                    <span style="color:var(--rose)">10+ דק' — נטישה ✗</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-sort-amount-down" style="color:var(--brand-secondary);margin-left:.4rem"></i> סדר שאלות — מהקל לכבד</h3>
+                <p>התחילו בשאלות קלות וסגורות (עידוד). המשיכו לשאלות מהותיות. שאלות רגישות (הכנסה, גיל) — תמיד בסוף. שאלה פתוחה — אחרונה לחלוטין.</p>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-pen" style="color:var(--brand-accent);margin-left:.4rem"></i> מבוא ברור — מי, למה, כמה זמן</h3>
+                <p>כתבו בתחילת הסקר: מי אתם, למה אתם שואלים, כמה זמן זה ייקח, שהסקר אנונימי. בלי מבוא — אנשים לא סומכים ולא ממלאים.</p>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-mobile-alt" style="color:var(--rose);margin-left:.4rem"></i> בדקו במובייל!</h3>
+                <p>80%+ מהמשיבים ימלאו מהטלפון. ודאו שהסקר נראה טוב ונוח למילוי בנייד. ב-Google Forms זה אוטומטי, אבל תמיד כדאי לבדוק.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║    SECTION 6 — PILOT                ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="pilot" style="background:var(--surface)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 6 — פיילוט</div>
+            <h2 class="section-title">ניסוי מקדים — אל תדלגו על השלב הזה!</h2>
+            <p class="section-sub" style="margin-bottom:2rem">5 אנשים בפיילוט חוסכים לכם 100 תגובות מקולקלות.</p>
+        </div>
+
+        <div class="reveal">
+            <p style="font-size:.95rem;color:var(--text-secondary);margin-bottom:1.5rem">שלחו את הסקר ל-5-10 אנשים (חברים, בני משפחה, עמיתים — לא משנה, הם לא חלק מהמדגם הסופי) ושאלו אותם:</p>
+            <ol class="numbered-list">
+                <li>האם הייתה שאלה שלא הבנת? איפה בדיוק תקעת?</li>
+                <li>כמה זמן לקח לך למלא? (אם מעל 5 דקות — קצרו)</li>
+                <li>האם הרגשת שחסרה תשובה שהתאימה לך? (= צריך להוסיף אופציה)</li>
+                <li>האם היו שאלות שנראו לך כפולות או מיותרות?</li>
+                <li>האם הניתוב (מעבר בין עמודים) עבד חלק?</li>
+            </ol>
+
+            <div class="tip-box tip-box--red" style="margin-top:1.5rem">
+                <i class="fas fa-bug"></i>
+                <p><strong>טעות קלאסית:</strong> שולחים את הסקר ל-100 איש, ואז מגלים שהשאלה הכי חשובה לא ברורה, או שאנשים בוחרים "אחר" ב-40% מהתגובות כי האפשרויות לא מספיקות. ברגע שיצאתם לשטח — אין חזרה.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 7 — DISTRIBUTION           ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="distribute" class="gradient-section">
+    <div class="container">
+        <div class="narrow reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 7 — הפצה</div>
+            <h2 class="section-title">בניתם שאלון מדהים. עכשיו — איך מביאים אנשים לענות?</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">שליחה לחברים ומשפחה תיצור "הטיית קירבה" — הם יענו מה שאתם רוצים לשמוע. אתם צריכים קהל יעד אמיתי ובלתי תלוי.</p>
+        </div>
+
+        <div class="grid-2 reveal">
+            <!-- Swappa -->
+            <div class="card" style="border-right:4px solid var(--brand-accent)">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#fef3c7;padding:.4rem .7rem;border-radius:.5rem"><i class="fas fa-exchange-alt" style="color:#b45309"></i></span>
+                    <h3 style="margin:0">פלטפורמת Swappa</h3>
+                </div>
+                <p>פלטפורמה ישראלית מעולה לסטודנטים. שתי אפשרויות:</p>
+                <ul style="padding-right:1.2rem;margin-top:.5rem;font-size:.9rem;color:var(--text-secondary)">
+                    <li><strong>סחר חליפין (קארמה):</strong> מלאו סקרים של אחרים ← קבלו קרדיטים ← השתמשו בהם להפצת הסקר שלכם. "ענה לי ואענה לך".</li>
+                    <li><strong>תשלום:</strong> שלמו סכום קטן עבור תגובות מהירות מפאנל נבדקים.</li>
+                </ul>
+            </div>
+
+            <!-- Facebook Groups -->
+            <div class="card" style="border-right:4px solid #3b5998">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#dbeafe;padding:.4rem .7rem;border-radius:.5rem"><i class="fab fa-facebook-f" style="color:#3b5998"></i></span>
+                    <h3 style="margin:0">קבוצות פייסבוק ממוקדות</h3>
+                </div>
+                <p>חפשו קבוצות שמתאימות <strong>בדיוק</strong> לקהל היעד:</p>
+                <ul style="padding-right:1.2rem;margin-top:.5rem;font-size:.9rem;color:var(--text-secondary)">
+                    <li>"אימהות בחופשת לידה — מרכז"</li>
+                    <li>"בעלי כלבים — תל אביב"</li>
+                    <li>"מנהלי HR בהייטק"</li>
+                </ul>
+                <p style="font-size:.88rem;margin-top:.5rem"><strong>טיפ:</strong> בקשו אישור ממנהל הקבוצה לפני פרסום. כתבו פוסט אישי ולא "רובוטי".</p>
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="card" style="border-right:4px solid #0077b5">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#dbeafe;padding:.4rem .7rem;border-radius:.5rem"><i class="fab fa-linkedin-in" style="color:#0077b5"></i></span>
+                    <h3 style="margin:0">לינקדאין (B2B)</h3>
+                </div>
+                <p>חיוני למוצרים ארגוניים. אפשרויות:</p>
+                <ul style="padding-right:1.2rem;margin-top:.5rem;font-size:.9rem;color:var(--text-secondary)">
+                    <li>פרסום הסקר כפוסט ברשת עם הקשר אישי</li>
+                    <li>שליחת הודעות אישיות מנומסות למנהלים רלוונטיים</li>
+                    <li>שימוש בסקר המובנה של לינקדאין (מוגבל ל-4 אפשרויות)</li>
+                </ul>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="card" style="border-right:4px solid #25d366">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#dcfce7;padding:.4rem .7rem;border-radius:.5rem"><i class="fab fa-whatsapp" style="color:#25d366"></i></span>
+                    <h3 style="margin:0">קבוצות ווטסאפ</h3>
+                </div>
+                <p>אפקטיבי מאוד לישראל — אבל בזהירות:</p>
+                <ul style="padding-right:1.2rem;margin-top:.5rem;font-size:.9rem;color:var(--text-secondary)">
+                    <li>✅ קבוצות ווטסאפ קהילתיות שקשורות לנושא</li>
+                    <li>✅ קבוצות מקצועיות / לימודיות</li>
+                    <li>❌ <strong>לא</strong> לקבוצות החברים הקרובים שלכם (הטיית קירבה!)</li>
+                </ul>
+            </div>
+
+            <!-- Email -->
+            <div class="card" style="border-right:4px solid #7c3aed">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#ede9fe;padding:.4rem .7rem;border-radius:.5rem"><i class="fas fa-envelope" style="color:#7c3aed"></i></span>
+                    <h3 style="margin:0">רשימות דיוור ופורומים</h3>
+                </div>
+                <p>אם יש לכם גישה לרשימות רלוונטיות (דרך המכללה, חממת סטארטאפ, או ארגון מקצועי) — זה מקור מעולה. גם פורומים ישראליים (FXP, וואלה פורומים) יכולים להתאים לנישות מסוימות.</p>
+            </div>
+
+            <!-- Incentives -->
+            <div class="card" style="border-right:4px solid var(--brand-accent)">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+                    <span style="background:#fef3c7;padding:.4rem .7rem;border-radius:.5rem"><i class="fas fa-gift" style="color:#b45309"></i></span>
+                    <h3 style="margin:0">תמריצים (Incentives)</h3>
+                </div>
+                <p>הצעת תגמול יכולה להגדיל אחוזי מענה משמעותית:</p>
+                <ul style="padding-right:1.2rem;margin-top:.5rem;font-size:.9rem;color:var(--text-secondary)">
+                    <li>הגרלת שובר (Giftcard) בין כל המשיבים</li>
+                    <li>"מילוי הסקר = כניסה להגרלה על שובר Amazon / מסעדה בשווי 100 ₪"</li>
+                    <li>בקשו אימייל בנפרד (לא בתוך הסקר!) כדי לשמור על אנונימיות</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="narrow reveal" style="margin-top:2rem">
+            <div class="tip-box tip-box--blue">
+                <i class="fas fa-calculator"></i>
+                <p><strong>כמה תגובות צריך?</strong> המינימום הסטטיסטי הוא n=30. אבל כדי לקבל תמונה אמינה שאפשר לפלח (לפי גיל, מגדר, אזור) — כדאי לשאוף ל-<strong>100-150 תגובות</strong>. אם יש לכם תת-קבוצות חשובות, תצטרכו לפחות 30 בכל תת-קבוצה.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 8 — ANALYSIS               ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="analyze" style="background:var(--surface)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 8 — ניתוח</div>
+            <h2 class="section-title">קיבלתם תגובות! עכשיו מה עושים עם הדאטה?</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">לא צריכים תואר בסטטיסטיקה. הנה הניתוחים הבסיסיים שכל אחד יכול לעשות.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.2rem">
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">א</div><h3>ייצוא הנתונים</h3></div>
+                <div class="step-body">
+                    <p>ב-Google Forms: לשונית "תגובות" → לחצו על הסמל הירוק של Sheets → נפתח Google Sheet אוטומטי. כל שורה = משיב אחד, כל עמודה = שאלה.</p>
+                    <p>אפשר גם להוריד כ-CSV (קובץ ← הורד ← CSV) ולפתוח ב-Excel.</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">ב</div><h3>ניקוי נתונים</h3></div>
+                <div class="step-body">
+                    <p>לפני הניתוח — בדקו ומחקו תגובות חשודות:</p>
+                    <ul style="padding-right:1.2rem">
+                        <li>תגובות שמילאו הכול ב-2 שניות (לחיצה אקראית)</li>
+                        <li>תגובות שכל התשובות זהות (למשל כולן "3")</li>
+                        <li>תגובות שלא עברו את שאלת הסינון אבל איכשהו המשיכו</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">ג</div><h3>ניתוחים בסיסיים — מה לחשב</h3></div>
+                <div class="step-body">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>סוג שאלה</th>
+                                <th>מה לחשב</th>
+                                <th>איך ב-Excel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ליקרט (1-5)</td>
+                                <td>ממוצע, סטיית תקן, חציון</td>
+                                <td><code>=AVERAGE()</code>, <code>=STDEV()</code>, <code>=MEDIAN()</code></td>
+                            </tr>
+                            <tr>
+                                <td>בחירה מרובה</td>
+                                <td>תדירות (כמה בחרו כל אפשרות) + אחוזים</td>
+                                <td><code>=COUNTIF()</code> חלקי סה"כ תגובות</td>
+                            </tr>
+                            <tr>
+                                <td>דירוג</td>
+                                <td>ממוצע דירוג לכל פריט (הנמוך ביותר = חשוב ביותר)</td>
+                                <td><code>=AVERAGE()</code> לכל עמודה</td>
+                            </tr>
+                            <tr>
+                                <td>נכונות לשלם</td>
+                                <td>אחוז שבחרו כל טווח מחיר</td>
+                                <td><code>=COUNTIF()</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">ד</div><h3>הצלבות (Cross-Tabulation)</h3></div>
+                <div class="step-body">
+                    <p>כאן קורה הקסם. במקום לראות רק "70% מוכנים לשלם" — בדקו: האם יש הבדל בין גילאים? בין אזורים? בין אנשים שחוו את הבעיה לעומת כאלה שלא?</p>
+                    <p style="margin-top:.5rem">ב-Google Sheets: השתמשו ב-<strong>Pivot Table</strong> (טבלת ציר) — תפריט "נתונים" → "טבלת ציר". גררו את השאלה הדמוגרפית לשורות ואת שאלת התוכן לעמודות.</p>
+                </div>
+            </div>
+
+            <div class="step-box reveal">
+                <div class="step-header"><div class="step-num">ה</div><h3>הצגת התוצאות — גרפים</h3></div>
+                <div class="step-body">
+                    <p>תמיד הציגו תוצאות כגרפים — לא כמספרים יבשים:</p>
+                    <ul style="padding-right:1.2rem">
+                        <li><strong>עוגה (Pie)</strong> — לשאלות בחירה מרובה עם 3-5 אפשרויות</li>
+                        <li><strong>עמודות (Bar)</strong> — לליקרט, לדירוג, להשוואה בין קבוצות</li>
+                        <li><strong>עמודות מוערמות (Stacked)</strong> — להצלבות (דמוגרפיה × עמדה)</li>
+                    </ul>
+                    <p style="margin-top:.5rem">ב-Google Forms יש גרפים אוטומטיים בלשונית "תגובות" — אפשר להשתמש בהם ישירות.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 9 — VALIDATION             ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="validation" class="dark-section" style="padding:5rem 0">
+    <div class="container narrow" style="position:relative;z-index:2">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 9 — תיקוף מחקרי</div>
+            <h2 class="section-title" style="color:var(--text-main)">מאיפה מביאים שאלות? (סולמות מוכחים)</h2>
+            <p style="color:var(--text-secondary);margin-bottom:2rem">במחקר מקצועי, לא ממציאים שאלות מהאוויר. משתמשים בסולמות שכבר תוקפו במחקרים קודמים:</p>
+        </div>
+
+        <div class="grid-2 reveal">
+            <div style="background:var(--surface);border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem">
+                <h4 style="color:var(--brand-primary);font-size:1.1rem;margin-bottom:.5rem">מודל TAM</h4>
+                <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:.5rem">Technology Acceptance Model — מודל קלאסי לבחינת נכונות לאמץ טכנולוגיה. מתמקד ב-<strong style="color:var(--text-main)">תועלת נתפסת</strong> (Perceived Usefulness) ו-<strong style="color:var(--text-main)">קלות שימוש נתפסת</strong> (Perceived Ease of Use).</p>
+                <p style="color:#64748b;font-size:.8rem;border-top:1px solid #e2e8f0;padding-top:.5rem;margin-top:.5rem"><i class="fas fa-search"></i> חפשו: "TAM questionnaire examples" ב-Google Scholar</p>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem">
+                <h4 style="color:#6d28d9;font-size:1.1rem;margin-bottom:.5rem">שאלון SUS</h4>
+                <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:.5rem">System Usability Scale — 10 שאלות סטנדרטיות למדידת שימושיות. מתאים להעברה <strong style="color:var(--text-main)">לאחר</strong> שהצגתם פרוטוטייפ (Figma) ללקוחות. ציון מעל 68 = מעל הממוצע.</p>
+                <p style="color:#64748b;font-size:.8rem;border-top:1px solid #e2e8f0;padding-top:.5rem;margin-top:.5rem"><i class="fas fa-search"></i> חפשו: "SUS Survey Template" בגוגל</p>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem">
+                <h4 style="color:#b45309;font-size:1.1rem;margin-bottom:.5rem">NPS — Net Promoter Score</h4>
+                <p style="color:var(--text-secondary);font-size:.9rem">"בסולם 0-10, עד כמה היית ממליץ על השירות לחבר?" — שאלה בודדת, עוצמתית. 9-10 = מקדמים, 7-8 = פסיביים, 0-6 = מלעיזים. NPS = %מקדמים - %מלעיזים.</p>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid #e2e8f0;border-radius:.75rem;padding:1.5rem">
+                <h4 style="color:#059669;font-size:1.1rem;margin-bottom:.5rem">Van Westendorp Price Sensitivity</h4>
+                <p style="color:var(--text-secondary);font-size:.9rem">4 שאלות על מחיר: "באיזה מחיר זה זול מדי?" / "סביר" / "מתחיל להיות יקר" / "יקר מדי". הצטלבות העקומים = טווח המחיר האופטימלי.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 10 — COMMON MISTAKES       ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="mistakes" style="background:var(--surface-alt)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שלב 10 — מלכודות</div>
+            <h2 class="section-title">10 הטעויות הנפוצות ביותר — ואיך להימנע מהן</h2>
+            <p class="section-sub" style="margin-bottom:2.5rem">כל טעות כאן נפוצה ביותר אצל סטודנטים. קראו, תעשו צ'קליסט, תמנעו.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1rem" class="reveal">
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">1</span>
+                <div>
+                    <h3 style="font-size:1rem">שאלה מנחה (Leading Question)</h3>
+                    <p>"עד כמה מצוין לדעתך הרעיון שלנו?" — ניסוח שדוחף לתשובה חיובית. ❌<br>תקנו: "כיצד היית מתאר/ת את הרלוונטיות של פתרון כזה לחיי היומיום שלך?" ✅</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">2</span>
+                <div>
+                    <h3 style="font-size:1rem">שאלה כפולה (Double-barreled)</h3>
+                    <p>"האם השירות מהיר ואמין?" — מהיר ≠ אמין, אלו שני דברים שונים. ❌<br>תקנו: שאלה על מהירות ושאלה נפרדת על אמינות. ✅</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">3</span>
+                <div>
+                    <h3 style="font-size:1rem">חוסר אפשרות "אין לי דעה" או "לא רלוונטי"</h3>
+                    <p>אם אנשים נאלצים לבחור תשובה שלא מתאימה להם, הנתונים שלכם מזוהמים. תמיד תנו מוצא.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">4</span>
+                <div>
+                    <h3 style="font-size:1rem">שאלות דמוגרפיות בהתחלה</h3>
+                    <p>שאלות על גיל, הכנסה, מגדר בתחילת הסקר מפחידות ומעייפות. שימו אותן תמיד <strong>בסוף</strong>.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">5</span>
+                <div>
+                    <h3 style="font-size:1rem">סקר ארוך מדי</h3>
+                    <p>מעל 20 שאלות = נטישה. מעל 7 דקות = נטישה. שאלו רק מה שחיוני למחקר. "nice to know" — לא שווה את הסיכון.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">6</span>
+                <div>
+                    <h3 style="font-size:1rem">ז'רגון או שפה מקצועית</h3>
+                    <p>"האם היית משתמש ב-API מבוסס RESTful?" — אם קהל היעד שלכם לא טכני, זה לא יעבוד. השתמשו בשפה של הלקוח, לא שלכם.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">7</span>
+                <div>
+                    <h3 style="font-size:1rem">היעדר שאלות סינון</h3>
+                    <p>בלי סינון, אנשים שלא שייכים לקהל היעד ממלאים את הסקר ומזהמים את הנתונים. הוסיפו 1-2 שאלות סינון בהתחלה.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">8</span>
+                <div>
+                    <h3 style="font-size:1rem">הפצה רק לחברים ומשפחה</h3>
+                    <p>הטיית קירבה (Acquaintance Bias) — הם רוצים שתצליחו ויענו בהתאם. צריך קהל בלתי תלוי.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">9</span>
+                <div>
+                    <h3 style="font-size:1rem">דילוג על פיילוט</h3>
+                    <p>שולחים ל-100 איש בלי לבדוק על 5 — ואז מגלים בעיות. ברגע שיצאתם לשטח, אין חזרה.</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+                <span style="background:#fef2f2;color:var(--rose);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0">10</span>
+                <div>
+                    <h3 style="font-size:1rem">אי-הוספת "אחר" בשאלות בחירה</h3>
+                    <p>אם לא חשבתם על כל האפשרויות (וסביר שלא) — "אחר: ________" יציל אתכם מנתונים חסרים.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 11 — TOOL COMPARISON       ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section style="background:var(--surface)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> בונוס — כלים</div>
+            <h2 class="section-title">השוואת כלים לבניית סקרים</h2>
+            <p class="section-sub" style="margin-bottom:2rem">Google Forms הוא לא האפשרות היחידה. הנה השוואה:</p>
+        </div>
+
+        <div class="reveal" style="overflow-x:auto">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>כלי</th>
+                        <th>מחיר</th>
+                        <th>חוויית משתמש</th>
+                        <th>ניתוב חכם</th>
+                        <th>מתאים ל-</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Google Forms</strong></td>
+                        <td><span class="badge badge--green">חינם</span></td>
+                        <td>בסיסית, נקייה</td>
+                        <td>ניתוב פשוט</td>
+                        <td>רוב הסטודנטים</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Typeform</strong></td>
+                        <td><span class="badge badge--amber">$25/חודש</span></td>
+                        <td>מעולה, שאלה-אחת-במסך</td>
+                        <td>חכם מאוד</td>
+                        <td>UX מושקע, אחוזי השלמה גבוהים</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SurveyMonkey</strong></td>
+                        <td><span class="badge badge--amber">$39/חודש</span></td>
+                        <td>מקצועית</td>
+                        <td>מתקדם</td>
+                        <td>מחקרים מורכבים, ארגונים</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qualtrics</strong></td>
+                        <td><span class="badge badge--purple">אקדמי/ארגוני</span></td>
+                        <td>מאוד מתקדמת</td>
+                        <td>הכי מתקדם</td>
+                        <td>מחקר אקדמי רציני</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Microsoft Forms</strong></td>
+                        <td><span class="badge badge--green">חינם (365)</span></td>
+                        <td>בסיסית</td>
+                        <td>בסיסי</td>
+                        <td>משתמשי Office 365</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tip-box tip-box--green reveal" style="margin-top:1.5rem">
+            <i class="fas fa-thumbs-up"></i>
+            <p><strong>ההמלצה שלנו:</strong> התחילו עם Google Forms. זה חינמי, פשוט, מייצא ישר ל-Sheets/Excel, וכל אחד עם חשבון Google יכול ליצור אחד. אם תרצו חוויה יפה יותר — שקלו Typeform.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║      SECTION 12 — FAQ               ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="faq" style="background:var(--surface-alt)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> שאלות נפוצות</div>
+            <h2 class="section-title">FAQ — שאלות נפוצות של סטודנטים</h2>
+            <p class="section-sub" style="margin-bottom:2rem"></p>
+        </div>
+
+        <div class="reveal">
+            <details>
+                <summary>כמה תגובות (N) אני צריך כדי שהמחקר יהיה תקף?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">המינימום הסטטיסטי למבחנים בסיסיים הוא n=30. אבל כדי לקבל תמונה מייצגת, כדאי לשאוף ל-<strong>100-150 תגובות</strong>. אם מחלקים לתת-קבוצות (למשל: השוואה בין רווקים להורים) — צריך לפחות 30 בכל קבוצה.</div>
+            </details>
+            <details>
+                <summary>איך נמנעים מהטיית אישור (Confirmation Bias)?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">ניסוח ניטרלי. במקום "עד כמה תשמח להשתמש באפליקציה שחוסכת לך כסף?" — כתבו: "כיצד אתה מתמודד כיום עם הוצאות הסופרמרקט?". תמיד הוסיפו "אני לא חווה את הבעיה הזו" או "אני מרוצה מהפתרון הקיים".</div>
+            </details>
+            <details>
+                <summary>האם חובה שאלות דמוגרפיות?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">כן, אך <strong>בסוף השאלון</strong>. שאלות על גיל, מגדר והכנסה בהתחלה יוצרות חשש ומעייפות. בסוף — המשיב כבר השקיע ופחות סביר שיינטוש. השתמשו בנתונים אלו להצלבות (האם אימהות בצפון עונות שונה מאימהות במרכז?).</div>
+            </details>
+            <details>
+                <summary>כמה שאלות פתוחות מותר לשים?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">מקסימום 1-2, ותמיד כ"לא חובה". שאלות פתוחות מורידות אחוזי השלמה ויקשו מאוד על ניתוח כמותי. שימו אותן בסוף, כהזדמנות אחרונה למשיב להוסיף משהו.</div>
+            </details>
+            <details>
+                <summary>האם Google Forms מספיק טוב למחקר אקדמי?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">בהחלט — לרוב הסקרים הסטודנטיאליים Google Forms מעולה. המגבלות העיקריות: אין אקראיות סדר שאלות (Randomization), ניתוב מוגבל לרמת סעיף, ואין ניתוח סטטיסטי מובנה. אם אלו קריטיים — שקלו Qualtrics.</div>
+            </details>
+            <details>
+                <summary>מה לעשות אם אנשים לא ממלאים?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body">שלושה דברים: (1) קצרו את הסקר — כל שאלה שאתם מסירים מגדילה אחוזי השלמה. (2) הציעו תמריץ — הגרלת שובר עובדת נהדר. (3) גוונו ערוצי הפצה — אם פייסבוק לא עובד, נסו ווטסאפ, Swappa, או לינקדאין.</div>
+            </details>
+            <details>
+                <summary>אפשר לשנות שאלות אחרי שכבר התחלתי לקבל תגובות?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body"><strong>לא מומלץ בכלל!</strong> כל שינוי בשאלות הופך את הנתונים ללא עקביים — חלק ענו על גרסה אחת וחלק על אחרת. לכן שלב הפיילוט כל כך קריטי. אם חייבים לשנות — מתחילים מאפס.</div>
+            </details>
+            <details>
+                <summary>מה ההבדל בין "בחירה מרובה" ל"תיבות סימון" ב-Google Forms?<span class="chevron"><i class="fas fa-chevron-down"></i></span></summary>
+                <div class="faq-body"><strong>בחירה מרובה (Multiple choice)</strong> = המשיב בוחר תשובה אחת בלבד (עיגול ○). <strong>תיבות סימון (Checkboxes)</strong> = המשיב יכול לסמן כמה תשובות (ריבוע ☐). בחרו לפי מה שמתאים: "מהי הסיבה העיקרית?" = בחירה מרובה. "באילו פלטפורמות אתה משתמש?" = תיבות סימון.</div>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║      SECTION 13 — CHECKLIST         ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section style="background:var(--surface)">
+    <div class="container narrow">
+        <div class="reveal">
+            <div class="section-tag"><i class="fas fa-circle"></i> לפני שמפיצים</div>
+            <h2 class="section-title">צ'קליסט סופי — ✅ ודאו שהכול מוכן</h2>
+            <p class="section-sub" style="margin-bottom:2rem">עברו על כל סעיף לפני שאתם לוחצים "שלח":</p>
+        </div>
+
+        <div class="card reveal">
+            <ul class="checklist">
+                <li><i class="fas fa-check-circle"></i> <strong>שאלת מחקר ברורה</strong> — אני יודע/ת בדיוק מה אני רוצה לגלות</li>
+                <li><i class="fas fa-check-circle"></i> <strong>שאלות סינון</strong> — רק קהל היעד ימשיך לסקר</li>
+                <li><i class="fas fa-check-circle"></i> <strong>ניסוח ניטרלי</strong> — אין שאלות מנחות או כפולות</li>
+                <li><i class="fas fa-check-circle"></i> <strong>שאלה = נושא אחד</strong> — אין שאלות double-barreled</li>
+                <li><i class="fas fa-check-circle"></i> <strong>אפשרות "אחר"</strong> — בכל שאלת בחירה</li>
+                <li><i class="fas fa-check-circle"></i> <strong>דמוגרפיה בסוף</strong> — לא בהתחלה</li>
+                <li><i class="fas fa-check-circle"></i> <strong>מקסימום 15 שאלות / 5 דקות</strong> — קצר ולעניין</li>
+                <li><i class="fas fa-check-circle"></i> <strong>מבוא ברור</strong> — מי, למה, כמה זמן, אנונימיות</li>
+                <li><i class="fas fa-check-circle"></i> <strong>חלוקה לסעיפים</strong> — לא גליל אחד ארוך</li>
+                <li><i class="fas fa-check-circle"></i> <strong>ניתוב עובד</strong> — מי שלא מתאים מועבר לעמוד תודה</li>
+                <li><i class="fas fa-check-circle"></i> <strong>שדות חובה נכונים</strong> — ליבה = חובה, דמוגרפיה = לא חובה</li>
+                <li><i class="fas fa-check-circle"></i> <strong>פיילוט הושלם</strong> — 5-10 אנשים מילאו ונתנו פידבק</li>
+                <li><i class="fas fa-check-circle"></i> <strong>בדיקה בנייד</strong> — הסקר נוח ויפה בטלפון</li>
+                <li><i class="fas fa-check-circle"></i> <strong>הודעת סיום</strong> — "תודה רבה!" מנומסת</li>
+                <li><i class="fas fa-check-circle"></i> <strong>ערוצי הפצה מתוכננים</strong> — יודע/ת לאן שולח/ת את הלינק</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION — SAMPLE QUESTIONNAIRE     ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="sample" style="background:linear-gradient(135deg,#fdf4ff,#eef2ff,#ecfeff);border-top:1px solid #d8b4fe;border-bottom:1px solid #d8b4fe;padding:5rem 0">
+    <div class="container narrow">
+        <div class="reveal" style="text-align:center;margin-bottom:3rem">
+            <div class="section-tag" style="color:#7c3aed"><i class="fas fa-circle"></i> נספח — שאלון לדוגמה מלא</div>
+            <h2 class="section-title" style="line-height:1.3">
+                <span style="font-size:.6em;display:block;font-weight:400;color:var(--text-secondary);margin-bottom:.3rem">כדי שתראו איך הכול מתחבר — הנה שאלון שלם לדוגמה בנושא:</span>
+                🌙 DreamBnB — פלטפורמה להשכרת חלומות בין אנשים
+            </h2>
+            <p style="color:var(--text-secondary);max-width:640px;margin:1rem auto 0">
+                הרעיון (הדמיוני לחלוטין): אפליקציה שמאפשרת לאנשים <strong>להעלות חלומות שחלמו</strong> ולאנשים אחרים <strong>לשכור חלום ללילה</strong> — מסוג פנטזיה, הרפתקה, נוסטלגיה, או רוגע. כן, זה הזוי. בדיוק הנקודה — כל נושא ניתן לחקור בשיטה הנכונה.
+            </p>
+            <div class="tip-box tip-box--blue" style="text-align:right;max-width:640px;margin:1.5rem auto 0">
+                <i class="fas fa-graduation-cap"></i>
+                <p>שימו לב: השאלון הזה מדגים את <strong>כל סוגי השאלות</strong> שלמדנו — סינון, ליקרט, בחירה מרובה, דירוג, נכונות לשלם, תיבות סימון, שאלה פתוחה ודמוגרפיה. בפועל, 12 שאלות מספיקות — כאן הוספנו כדי להדגים מגוון.</p>
+            </div>
+        </div>
+
+        <!-- The actual sample survey -->
+        <div class="reveal">
+            <!-- Survey Header Mock -->
+            <div style="background:var(--surface);border:2px solid #c4b5fd;border-radius:1rem;overflow:hidden;box-shadow:0 8px 30px rgba(124,58,237,.08)">
+                <!-- Purple header bar -->
+                <div style="background:linear-gradient(135deg,#7c3aed,#6d28d9);padding:2rem;color:#fff">
+                    <h3 style="font-size:1.3rem;margin-bottom:.5rem">🌙 סקר: עמדות כלפי שירות חדשני לשיתוף חוויות חלום</h3>
+                    <p style="font-size:.88rem;color:#e9d5ff;line-height:1.6">שלום! אנחנו צוות סטודנטים בקורס בינה עסקית (ד״ר שי צבאן) ובוחנים רעיון חדשני בתחום חוויות השינה. הסקר אנונימי לחלוטין, ייקח <strong style="color:#fff">2-3 דקות בלבד</strong>, ואין תשובות נכונות או לא נכונות. תודה רבה על הזמן שלכם! 🙏</p>
+                </div>
+
+                <!-- PART 1: SCREENING -->
+                <div style="padding:2rem;border-bottom:2px dashed #e2e8f0">
+                    <div style="display:inline-block;background:#f3e8ff;color:#7c3aed;font-size:.75rem;font-weight:700;padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem">חלק 1 — שאלות סינון</div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 1: באופן כללי, עד כמה אתה זוכר את החלומות שלך בבוקר? <span style="color:var(--rose);font-size:.8rem">* חובה</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.35rem 0">○ &nbsp;כמעט אף פעם — אני שוכח/ת הכול ברגע שאני קם/ה</div>
+                            <div style="padding:.35rem 0">○ &nbsp;לפעמים — יש בקרים שאני זוכר/ת שברי חלום</div>
+                            <div style="padding:.35rem 0;font-weight:600;color:#7c3aed">● &nbsp;לעיתים קרובות — אני זוכר/ת חלומות בפירוט יפה</div>
+                            <div style="padding:.35rem 0">○ &nbsp;כמעט תמיד — אני זוכר/ת חלומות כל בוקר</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> סינון — מי שענה "כמעט אף פעם" כנראה לא קהל היעד. ב-Google Forms — ניתוב לעמוד "תודה, הסקר לא מתאים לך".</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 2: האם קרה לך שרצית "לחזור" לחלום מסוים או שרצית לחלום חלום ספציפי? <span style="color:var(--rose);font-size:.8rem">* חובה</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.35rem 0;font-weight:600;color:#7c3aed">● &nbsp;כן, זה קרה לי יותר מפעם אחת</div>
+                            <div style="padding:.35rem 0">○ &nbsp;אולי פעם אחת, לא בטוח/ה</div>
+                            <div style="padding:.35rem 0">○ &nbsp;לא, מעולם</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> סינון נוסף — אימות שיש "כאב" או צורך. מי שענה "לא, מעולם" — אולי לא קהל יעד.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART 2: CURRENT BEHAVIOR -->
+                <div style="padding:2rem;border-bottom:2px dashed #e2e8f0">
+                    <div style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:.75rem;font-weight:700;padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem">חלק 2 — הרגלים נוכחיים</div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 3: כיום, כשאתה רוצה לשפר את איכות השינה או החלומות שלך — מה אתה עושה? <span style="color:var(--text-secondary);font-size:.8rem">(תיבות סימון — סמנו את כל המתאימות)</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.35rem 0">☑ &nbsp;מאזין/ה למוזיקה רגועה / מדיטציה לפני השינה</div>
+                            <div style="padding:.35rem 0">☑ &nbsp;כותב/ת ביומן חלומות</div>
+                            <div style="padding:.35rem 0">☐ &nbsp;משתמש/ת באפליקציית שינה (Calm, Headspace וכו')</div>
+                            <div style="padding:.35rem 0">☐ &nbsp;לוקח/ת תוספי מזון (מלטונין, תה קמומיל)</div>
+                            <div style="padding:.35rem 0">☐ &nbsp;לא עושה שום דבר מיוחד</div>
+                            <div style="padding:.35rem 0">☐ &nbsp;אחר: __________</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>Checkboxes</em> — הבנת ההתנהגות הנוכחית. מאפשר סימון מרובה + "אחר" ללכידת דברים שלא חשבנו עליהם.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 4: מהי הסיבה העיקרית שהיית רוצה לבחור חלום ספציפי ללילה? <span style="color:var(--text-secondary);font-size:.8rem">(בחרו תשובה אחת)</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.35rem 0">○ &nbsp;בריחה מהמציאות / הרפתקה</div>
+                            <div style="padding:.35rem 0;font-weight:600;color:#7c3aed">● &nbsp;הפגת מתחים וחרדות — חלום מרגיע</div>
+                            <div style="padding:.35rem 0">○ &nbsp;נוסטלגיה — לחזור למקומות ואנשים מהעבר</div>
+                            <div style="padding:.35rem 0">○ &nbsp;השראה יצירתית (אמנות, מוזיקה, כתיבה)</div>
+                            <div style="padding:.35rem 0">○ &nbsp;סתם כיף — חוויה בידורית</div>
+                            <div style="padding:.35rem 0">○ &nbsp;אחר: __________</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>Multiple Choice</em> — איתור ה"כאב" העיקרי. תשובה אחת בלבד כדי לאלץ תיעדוף.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART 3: ATTITUDES -->
+                <div style="padding:2rem;border-bottom:2px dashed #e2e8f0">
+                    <div style="display:inline-block;background:#fef3c7;color:#92400e;font-size:.75rem;font-weight:700;padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem">חלק 3 — עמדות כלפי הפתרון</div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 5: באיזו מידה היית מוכן/ה לנסות אפליקציה שמאפשרת לך לבחור סוג חלום מתוך קטלוג לפני שאתה הולך לישון?</p>
+                        <div class="likert-demo">
+                            <span>1<br>כלל לא</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span class="selected">4</span>
+                            <span>5<br>בהחלט</span>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>ליקרט 1-5</em> — מדידת פתיחות הלקוח לרעיון. ב-Google Forms: "סולם לינארי".</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 6: באיזו מידה חשוב לך שהחלומות באפליקציה יהיו מבוססים על חלומות אמיתיים שאנשים אחרים חלמו — ולא תוכן שנוצר ע"י AI?</p>
+                        <div class="likert-demo">
+                            <span>1<br>כלל לא חשוב</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span class="selected">5<br>מאוד חשוב</span>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>ליקרט</em> — בידוד משתנה: בדיקת חשיבות ה"אותנטיות" בנפרד משאלות אחרות.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 7: באיזו מידה מדאיג אותך שמישהו זר יוכל "לצפות" בחלומות שלך אם תעלה אותם לפלטפורמה?</p>
+                        <div class="likert-demo">
+                            <span>1<br>כלל לא מדאיג</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span class="selected">4</span>
+                            <span>5<br>מדאיג מאוד</span>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>ליקרט</em> — מדידת חסם אמון/פרטיות. קריטי ל-MVP — אם הציון גבוה, צריך להשקיע באנונימיות.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 8: דרגו את המאפיינים הבאים לפי חשיבותם בשירות כזה (1 = חשוב ביותר, 4 = פחות חשוב):</p>
+                        <div style="font-size:.88rem;margin-top:.5rem">
+                            <div style="display:flex;align-items:center;gap:.5rem;padding:.35rem 0;background:#faf5ff;border-radius:.4rem;padding:.4rem .6rem;margin-bottom:.3rem"><span style="background:#7c3aed;color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">1</span> מגוון רחב של קטגוריות חלומות</div>
+                            <div style="display:flex;align-items:center;gap:.5rem;padding:.35rem 0;padding:.4rem .6rem;margin-bottom:.3rem"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">2</span> אנונימיות מלאה של החולמים</div>
+                            <div style="display:flex;align-items:center;gap:.5rem;padding:.35rem 0;padding:.4rem .6rem;margin-bottom:.3rem"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">3</span> דירוגים וביקורות של חולמים אחרים</div>
+                            <div style="display:flex;align-items:center;gap:.5rem;padding:.35rem 0;padding:.4rem .6rem"><span style="background:#e2e8f0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">4</span> אפשרות להתאמה אישית (שנה פרטים בחלום)</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>דירוג (Ranking)</em> — מכריח את המשיב לבחור, לא רק להגיד "הכול חשוב". ב-Forms: רשת בחירה מרובה.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 9: עבור מנוי חודשי ב-DreamBnB המאפשר גישה לקטלוג בלתי מוגבל של חלומות — איזה משפט מתאר הכי טוב את תחושתך?</p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9">○ &nbsp;19.90 ₪/חודש — מחיר מצוין, אירשם מיד</div>
+                            <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9;font-weight:600;color:#7c3aed">● &nbsp;39.90 ₪/חודש — קצת יקר, אבל שווה ניסיון</div>
+                            <div style="padding:.4rem 0;border-bottom:1px solid #f1f5f9">○ &nbsp;59.90 ₪/חודש — יקר מדי, לא אשלם על זה</div>
+                            <div style="padding:.4rem 0">○ &nbsp;בשום מחיר — אני לא מוכן/ה לשלם עבור שירות כזה</div>
+                        </div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>נכונות לשלם (WTP)</em> — שימו לב שיש גם אפשרות "בשום מחיר" — חובה לאפשר סירוב!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART 4: OPEN + DEMOGRAPHICS -->
+                <div style="padding:2rem">
+                    <div style="display:inline-block;background:#dcfce7;color:#166534;font-size:.75rem;font-weight:700;padding:.3rem .8rem;border-radius:100px;margin-bottom:1rem">חלק 4 — שאלה פתוחה + דמוגרפיה</div>
+
+                    <div style="margin-bottom:1.8rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 10: האם יש משהו נוסף שתרצה לשתף אותנו לגבי חוויות השינה והחלומות שלך? <span style="color:var(--text-secondary);font-size:.8rem">(לא חובה)</span></p>
+                        <div style="height:3.5rem;background:#f8fafc;border:1px solid #d1d5db;border-radius:.5rem;margin-top:.4rem"></div>
+                        <div class="tip-box tip-box--green" style="margin-top:.6rem;padding:.6rem .8rem;font-size:.78rem">
+                            <i class="fas fa-arrow-left"></i>
+                            <p><strong>מטרה:</strong> <em>שאלה פתוחה</em> — לא חובה, בסוף, מגלה תובנות שלא חשבנו עליהן.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 11: מה הגיל שלך? <span style="color:var(--text-secondary);font-size:.8rem">(לא חובה)</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <span style="display:inline-block;padding:.2rem .6rem;border:1px solid #e2e8f0;border-radius:.3rem;margin-left:.3rem;margin-bottom:.3rem">18-24</span>
+                            <span style="display:inline-block;padding:.2rem .6rem;border:1px solid #e2e8f0;border-radius:.3rem;margin-left:.3rem;margin-bottom:.3rem">25-34</span>
+                            <span style="display:inline-block;padding:.2rem .6rem;border:1px solid #c4b5fd;border-radius:.3rem;background:#f5f3ff;margin-left:.3rem;margin-bottom:.3rem;font-weight:600;color:#7c3aed">35-44</span>
+                            <span style="display:inline-block;padding:.2rem .6rem;border:1px solid #e2e8f0;border-radius:.3rem;margin-left:.3rem;margin-bottom:.3rem">45-54</span>
+                            <span style="display:inline-block;padding:.2rem .6rem;border:1px solid #e2e8f0;border-radius:.3rem;margin-bottom:.3rem">55+</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem">
+                        <p style="font-weight:700;margin-bottom:.5rem;font-size:.95rem">שאלה 12: מגדר <span style="color:var(--text-secondary);font-size:.8rem">(לא חובה)</span></p>
+                        <div style="font-size:.88rem;color:var(--text-secondary)">
+                            <div style="padding:.25rem 0">○ &nbsp;זכר</div>
+                            <div style="padding:.25rem 0">○ &nbsp;נקבה</div>
+                            <div style="padding:.25rem 0">○ &nbsp;אחר / מעדיף/ה לא לציין</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box tip-box--green" style="padding:.6rem .8rem;font-size:.78rem">
+                        <i class="fas fa-arrow-left"></i>
+                        <p><strong>מטרה:</strong> <em>דמוגרפיה</em> — תמיד בסוף, תמיד "לא חובה". ישמשו להצלבות (האם צעירים פתוחים יותר מבוגרים?).</p>
+                    </div>
+
+                    <!-- Thank you -->
+                    <div style="text-align:center;margin-top:2rem;padding:1.5rem;background:#f5f3ff;border-radius:.75rem;border:1px solid #e9d5ff">
+                        <p style="font-size:1.1rem;font-weight:700;color:#7c3aed;margin-bottom:.3rem">🙏 תודה רבה שהקדשתם מזמנכם!</p>
+                        <p style="font-size:.88rem;color:var(--text-secondary)">התשובות שלכם תורמות לפרויקט הלימודי שלנו. חלומות מתוקים! 🌙</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary annotation -->
+            <div class="tip-box tip-box--blue" style="margin-top:2rem">
+                <i class="fas fa-clipboard-check"></i>
+                <p><strong>סיכום מבנה השאלון לדוגמה:</strong> 2 שאלות סינון → 2 שאלות הרגלים (Checkboxes + MC) → 3 שאלות ליקרט → 1 דירוג → 1 WTP → 1 שאלה פתוחה → 2 דמוגרפיה. סה"כ 12 שאלות, ~3 דקות. מושלם. עכשיו קחו את המבנה הזה והחליפו את DreamBnB בנושא <em>שלכם</em>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║            FOOTER                   ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<footer>
+    <div class="container">
+        <p style="margin-bottom:.5rem"><i class="fas fa-flask" style="color:var(--brand-primary);margin-left:.4rem"></i> מאינטואיציה לנתונים — מחקר כמותי בניהול מוצר</p>
+        <p style="margin-bottom:.3rem">קורס <strong>בינה עסקית (Business Intelligence)</strong> | ד״ר שי צבאן</p>
+        <p style="font-size:.82rem">זכרו: נתונים גרועים גרועים יותר מחוסר נתונים כלל. הקפידו על בנייה נכונה.</p>
+    </div>
+</footer>
+
+<!-- Scroll reveal script -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Reveal on scroll
+    const reveals = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) { e.target.classList.add("active"); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    reveals.forEach(function(r) { io.observe(r); });
+
+    // Side nav active state
+    const sections = document.querySelectorAll("section[id], header[id]");
+    const navLinks = document.querySelectorAll(".side-nav a");
+    const sio = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) {
+                navLinks.forEach(function(l) { l.classList.remove("active"); });
+                var link = document.querySelector('.side-nav a[href="#' + e.target.id + '"]');
+                if (link) link.classList.add("active");
+            }
+        });
+    }, { threshold: 0.3 });
+    sections.forEach(function(s) { sio.observe(s); });
+});
+</script>
+</body>
+</html>
