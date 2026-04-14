@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מאפס לשאלון מושלם — מערך שיעור מלא</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --surface-alt: #F3F1EB;
+  --primary: #1B6B4A;
+  --primary-light: #E8F5EE;
+  --primary-dark: #0F4A31;
+  --accent: #D97706;
+  --accent-light: #FEF3C7;
+  --danger: #DC2626;
+  --danger-light: #FEE2E2;
+  --text: #1A1A1A;
+  --text-muted: #6B7280;
+  --border: #E5E2DA;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 17px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(160deg, #0F4A31 0%, #1B6B4A 40%, #2D8B63 100%);
+  color: #fff;
+  padding: 80px 24px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.05) 0%, transparent 50%);
+}
+.hero h1 {
+  font-family: 'Rubik', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  position: relative;
+}
+.hero .subtitle {
+  font-size: 1.15rem;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto 28px;
+  font-weight: 300;
+  line-height: 1.8;
+}
+.hero .badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 6px 18px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ===== PHASE HEADER ===== */
+.phase-header {
+  margin: 64px 0 32px;
+  padding: 32px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-right: 5px solid var(--primary);
+  box-shadow: var(--shadow);
+}
+.phase-header .phase-num {
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.phase-header h2 {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 8px;
+}
+.phase-header .phase-goal {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.phase-header .time-badge {
+  display: inline-block;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* ===== STEP CARD ===== */
+.step {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.step h3 {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.step p, .step li {
+  margin-bottom: 8px;
+}
+
+/* ===== RULE BOX ===== */
+.rule-box {
+  background: var(--primary-light);
+  border-right: 4px solid var(--primary);
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+  font-weight: 500;
+}
+.rule-box .rule-title {
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+/* ===== WARN BOX ===== */
+.warn-box {
+  background: var(--danger-light);
+  border-right: 4px solid var(--danger);
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+}
+.warn-box .warn-title {
+  font-weight: 700;
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+/* ===== TIP BOX ===== */
+.tip-box {
+  background: var(--accent-light);
+  border-right: 4px solid var(--accent);
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+}
+.tip-box .tip-title {
+  font-weight: 700;
+  color: #92400E;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+/* ===== EXAMPLE BOXES ===== */
+.example-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 600px) {
+  .example-pair { grid-template-columns: 1fr; }
+}
+.example-good, .example-bad {
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+}
+.example-good {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+}
+.example-good::before {
+  content: '✅ כן — ';
+  font-weight: 700;
+  color: #059669;
+}
+.example-bad {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+.example-bad::before {
+  content: '❌ לא — ';
+  font-weight: 700;
+  color: #DC2626;
+}
+
+/* ===== PLAYGROUND ===== */
+.playground {
+  background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+  border: 2px dashed var(--primary);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 20px 0;
+}
+.playground .pg-title {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+.playground .pg-title::before {
+  content: '🎯 ';
+}
+.playground textarea {
+  width: 100%;
+  min-height: 90px;
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.95rem;
+  resize: vertical;
+  margin-top: 8px;
+  background: #fff;
+  direction: rtl;
+}
+.playground textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(27,107,74,0.12);
+}
+
+/* ===== QUIZ ===== */
+.quiz {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 24px 0;
+}
+.quiz .quiz-title {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 14px;
+  color: var(--primary-dark);
+}
+.quiz .quiz-title::before {
+  content: '🧠 ';
+}
+.quiz-option {
+  display: block;
+  background: var(--surface-alt);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+.quiz-option:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.quiz-option.correct {
+  border-color: #059669;
+  background: #ECFDF5;
+}
+.quiz-option.wrong {
+  border-color: #DC2626;
+  background: #FEF2F2;
+  opacity: 0.7;
+}
+.quiz-feedback {
+  display: none;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+}
+.quiz-feedback.wrong-fb {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+/* ===== ACTIVITY ===== */
+.activity {
+  background: linear-gradient(135deg, #FEF9EE 0%, #FFFBEB 100%);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 24px 0;
+}
+.activity .act-title {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  color: #92400E;
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+.activity .act-title::before {
+  content: '👥 ';
+}
+.activity ol, .activity ul {
+  padding-right: 24px;
+}
+
+/* ===== REVEAL ===== */
+.reveal-btn {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+.reveal-btn:hover { background: var(--primary-dark); }
+.reveal-content {
+  display: none;
+  margin-top: 14px;
+  padding: 16px 20px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.reveal-content.show { display: block; }
+
+/* ===== TABLE ===== */
+.clean-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.92rem;
+}
+.clean-table th {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 2px solid var(--primary);
+}
+.clean-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.clean-table tr:hover td {
+  background: var(--surface-alt);
+}
+
+/* ===== CHECKLIST ===== */
+.checklist {
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin: 24px 0;
+}
+.checklist h3 {
+  font-family: 'Rubik', sans-serif;
+  color: var(--primary-dark);
+  margin-bottom: 14px;
+}
+.checklist label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.checklist label:last-child { border-bottom: none; }
+.checklist input[type="checkbox"] {
+  margin-top: 5px;
+  accent-color: var(--primary);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ===== BI CONNECTION ===== */
+.bi-link {
+  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  border-right: 4px solid #4F46E5;
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 16px 0;
+  font-size: 0.92rem;
+}
+.bi-link .bi-title {
+  font-weight: 700;
+  color: #3730A3;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+.bi-link .bi-title::before {
+  content: '📊 ';
+}
+
+/* ===== COUNTER ===== */
+.step-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  direction: ltr;
+}
+.flow-item {
+  background: var(--primary-light);
+  border: 1px solid #A7F3D0;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--primary-dark);
+  white-space: nowrap;
+}
+.flow-arrow {
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  margin-top: 64px;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary);
+  z-index: 1000;
+  transition: width 0.15s;
+  width: 0%;
+}
+
+/* ===== NUMBER HIGHLIGHT ===== */
+.num-hl {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 24px;
+  margin-left: 6px;
+}
+
+strong { font-weight: 600; }
+em { font-style: normal; color: var(--primary-dark); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <h1>🎯 מאפס לשאלון מושלם</h1>
+  <p class="subtitle">
+    מערך שיעור מלא ומעשי — בסיום השיעור תדעו לבנות שאלון מחקר כמותי מקצועי בעצמכם,
+    גם אם מעולם לא בניתם אחד. כל שלב קטן, פשוט, עם תרגול מיידי.
+  </p>
+  <span class="badge">קורס בינה עסקית — ד״ר שי צבאן</span>
+</header>
+
+<div class="container">
+
+<!-- ==================== מבוא: למה אנחנו כאן ==================== -->
+<div class="phase-header">
+  <div class="phase-num">פתיחה</div>
+  <h2>רגע לפני שמתחילים — למה אנחנו כאן?</h2>
+  <p class="phase-goal">הבנת הרציונל: למה בעולם הבינה העסקית צריך לדעת לבנות שאלון</p>
+  <span class="time-badge">⏱ 5 דקות</span>
+</div>
+
+<div class="step">
+  <h3>הבעיה: לא תמיד יש לנו נתונים</h3>
+  <p>
+    בעולם הבינה העסקית יש שני סוגים של נתונים. הסוג הראשון — <strong>נתונים אמפיריים</strong> — מגיע ממערכות של הארגון: לקוח קנה משהו? המערכת רשמה. משתמש לחץ על כפתור? המערכת רשמה.
+  </p>
+  <p>
+    אבל מה קורה כשאנחנו <strong>בונים מוצר חדש</strong> ואין לנו מערכת? אין לקוחות, אין נתוני מכירות, אין כלום. המערכת לא יכולה לרשום דבר שלא קיים עדיין.
+  </p>
+
+  <div class="rule-box">
+    <div class="rule-title">⚡ הכלל הפשוט</div>
+    כשאין לך נתונים — אתה יוצר אותם בעצמך באמצעות <strong>שאלון מחקר כמותי</strong>.
+  </div>
+</div>
+
+<div class="step">
+  <h3>מה זה "מחקר כמותי"?</h3>
+  <p>
+    <strong>כמותי (Quantitative)</strong> = שואלים הרבה אנשים שאלות סגורות (מספרים, דירוגים, בחירות). התוצאה: טבלה עם מספרים שאפשר לנתח.
+  </p>
+  <p>
+    <strong>איכותני (Qualitative)</strong> = שואלים מעט אנשים שאלות פתוחות (ראיונות). התוצאה: הבנה עמוקה, אבל קשה למדוד. <em>לא זה המיקוד שלנו היום.</em>
+  </p>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת הבנה — בדקו את עצמכם</div>
+  <p style="margin-bottom:12px">אתם מפתחים אפליקציה חדשה לשיתוף חניות. רוצים לדעת כמה אנשים מוכנים לשלם עבורה. מאיפה תביאו את הנתון הזה?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q0')">שאלון מחקר כמותי — כי עדיין אין מערכת שאוספת נתונים</div>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q0')">מערכת הקופה של החברה — כי זה נתון אמפירי</div>
+  <div class="quiz-feedback correct-fb" id="q0-correct">מדויק! אין לנו עדיין מערכת ולקוחות, אז אנחנו חייבים ליצור את הנתונים בעצמנו דרך שאלון.</div>
+  <div class="quiz-feedback wrong-fb" id="q0-wrong">לא בדיוק. אין לנו מערכת — האפליקציה עוד לא קיימת. אנחנו חייבים לצאת ולשאול אנשים בעצמנו.</div>
+</div>
+
+
+<!-- ==================== שלב 1: שאלת המחקר ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 1 מתוך 7</div>
+  <h2>מה אני בכלל רוצה לגלות?</h2>
+  <p class="phase-goal">הגדרת שאלות מחקר — לפני שבונים שאלון, חייבים לדעת מה רוצים לגלות</p>
+  <span class="time-badge">⏱ 10 דקות</span>
+</div>
+
+<div class="step">
+  <h3>הכלל הראשון: שאלון בלי מטרה = בזבוז זמן</h3>
+  <p>
+    לפני שכותבים שאלה אחת, חייבים לענות לעצמכם: <strong>מה אני חייב/ה לדעת כדי שהמוצר שלי יצליח?</strong>
+  </p>
+  <p>כתבו 2–4 שאלות מחקר. כל שאלה צריכה להיות משהו שאם תגלו את התשובה — זה ישנה את מה שתבנו.</p>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    שאלת מחקר טובה = "איזה נתון, אם אגלה אותו, ישנה את כל האפיון שלי?"
+  </div>
+
+  <p>דוגמאות לשאלות מחקר:</p>
+  <ul style="padding-right:24px;">
+    <li>האם קיימת נכונות לשלם עבור שירות חניות P2P?</li>
+    <li>מהו הפיצ'ר הקריטי ביותר לאימהות שמחפשות בייביסיטר?</li>
+    <li>מהו החסם המרכזי שמונע מאנשי HR לאמץ כלי חדש?</li>
+  </ul>
+</div>
+
+<div class="playground">
+  <div class="pg-title">התנסות — כתבו את שאלות המחקר שלכם</div>
+  <p>חשבו על הפרויקט / המוצר שלכם וכתבו 2–4 שאלות מחקר:</p>
+  <textarea placeholder="דוגמה: האם סטודנטים מוכנים לשלם עבור אפליקציה שעוזרת למצוא שותף ללימודים? ..."></textarea>
+</div>
+
+<div class="bi-link">
+  <div class="bi-title">קישור ל-BI — למה זה חשוב לניתוח?</div>
+  שאלות המחקר שלכם יהפכו בסוף ל<strong>מדדים (Measures)</strong> שתנתחו בדשבורד — ממוצעי נכונות לשלם, דירוגי חשיבות פיצ'רים. בלי שאלות ברורות — אין מה לנתח.
+</div>
+
+
+<!-- ==================== שלב 2: הפילוסופיה ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 2 מתוך 7</div>
+  <h2>4 כללי זהב לשאלות טובות</h2>
+  <p class="phase-goal">חשיבה נכונה — איך שואלים כדי לקבל תשובות אמיתיות ולא תשובות שנעים לשמוע</p>
+  <span class="time-badge">⏱ 15 דקות</span>
+</div>
+
+<!-- כלל 1 -->
+<div class="step">
+  <h3><span class="step-counter">1</span> שאלו על העבר — לא על העתיד</h3>
+  <p>אנשים גרועים בלנבא מה הם יעשו. הם מצוינים לתאר מה הם כבר עשו.</p>
+
+  <div class="example-pair">
+    <div class="example-good">"כמה פעמים בחודש האחרון חיפשת חניה?"</div>
+    <div class="example-bad">"האם תשתמש באפליקציית חניה?"</div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    במקום "האם היית..." — שאלו "מתי בפעם האחרונה..."
+  </div>
+</div>
+
+<!-- כלל 2 -->
+<div class="step">
+  <h3><span class="step-counter">2</span> שאלה אחת = נושא אחד</h3>
+  <p>אם שאלתם "האם השירות מהיר ואמין?" — ומישהו ענה "לא" — מה לא? לא מהיר? לא אמין? שניהם? אין לכם מושג.</p>
+
+  <div class="example-pair">
+    <div class="example-good">שאלה 1: "עד כמה השירות מהיר?" שאלה 2: "עד כמה השירות אמין?"</div>
+    <div class="example-bad">"האם השירות מהיר ואמין?"</div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    אם יש "ו" / "וגם" באמצע השאלה — פצלו לשתי שאלות נפרדות.
+  </div>
+</div>
+
+<!-- כלל 3 -->
+<div class="step">
+  <h3><span class="step-counter">3</span> ניסוח ניטרלי — בלי לדחוף לתשובה</h3>
+  <p>"עד כמה מצוין הרעיון שלנו?" — זו שאלה מנחה. אתם כבר אומרים שזה מצוין.</p>
+
+  <div class="example-pair">
+    <div class="example-good">"כיצד היית מתאר את הרלוונטיות של פתרון כזה לחייך?"</div>
+    <div class="example-bad">"עד כמה מצוין לדעתך הרעיון שלנו?"</div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    אם השאלה שלכם כבר "רומזת" לתשובה — שנו את הניסוח.
+  </div>
+</div>
+
+<!-- כלל 4 -->
+<div class="step">
+  <h3><span class="step-counter">4</span> שאלות סינון — רק מי שרלוונטי ייכנס</h3>
+  <p>אם המוצר שלכם לבעלי כלבים — אין טעם שמי שאין לו כלב ימלא את הסקר. השאלה הראשונה חייבת לסנן.</p>
+
+  <div class="example-pair">
+    <div class="example-good">"האם יש לך כלב?" → מי שענה "לא" → עמוד "תודה, הסקר לא מתאים לך"</div>
+    <div class="example-bad">שום סינון — כל אחד ממלא, והנתונים מלוכלכים</div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    1–2 שאלות סינון בהתחלה. מי שלא מתאים — מנותב החוצה אוטומטית.
+  </div>
+</div>
+
+<div class="activity">
+  <div class="act-title">הפעלה בכיתה — "מצא את הבאג בשאלה"</div>
+  <p>לכל זוג ניתנת שאלה "גרועה". המשימה: זהו מה הבעיה ותקנו אותה. 3 דקות עבודה, ואז שיתוף.</p>
+  <ol style="padding-right:24px;margin-top:10px;">
+    <li>"האם אתה אוהב אוכל בריא וטעים?" → <em>מהי הבעיה?</em></li>
+    <li>"עד כמה תשמח להשתמש באפליקציה שתחסוך לך כסף?" → <em>מהי הבעיה?</em></li>
+    <li>"מה דעתך על הפלטפורמה?" (בלי שאלות סינון לפני) → <em>מהי הבעיה?</em></li>
+  </ol>
+  <button class="reveal-btn" onclick="toggleReveal('fix-reveal')">הצג תשובות</button>
+  <div class="reveal-content" id="fix-reveal">
+    <p><strong>1.</strong> שאלה כפולה — "בריא" ו"טעים" הם שני דברים. פצלו לשתי שאלות.</p>
+    <p><strong>2.</strong> שאלה מנחה — "תשמח" ו"תחסוך" כבר מניחים שזה טוב. נסחו ניטרלית: "כיצד אתה מתמודד היום עם הוצאות הסופרמרקט?"</p>
+    <p><strong>3.</strong> חסר סינון — צריך לוודא שהמשיב רלוונטי לפני שמבקשים דעה.</p>
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת הבנה — זהו את הבעיה</div>
+  <p style="margin-bottom:12px">השאלה הבאה מופיעה בסקר: "עד כמה היית סומך על מישהו באינטרנט ומוכן לשלם לו?" — מה הבעיה?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q1')">שאלה מנחה</div>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q1')">שאלה כפולה (Double-barreled) — אמון ותשלום הם שני נושאים</div>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q1')">חסר שאלת סינון</div>
+  <div class="quiz-feedback correct-fb" id="q1-correct">מדויק! "סומך" ו"מוכן לשלם" הם שני דברים שונים. צריך לפצל לשתי שאלות נפרדות.</div>
+  <div class="quiz-feedback wrong-fb" id="q1-wrong">לא בדיוק. הבעיה העיקרית כאן היא שמערבבים שני נושאים שונים (אמון + תשלום) בשאלה אחת.</div>
+</div>
+
+
+<!-- ==================== שלב 3: סוגי שאלות ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 3 מתוך 7</div>
+  <h2>ארגז הכלים — 6 סוגי שאלות (ותו לא)</h2>
+  <p class="phase-goal">הכרת כל סוג שאלה, מתי להשתמש בו, ואיך הוא נראה ב-Google Forms</p>
+  <span class="time-badge">⏱ 20 דקות</span>
+</div>
+
+<!-- ליקרט -->
+<div class="step">
+  <h3>🔵 סוג 1: סולם ליקרט (Likert Scale)</h3>
+  <p><strong>מה זה:</strong> דירוג על סולם, בדרך כלל 1 עד 5. מודד עוצמת עמדה — "עד כמה אתה מסכים?"</p>
+  <p><strong>מתי להשתמש:</strong> כשרוצים למדוד כמה חזק מישהו מרגיש לגבי משהו.</p>
+  <p><strong>דוגמה:</strong> "באיזו מידה אתה מרוצה מחוויית המשלוחים שלך?"</p>
+  <p style="text-align:center;margin:12px 0;font-size:1.1rem;letter-spacing:2px;">
+    ① כלל לא &nbsp; ② &nbsp; ③ &nbsp; ④ &nbsp; ⑤ מאוד
+  </p>
+  <p><strong>ב-Google Forms:</strong> בחרו "סולם לינארי" (Linear Scale), הגדירו 1 עד 5, רשמו תוויות לקצוות.</p>
+
+  <div class="bi-link">
+    <div class="bi-title">קישור ל-BI</div>
+    ליקרט מייצר <strong>מדד (Measure)</strong> — מספר שאפשר לחשב עליו ממוצע, סטיית תקן ולבנות גרפים ב-Tableau.
+  </div>
+</div>
+
+<!-- בחירה מרובה -->
+<div class="step">
+  <h3>🟡 סוג 2: בחירה מרובה (Multiple Choice)</h3>
+  <p><strong>מה זה:</strong> המשיב בוחר תשובה אחת מתוך רשימה (עיגולים ○).</p>
+  <p><strong>מתי להשתמש:</strong> כשרוצים לדעת מה הסיבה העיקרית / מה הדבר החשוב ביותר.</p>
+  <p><strong>דוגמה:</strong> "מהי הסיבה העיקרית שמונעת ממך לתעד משימות ביומן?"</p>
+
+  <div class="warn-box">
+    <div class="warn-title">⚠️ אל תשכחו</div>
+    תמיד הוסיפו אפשרות "אחר: ____" — אתם לא יכולים לחשוב על הכל.
+  </div>
+</div>
+
+<!-- תיבות סימון -->
+<div class="step">
+  <h3>🟢 סוג 3: תיבות סימון (Checkboxes)</h3>
+  <p><strong>מה זה:</strong> המשיב יכול לסמן כמה תשובות (ריבועים ☐). ההבדל מבחירה מרובה: שם בוחרים רק אחת.</p>
+  <p><strong>מתי להשתמש:</strong> כשרוצים לדעת את כל האפשרויות שמתאימות, לא רק אחת.</p>
+  <p><strong>דוגמה:</strong> "באילו פלטפורמות אתה מחפש שירותי בית כיום? (סמנו את כל המתאימות)"</p>
+</div>
+
+<!-- דירוג -->
+<div class="step">
+  <h3>🟠 סוג 4: דירוג עדיפויות (Ranking)</h3>
+  <p><strong>מה זה:</strong> המשיב מדרג פריטים לפי חשיבות (1 = חשוב ביותר).</p>
+  <p><strong>מתי להשתמש:</strong> כשרוצים לדעת מה חשוב יותר ממה. לא "האם זה טוב?" — אלא "על מה תוותר?"</p>
+  <p><strong>ב-Google Forms:</strong> אין דירוג גרירה. הפתרון: "רשת בחירה מרובה" (Multiple Choice Grid), שורות = פריטים, עמודות = 1 עד 4.</p>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 למה דירוג ולא ליקרט?</div>
+    אם תשאלו "עד כמה חשוב X?" בליקרט — כולם יגידו 5. דירוג מכריח לבחור מה חשוב <em>יותר</em>.
+  </div>
+</div>
+
+<!-- נכונות לשלם -->
+<div class="step">
+  <h3>🔴 סוג 5: נכונות לשלם (Willingness to Pay)</h3>
+  <p><strong>מה זה:</strong> במקום לשאול "כמה תשלם?" (תשובה לא אמינה), מציגים <strong>תרחישים עם מחירים</strong>.</p>
+  <p><strong>דוגמה:</strong></p>
+  <div style="background:var(--surface-alt);padding:14px 18px;border-radius:var(--radius-sm);margin:10px 0;font-size:0.95rem;">
+    עבור מנוי חודשי של חניה שמורה:<br>
+    ○ 29 ₪/חודש — מחיר מצוין, אשלם בשמחה<br>
+    ○ 59 ₪/חודש — יקר, אבל שווה<br>
+    ○ 99 ₪/חודש — יקר מדי, לא אשלם<br>
+    ○ בשום מחיר — לא מוכן/ה לשלם על זה
+  </div>
+
+  <div class="warn-box">
+    <div class="warn-title">⚠️ חובה</div>
+    תמיד הוסיפו אפשרות "בשום מחיר" — אנשים חייבים להיות מסוגלים לסרב.
+  </div>
+</div>
+
+<!-- שאלה פתוחה -->
+<div class="step">
+  <h3>⚪ סוג 6: שאלה פתוחה</h3>
+  <p><strong>מה זה:</strong> המשיב כותב תשובה חופשית.</p>
+  <p><strong>מתי להשתמש:</strong> מקסימום 1–2 בסקר כולו, תמיד בסוף, תמיד "לא חובה". שאלות פתוחות קשות לניתוח כמותי ומורידות אחוזי השלמה.</p>
+  <p><strong>דוגמה:</strong> "האם יש משהו נוסף שתרצה לשתף אותנו?"</p>
+</div>
+
+<!-- טבלת סיכום -->
+<div class="step">
+  <h3>סיכום מהיר — מתי משתמשים במה</h3>
+  <table class="clean-table">
+    <thead>
+      <tr><th>סוג שאלה</th><th>מטרה</th><th>סוג ב-Google Forms</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ליקרט (1–5)</td><td>עוצמת עמדה / רגש</td><td>סולם לינארי</td></tr>
+      <tr><td>בחירה מרובה</td><td>הסיבה העיקרית / בחירה אחת</td><td>Multiple Choice</td></tr>
+      <tr><td>תיבות סימון</td><td>כל מה שמתאים (כמה תשובות)</td><td>Checkboxes</td></tr>
+      <tr><td>דירוג</td><td>תיעדוף — מה חשוב יותר ממה</td><td>Multiple Choice Grid</td></tr>
+      <tr><td>נכונות לשלם</td><td>תמחור / מודל עסקי</td><td>Multiple Choice (עם תרחישים)</td></tr>
+      <tr><td>שאלה פתוחה</td><td>תובנות לא צפויות</td><td>Paragraph (לא חובה!)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="playground">
+  <div class="pg-title">התנסות — התאמת סוג שאלה למטרה</div>
+  <p>לכל אחת מהמטרות הבאות, כתבו איזה סוג שאלה תשתמשו בו ולמה:</p>
+  <p style="margin:8px 0"><strong>א.</strong> אני רוצה לדעת עד כמה אנשים מרוצים מהשירות הנוכחי:</p>
+  <textarea rows="2" placeholder="סוג: ליקרט, כי..."></textarea>
+  <p style="margin:8px 0"><strong>ב.</strong> אני רוצה לדעת באילו פלטפורמות אנשים מחפשים מוצרים דומים:</p>
+  <textarea rows="2" placeholder="סוג: ..."></textarea>
+  <p style="margin:8px 0"><strong>ג.</strong> אני רוצה לדעת מה הפיצ'ר הכי חשוב מתוך 4 אפשרויות:</p>
+  <textarea rows="2" placeholder="סוג: ..."></textarea>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת הבנה — בחירה מרובה vs תיבות סימון</div>
+  <p style="margin-bottom:12px">מה ההבדל בין "בחירה מרובה" ל"תיבות סימון" ב-Google Forms?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q2')">אין הבדל, שניהם אותו דבר</div>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q2')">בחירה מרובה = תשובה אחת בלבד. תיבות סימון = אפשר לסמן כמה תשובות</div>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q2')">תיבות סימון מתאימות רק לשאלות דמוגרפיות</div>
+  <div class="quiz-feedback correct-fb" id="q2-correct">נכון! ○ עיגול = אחת בלבד. ☐ ריבוע = כמה שרוצים.</div>
+  <div class="quiz-feedback wrong-fb" id="q2-wrong">לא. ההבדל המרכזי: בחירה מרובה (○) = תשובה אחת. תיבות סימון (☐) = כמה תשובות.</div>
+</div>
+
+
+<!-- ==================== שלב 4: מבנה השאלון ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 4 מתוך 7</div>
+  <h2>מבנה השאלון — 4 חלקים בסדר הנכון</h2>
+  <p class="phase-goal">איך מסדרים את השאלות כדי שאנשים ימלאו עד הסוף ולא יברחו באמצע</p>
+  <span class="time-badge">⏱ 15 דקות</span>
+</div>
+
+<div class="step">
+  <h3>הסדר חשוב — והנה הנוסחה</h3>
+
+  <div class="flow">
+    <div class="flow-item">👋 מבוא</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">🔍 סינון</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">📋 חוויה נוכחית</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">💡 עמדות כלפי הפתרון</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">👤 דמוגרפיה</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">🙏 תודה</div>
+  </div>
+</div>
+
+<div class="step">
+  <h3>חלק 1: מבוא — מי אתם ולמה</h3>
+  <p>בלי מבוא, אנשים לא סומכים ולא ממלאים. המבוא חייב לכלול:</p>
+  <ul style="padding-right:24px;">
+    <li>מי אתם (סטודנטים בקורס X)</li>
+    <li>למה אתם שואלים</li>
+    <li>כמה זמן זה ייקח ("2–3 דקות בלבד")</li>
+    <li>הבטחה לאנונימיות</li>
+  </ul>
+
+  <div style="background:var(--surface-alt);padding:16px 20px;border-radius:var(--radius-sm);margin:12px 0;border:1px solid var(--border);">
+    <strong>📋 דוגמה למבוא:</strong><br>
+    "שלום! אנחנו סטודנטים בקורס בינה עסקית ובוחנים פתרון חדשני ל[תחום]. הסקר אנונימי לחלוטין ויימשך כ-3 דקות. תודה רבה!"
+  </div>
+</div>
+
+<div class="step">
+  <h3>חלק 2: שאלות סינון (1–2 שאלות)</h3>
+  <p>מטרה: לוודא שרק קהל היעד ממשיך. מי שלא מתאים — עמוד "תודה, הסקר לא מתאים לך".</p>
+
+  <div class="bi-link">
+    <div class="bi-title">קישור ל-BI</div>
+    שאלות הסינון יהפכו ל<strong>ממדים (Dimensions)</strong> בדשבורד — תוכלו לסנן ולפלח את הנתונים לפי תשובות הסינון.
+  </div>
+</div>
+
+<div class="step">
+  <h3>חלק 3: חוויה נוכחית + עמדות כלפי הפתרון</h3>
+  <p>כאן נכנסות רוב השאלות — ליקרט, בחירה מרובה, דירוג, נכונות לשלם. חלקו ל:</p>
+  <ul style="padding-right:24px;">
+    <li><strong>שאלות התנהגותיות:</strong> איך אתה מתמודד היום? (תיבות סימון / בחירה מרובה)</li>
+    <li><strong>שאלות פסיכוגרפיות:</strong> מה מניע אותך? מה חשוב לך? (ליקרט / דירוג)</li>
+    <li><strong>עמדות כלפי הפתרון:</strong> נכונות לשלם, חששות, ציפיות (ליקרט / WTP)</li>
+  </ul>
+
+  <div class="bi-link">
+    <div class="bi-title">קישור ל-BI</div>
+    שאלות ליקרט (1–5) יהפכו ל<strong>מדדים (Measures)</strong> — מספרים שאפשר לחשב עליהם ממוצע, סטיית תקן, ולהריץ רגרסיות. שאלות בחירה יהפכו ל<strong>ממדים (Dimensions)</strong> לפילוח.
+  </div>
+</div>
+
+<div class="step">
+  <h3>חלק 4: דמוגרפיה — תמיד בסוף!</h3>
+  <p>גיל, מגדר, מיקום, השכלה. תמיד בסוף (כדי לא להפחיד), תמיד "לא חובה".</p>
+
+  <div class="warn-box">
+    <div class="warn-title">⚠️ טעות קלאסית</div>
+    שמים דמוגרפיה בהתחלה → אנשים מפחדים / מתעייפים → נוטשים לפני השאלות החשובות.
+  </div>
+</div>
+
+<div class="step">
+  <h3>3 כללים על אורך וסדר</h3>
+  <div class="rule-box">
+    <div class="rule-title">📏 כלל 1 — מקסימום 15 שאלות / 5 דקות</div>
+    כל שאלה ≈ 20 שניות. מעבר ל-15 שאלות → נטישה קופצת דרמטית.
+  </div>
+  <div class="rule-box">
+    <div class="rule-title">📏 כלל 2 — מהקל לכבד</div>
+    התחילו בשאלות סגורות קלות. שאלות רגישות (הכנסה, גיל) → בסוף.
+  </div>
+  <div class="rule-box">
+    <div class="rule-title">📏 כלל 3 — חלוקה לעמודים (סעיפים)</div>
+    ב-Google Forms — חלקו לסעיפים (Sections). עמוד-אחר-עמוד עדיף על גליל ארוך.
+  </div>
+</div>
+
+<div class="activity">
+  <div class="act-title">הפעלה — תכננו את מבנה השאלון שלכם</div>
+  <p>בזוגות, מלאו את הטבלה הבאה עבור הפרויקט שלכם (בנייר או במחשב):</p>
+  <table class="clean-table">
+    <thead>
+      <tr><th>חלק</th><th>מס' שאלות</th><th>סוגי שאלות</th><th>דוגמה לשאלה</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>סינון</td><td></td><td></td><td></td></tr>
+      <tr><td>חוויה נוכחית</td><td></td><td></td><td></td></tr>
+      <tr><td>עמדות כלפי הפתרון</td><td></td><td></td><td></td></tr>
+      <tr><td>דמוגרפיה</td><td></td><td></td><td></td></tr>
+      <tr><td><strong>סה"כ</strong></td><td><strong>≤ 15</strong></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת הבנה — סדר נכון</div>
+  <p style="margin-bottom:12px">מהו הסדר הנכון של חלקי השאלון?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q3')">דמוגרפיה → סינון → שאלות תוכן → שאלה פתוחה</div>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q3')">שאלות תוכן → דמוגרפיה → סינון → תודה</div>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q3')">מבוא → סינון → שאלות תוכן → דמוגרפיה → תודה</div>
+  <div class="quiz-feedback correct-fb" id="q3-correct">מושלם! מבוא (מי ולמה) → סינון (רק רלוונטיים) → תוכן (הליבה) → דמוגרפיה (בסוף!) → תודה.</div>
+  <div class="quiz-feedback wrong-fb" id="q3-wrong">לא בדיוק. הסדר הנכון: מבוא → סינון → שאלות תוכן → דמוגרפיה (בסוף!) → תודה.</div>
+</div>
+
+
+<!-- ==================== שלב 5: בנייה ב-Google Forms ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 5 מתוך 7</div>
+  <h2>בנייה ב-Google Forms — צעד אחרי צעד</h2>
+  <p class="phase-goal">יישום מעשי — פותחים את Forms ובונים את השאלון מאפס</p>
+  <span class="time-badge">⏱ 25 דקות (מעבדה)</span>
+</div>
+
+<div class="step">
+  <h3>צעד 1 — פתיחת טופס חדש</h3>
+  <p>היכנסו ל-<strong>forms.google.com</strong> → לחצו על <strong>+</strong> (טופס ריק). ייפתח עורך חדש.</p>
+</div>
+
+<div class="step">
+  <h3>צעד 2 — כותרת ומבוא</h3>
+  <p>בראש הטופס: כתבו <strong>כותרת</strong> ברורה ו<strong>תיאור</strong> קצר (מי, למה, כמה זמן, אנונימיות).</p>
+</div>
+
+<div class="step">
+  <h3>צעד 3 — הוספת סעיפים (Sections)</h3>
+  <p>לחצו על האייקון ≡≡ בסרגל הצדדי להוספת סעיף חדש. צרו סעיף לכל חלק:</p>
+  <ul style="padding-right:24px;">
+    <li>סעיף 1: סינון</li>
+    <li>סעיף 2: חוויה נוכחית</li>
+    <li>סעיף 3: עמדות ונכונות לשלם</li>
+    <li>סעיף 4: דמוגרפיה</li>
+    <li>סעיף 5: תודה (ללא שאלות)</li>
+  </ul>
+</div>
+
+<div class="step">
+  <h3>צעד 4 — הוספת שאלות ובחירת סוג</h3>
+  <p>לחצו <strong>+</strong> להוספת שאלה. בחרו את הסוג מהתפריט:</p>
+  <table class="clean-table">
+    <thead><tr><th>מה רוצים</th><th>בחרו ב-Forms</th></tr></thead>
+    <tbody>
+      <tr><td>ליקרט 1–5</td><td>סולם לינארי (Linear Scale)</td></tr>
+      <tr><td>בחירה אחת מרשימה</td><td>בחירה מרובה (Multiple Choice)</td></tr>
+      <tr><td>כמה תשובות</td><td>תיבות סימון (Checkboxes)</td></tr>
+      <tr><td>דירוג כמה פריטים</td><td>רשת בחירה מרובה (MC Grid)</td></tr>
+      <tr><td>טקסט חופשי</td><td>פסקה (Paragraph)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="step">
+  <h3>צעד 5 — הגדרת "חובה" וניתוב</h3>
+  <p><strong>חובה:</strong> הפעילו בשאלות סינון ושאלות ליבה. כבו בדמוגרפיה ושאלות פתוחות.</p>
+  <p><strong>ניתוב:</strong> בשאלת סינון (Multiple Choice) → לחצו ⋮ → "מעבר לסעיף על סמך תשובה" → מי שלא מתאים → "עמוד תודה".</p>
+
+  <div class="tip-box">
+    <div class="tip-title">💡 טיפ חשוב</div>
+    ניתוב עובד רק על שאלות "בחירה מרובה" (Multiple Choice) ורק ברמת סעיף. תכננו את הסעיפים מראש!
+  </div>
+</div>
+
+<div class="step">
+  <h3>צעד 6 — הגדרות הטופס (⚙️)</h3>
+  <p>לחצו על ⚙️ הגדרות:</p>
+  <ul style="padding-right:24px;">
+    <li>❌ כבו "הגבלה לתגובה אחת"</li>
+    <li>❌ כבו "איסוף כתובות דוא"ל" (אנונימיות!)</li>
+    <li>✅ הפעילו הודעת אישור: "תודה רבה!"</li>
+  </ul>
+</div>
+
+<div class="step">
+  <h3>צעד 7 — תצוגה מקדימה ובדיקה</h3>
+  <p>לחצו על <strong>👁 עין</strong> → עברו על הסקר כולו כמו משיב. בדקו שהניתוב עובד. בדקו במובייל!</p>
+</div>
+
+<div class="activity">
+  <div class="act-title">מעבדה — בנו את השאלון שלכם עכשיו</div>
+  <p>פתחו Google Forms ובנו שאלון עם:</p>
+  <ol style="padding-right:24px;">
+    <li>כותרת ומבוא</li>
+    <li>שאלת סינון אחת עם ניתוב</li>
+    <li>לפחות 3 שאלות תוכן (מסוגים שונים!)</li>
+    <li>שאלה דמוגרפית אחת (לא חובה)</li>
+    <li>עמוד תודה</li>
+  </ol>
+  <p><strong>זמן: 15 דקות. אחרי — שלחו לחבר/ה שיבדוק לכם.</strong></p>
+</div>
+
+
+<!-- ==================== שלב 6: טעויות נפוצות ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 6 מתוך 7</div>
+  <h2>7 טעויות שיהרסו לכם את הנתונים</h2>
+  <p class="phase-goal">למנוע מראש את הבעיות הנפוצות ביותר</p>
+  <span class="time-badge">⏱ 10 דקות</span>
+</div>
+
+<div class="step">
+  <table class="clean-table">
+    <thead><tr><th>#</th><th>הטעות</th><th>הפתרון</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>שאלה מנחה</strong> — דוחפת לתשובה</td><td>נסחו ניטרלית, בלי מילים שיפוטיות</td></tr>
+      <tr><td>2</td><td><strong>שאלה כפולה</strong> — שני נושאים בשאלה אחת</td><td>פצלו לשתי שאלות</td></tr>
+      <tr><td>3</td><td><strong>בלי "אחר"</strong> — חסרה אפשרות</td><td>הוסיפו "אחר: ____" בכל שאלת בחירה</td></tr>
+      <tr><td>4</td><td><strong>דמוגרפיה בהתחלה</strong></td><td>העבירו לסוף, סמנו "לא חובה"</td></tr>
+      <tr><td>5</td><td><strong>סקר ארוך מדי</strong> (20+ שאלות)</td><td>קצרו ל-15 שאלות / 5 דקות</td></tr>
+      <tr><td>6</td><td><strong>בלי סינון</strong> — כל אחד ממלא</td><td>הוסיפו 1–2 שאלות סינון + ניתוב</td></tr>
+      <tr><td>7</td><td><strong>דילוג על פיילוט</strong></td><td>שלחו ל-5 אנשים לפני ההפצה הרחבה</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="activity">
+  <div class="act-title">הפעלה — ביקורת עמיתים (Peer Review)</div>
+  <p>החליפו לינקים של Google Forms עם הזוג לידכם. כל אחד ממלא את השאלון של השני, ואז מדווח:</p>
+  <ol style="padding-right:24px;">
+    <li>האם הייתה שאלה שלא הבנתי?</li>
+    <li>כמה זמן לקח לי?</li>
+    <li>האם הייתה שאלה שהרגשתי שחסרה לי תשובה?</li>
+    <li>האם הניתוב עבד?</li>
+  </ol>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת הבנה — זהו את הטעות</div>
+  <p style="margin-bottom:12px">שלחתם את השאלון ישר ל-100 איש בלי לבדוק. קיבלתם 80 תשובות, אבל מגלים שבשאלה 5 אנשים לא הבינו מה שאלתם. מה קרה?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q4')">הייתם צריכים יותר שאלות סינון</div>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q4')">דילגתם על פיילוט — 5 אנשים היו חוסכים את הבעיה</div>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q4')">הייתם צריכים שאלון ארוך יותר</div>
+  <div class="quiz-feedback correct-fb" id="q4-correct">בדיוק! פיילוט על 5–10 אנשים היה חושף את הבעיה לפני שיצאתם ל-100. ברגע שהנתונים בפנים — אין חזרה.</div>
+  <div class="quiz-feedback wrong-fb" id="q4-wrong">לא. הבעיה היא שלא עשיתם פיילוט. 5 אנשים שממלאים ומדווחים על בעיות = חוסכים 80 תשובות מקולקלות.</div>
+</div>
+
+
+<!-- ==================== שלב 7: הפצה ==================== -->
+<div class="phase-header">
+  <div class="phase-num">שלב 7 מתוך 7</div>
+  <h2>הפצה — איך מביאים אנשים אמיתיים לענות</h2>
+  <p class="phase-goal">ערוצי הפצה נכונים וכמה תגובות צריך</p>
+  <span class="time-badge">⏱ 10 דקות</span>
+</div>
+
+<div class="step">
+  <h3>הכלל החשוב ביותר בהפצה</h3>
+
+  <div class="warn-box">
+    <div class="warn-title">⚠️ לא לחברים ולמשפחה!</div>
+    הם רוצים שתצליחו ויענו מה שנעים לכם לשמוע. זו "הטיית קירבה". אתם צריכים קהל בלתי תלוי.
+  </div>
+</div>
+
+<div class="step">
+  <h3>ערוצי הפצה מומלצים</h3>
+  <table class="clean-table">
+    <thead><tr><th>ערוץ</th><th>מתאים ל-</th><th>טיפ</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Swappa</strong></td><td>סטודנטים</td><td>סחר חליפין — מלאו סקרים של אחרים וקבלו קרדיטים</td></tr>
+      <tr><td><strong>קבוצות פייסבוק</strong></td><td>קהל ממוקד</td><td>חפשו קבוצות שמתאימות בדיוק לקהל היעד</td></tr>
+      <tr><td><strong>לינקדאין</strong></td><td>מוצרי B2B</td><td>פוסט עם הקשר אישי או הודעות ישירות</td></tr>
+      <tr><td><strong>ווטסאפ</strong></td><td>קהילות</td><td>קבוצות קהילתיות — לא קבוצת החברים שלכם!</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="step">
+  <h3>כמה תגובות צריך?</h3>
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל</div>
+    <strong>מינימום: 30.</strong> מתחת לזה — זה לא מחקר, זה אוסף דעות אקראיות.<br>
+    <strong>אידיאלי: 100–150.</strong> מספיק כדי לפלח לתת-קבוצות (לפחות 30 בכל קבוצה).<br>
+    <strong>תעשייה: 100–400.</strong> מאפשר ניתוח מתקדם, רגרסיות, ומסקנות מוצקות.
+  </div>
+
+  <div class="bi-link">
+    <div class="bi-title">קישור ל-BI</div>
+    ב-Tableau, כל משיב הוא שורה אחת בטבלה (<strong>תצפית</strong>). עם 30 שורות — רק גרפים בסיסיים. עם 100+ — אפשר Pivot Tables, סינונים, והצלבות אמיתיות.
+  </div>
+</div>
+
+<div class="playground">
+  <div class="pg-title">התנסות — תכננו את אסטרטגיית ההפצה</div>
+  <p>כתבו לאילו 3 ערוצים תפיצו את השאלון שלכם ולמה:</p>
+  <textarea placeholder="1. קבוצת פייסבוק: '...' כי קהל היעד שלנו הוא...&#10;2. ...&#10;3. ..."></textarea>
+</div>
+
+
+<!-- ==================== צ'קליסט סופי ==================== -->
+<div class="phase-header">
+  <div class="phase-num">סיכום</div>
+  <h2>צ'קליסט סופי — ✅ ודאו שהכול מוכן</h2>
+  <p class="phase-goal">לפני שלוחצים "שלח" — עברו על כל סעיף</p>
+</div>
+
+<div class="checklist">
+  <h3>✅ הצ'קליסט שלכם</h3>
+  <label><input type="checkbox"><span>שאלות מחקר ברורות — אני יודע/ת מה אני רוצה לגלות</span></label>
+  <label><input type="checkbox"><span>שאלות סינון — רק קהל היעד ימשיך</span></label>
+  <label><input type="checkbox"><span>ניסוח ניטרלי — אין שאלות מנחות</span></label>
+  <label><input type="checkbox"><span>שאלה = נושא אחד — אין שאלות כפולות</span></label>
+  <label><input type="checkbox"><span>אפשרות "אחר" — בכל שאלת בחירה</span></label>
+  <label><input type="checkbox"><span>דמוגרפיה בסוף — לא בהתחלה, "לא חובה"</span></label>
+  <label><input type="checkbox"><span>מקסימום 15 שאלות / 5 דקות</span></label>
+  <label><input type="checkbox"><span>מבוא ברור — מי, למה, כמה זמן, אנונימיות</span></label>
+  <label><input type="checkbox"><span>חלוקה לסעיפים — לא גליל אחד ארוך</span></label>
+  <label><input type="checkbox"><span>ניתוב עובד — לא-מתאימים מועברים לעמוד תודה</span></label>
+  <label><input type="checkbox"><span>פיילוט הושלם — 5–10 אנשים מילאו ונתנו פידבק</span></label>
+  <label><input type="checkbox"><span>בדיקה בנייד — הסקר נוח בטלפון</span></label>
+  <label><input type="checkbox"><span>הודעת סיום — "תודה רבה!" מנומסת</span></label>
+  <label><input type="checkbox"><span>ערוצי הפצה מתוכננים — יודע/ת לאן לשלוח</span></label>
+</div>
+
+
+<!-- ==================== שאלון לדוגמה ==================== -->
+<div class="phase-header">
+  <div class="phase-num">נספח</div>
+  <h2>🌙 שאלון לדוגמה מלא — DreamBnB</h2>
+  <p class="phase-goal">כדי שתראו איך הכל מתחבר — שאלון שלם לדוגמה בנושא דמיוני</p>
+</div>
+
+<div class="step">
+  <h3>הרעיון: אפליקציה להשכרת חלומות בין אנשים</h3>
+  <p>כן, זה הזוי. בדיוק הנקודה — כל נושא ניתן לחקור בשיטה הנכונה. שימו לב: כל שאלה מודגמת עם הסוג שלה והמטרה.</p>
+</div>
+
+<div class="step" style="border: 2px solid var(--primary);">
+  <h3 style="text-align:center;">📋 סקר: עמדות כלפי שירות חדשני לשיתוף חוויות חלום</h3>
+  <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;">שלום! אנחנו סטודנטים בקורס בינה עסקית ובוחנים רעיון בתחום חוויות השינה. אנונימי, 3 דקות. תודה! 🙏</p>
+
+  <hr style="margin:20px 0;border:none;border-top:1px solid var(--border);">
+
+  <p><strong>🔍 חלק 1 — סינון</strong></p>
+
+  <p style="margin-top:12px;"><strong>שאלה 1</strong> (בחירה מרובה, חובה): "עד כמה אתה זוכר חלומות בבוקר?"</p>
+  <p style="font-size:0.85rem;color:var(--text-muted);">→ מי שענה "כמעט אף פעם" → ניתוב לעמוד תודה</p>
+
+  <p style="margin-top:12px;"><strong>שאלה 2</strong> (בחירה מרובה, חובה): "האם קרה לך שרצית 'לחזור' לחלום?"</p>
+  <p style="font-size:0.85rem;color:var(--text-muted);">→ מי שענה "לא, מעולם" → ניתוב לעמוד תודה</p>
+
+  <hr style="margin:20px 0;border:none;border-top:1px dashed var(--border);">
+
+  <p><strong>📋 חלק 2 — חוויה נוכחית</strong></p>
+
+  <p style="margin-top:12px;"><strong>שאלה 3</strong> (תיבות סימון): "כשאתה רוצה לשפר את השינה — מה אתה עושה?"</p>
+  <p style="font-size:0.85rem;color:var(--text-muted);">→ סימון מרובה + "אחר" — מבינים הרגלים נוכחיים</p>
+
+  <p style="margin-top:12px;"><strong>שאלה 4</strong> (בחירה מרובה): "מהי הסיבה העיקרית שהיית רוצה לבחור חלום?"</p>
+  <p style="font-size:0.85rem;color:var(--text-muted);">→ תשובה אחת — מאלצים תיעדוף</p>
+
+  <hr style="margin:20px 0;border:none;border-top:1px dashed var(--border);">
+
+  <p><strong>💡 חלק 3 — עמדות כלפי הפתרון</strong></p>
+
+  <p style="margin-top:12px;"><strong>שאלה 5</strong> (ליקרט 1–5): "באיזו מידה היית מוכן לנסות אפליקציה כזו?"</p>
+  <p style="margin-top:8px;"><strong>שאלה 6</strong> (ליקרט 1–5): "עד כמה חשוב לך שהחלומות יהיו אמיתיים (לא AI)?"</p>
+  <p style="margin-top:8px;"><strong>שאלה 7</strong> (ליקרט 1–5): "עד כמה מדאיג אותך ששמישהו יצפה בחלומותיך?"</p>
+  <p style="margin-top:8px;"><strong>שאלה 8</strong> (דירוג 1–4): "דרגו: מגוון, אנונימיות, דירוגים, התאמה אישית"</p>
+  <p style="margin-top:8px;"><strong>שאלה 9</strong> (נכונות לשלם): "מנוי חודשי — 19.90₪ / 39.90₪ / 59.90₪ / בשום מחיר"</p>
+
+  <hr style="margin:20px 0;border:none;border-top:1px dashed var(--border);">
+
+  <p><strong>⚪ חלק 4 — פתוחה + דמוגרפיה</strong></p>
+
+  <p style="margin-top:12px;"><strong>שאלה 10</strong> (פתוחה, לא חובה): "משהו נוסף שתרצה לשתף?"</p>
+  <p style="margin-top:8px;"><strong>שאלה 11</strong> (דמוגרפיה, לא חובה): גיל</p>
+  <p style="margin-top:8px;"><strong>שאלה 12</strong> (דמוגרפיה, לא חובה): מגדר</p>
+
+  <hr style="margin:20px 0;border:none;border-top:1px solid var(--border);">
+
+  <p style="text-align:center;"><strong>🙏 תודה רבה! חלומות מתוקים 🌙</strong></p>
+
+  <div style="background:var(--primary-light);padding:14px;border-radius:var(--radius-sm);margin-top:16px;font-size:0.9rem;">
+    <strong>סיכום המבנה:</strong> 2 סינון → 2 חוויה נוכחית → 5 עמדות (3 ליקרט + 1 דירוג + 1 WTP) → 1 פתוחה → 2 דמוגרפיה = <strong>12 שאלות, ~3 דקות</strong>. קחו את המבנה הזה והחליפו את DreamBnB בנושא שלכם.
+  </div>
+</div>
+
+
+<!-- ==================== סיכום BI ==================== -->
+<div class="phase-header">
+  <div class="phase-num">הגשר הבא</div>
+  <h2>📊 מהשאלון — לדשבורד ב-Tableau</h2>
+  <p class="phase-goal">מבט קדימה — מה תעשו עם הנתונים שתקבלו</p>
+</div>
+
+<div class="step">
+  <h3>מה שבניתם היום → מה שתנתחו בהמשך</h3>
+  <p>כל שאלה בשאלון שלכם תהפוך לעמודה בקובץ Excel. כל משיב = שורה. וב-Tableau:</p>
+  <table class="clean-table">
+    <thead><tr><th>סוג שאלה בשאלון</th><th>הופך ל-</th><th>מה עושים איתו</th></tr></thead>
+    <tbody>
+      <tr><td>דמוגרפיה (גיל, מגדר, אזור)</td><td><strong style="color:#2563EB;">ממד (Dimension) 🔵</strong></td><td>פילוח, סינון, כותרות בגרף</td></tr>
+      <tr><td>בחירה מרובה / סינון</td><td><strong style="color:#2563EB;">ממד (Dimension) 🔵</strong></td><td>חיתוך הנתונים לקבוצות</td></tr>
+      <tr><td>ליקרט (1–5)</td><td><strong style="color:#16A34A;">מדד (Measure) 🟢</strong></td><td>ממוצע, סטיית תקן, גרף עמודות</td></tr>
+      <tr><td>דירוג / נכונות לשלם</td><td><strong style="color:#16A34A;">מדד (Measure) 🟢</strong></td><td>ניתוח סטטיסטי, רגרסיות</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule-box">
+    <div class="rule-title">📏 הכלל הפשוט</div>
+    <strong>ממד (כחול)</strong> = "מי? איפה? מתי?" — חותך את הנתונים.<br>
+    <strong>מדד (ירוק)</strong> = "כמה?" — מחשבים עליו חשבון (ממוצע, סכום).
+  </div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-title">שאלת סיכום אחרונה</div>
+  <p style="margin-bottom:12px">שאלת ליקרט "באיזו מידה אתה מרוצה מהשירות?" (1–5) — כשהנתונים נכנסים ל-Tableau, האם זה ממד (Dimension) או מדד (Measure)?</p>
+  <div class="quiz-option" onclick="checkQuiz(this, false, 'q5')">ממד (Dimension) — כי זה מפלח את הנתונים</div>
+  <div class="quiz-option" onclick="checkQuiz(this, true, 'q5')">מדד (Measure) — כי אפשר לחשב ממוצע על המספרים</div>
+  <div class="quiz-feedback correct-fb" id="q5-correct">מדויק! ליקרט (1–5) הוא מדד — אפשר לחשב עליו ממוצע (למשל 3.7), סטיית תקן ולבנות גרפים.</div>
+  <div class="quiz-feedback wrong-fb" id="q5-wrong">לא בדיוק. ליקרט הוא מספרי — אפשר לחשב עליו ממוצע (3.7, 4.2...) ולכן הוא מדד (Measure), לא ממד.</div>
+</div>
+
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p><strong>מאפס לשאלון מושלם</strong> — מערך שיעור משולב</p>
+  <p>קורס בינה עסקית | ד״ר שי צבאן</p>
+  <p style="margin-top:8px;">נתונים גרועים גרועים יותר מחוסר נתונים כלל. הקפידו על בנייה נכונה. 🎯</p>
+</div>
+
+</div><!-- end container -->
+
+<script>
+// ===== QUIZ LOGIC =====
+function checkQuiz(el, isCorrect, qId) {
+  const quiz = el.closest('.quiz');
+  const options = quiz.querySelectorAll('.quiz-option');
+  const alreadyAnswered = quiz.querySelector('.quiz-option.correct, .quiz-option.wrong');
+  if (alreadyAnswered) return;
+
+  options.forEach(opt => {
+    opt.style.pointerEvents = 'none';
+  });
+
+  if (isCorrect) {
+    el.classList.add('correct');
+    document.getElementById(qId + '-correct').classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.getElementById(qId + '-wrong').classList.add('show');
+    // Highlight correct
+    options.forEach(opt => {
+      if (opt !== el && opt.getAttribute('onclick').includes('true')) {
+        opt.classList.add('correct');
+      }
+    });
+  }
+}
+
+// ===== REVEAL LOGIC =====
+function toggleReveal(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('show')) {
+    btn.textContent = 'הסתר תשובות';
+  } else {
+    btn.textContent = 'הצג תשובות';
+  }
+}
+
+// ===== PROGRESS BAR =====
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+</script>
+
+</body>
+</html>
