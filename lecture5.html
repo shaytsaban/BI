@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור 5 - בינה עסקית, סקרייפינג ו-API</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;800;900&family=Rubik:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ================= עיצוב בסיסי ומשתנים ================= */
+        :root {
+            --bg-main: #0B1120; /* כחול-כהה עמוק */
+            --bg-card: #1E293B; /* כחול-אפרפר לכרטיסיות */
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent-primary: #0EA5E9; /* טורקיז-תכלת */
+            --accent-secondary: #F59E0B; /* זהב/כתום להדגשות */
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            font-size: 20px; /* כתב גדול וקריא למצגת */
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Heebo', sans-serif;
+            font-weight: 800;
+        }
+
+        /* ================= מחלקות מבנה ואנימציות ================= */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 10%;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            opacity: 0; /* לאנימציית הגלילה */
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-header {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .slide-header h2 {
+            font-size: 3.5rem;
+            color: var(--accent-primary);
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-secondary);
+            font-weight: 500;
+        }
+
+        /* עיטורים רקעיים */
+        .glow-circle {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-primary) 0%, transparent 60%);
+            opacity: 0.1;
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(40px);
+        }
+
+        /* ================= אלמנטים פנימיים ================= */
+        .info-box {
+            background: var(--bg-card);
+            border-right: 6px solid var(--accent-primary);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        
+        .info-box:hover {
+            transform: scale(1.02);
+            border-right-color: var(--accent-secondary);
+        }
+
+        .info-box i {
+            font-size: 2.5rem;
+            color: var(--accent-secondary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        ul.big-list {
+            list-style: none;
+        }
+        
+        ul.big-list li {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: flex-start;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        ul.big-list li i {
+            color: var(--accent-primary);
+            margin-left: 15px;
+            margin-top: 5px;
+            font-size: 1.5rem;
+        }
+
+        /* ================= אזור אינטראקטיבי / קוד ================= */
+        .code-block {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border-radius: 8px;
+            direction: ltr;
+            text-align: left;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            border: 1px solid #333;
+        }
+
+        .interactive-zone {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            border: 2px dashed var(--accent-secondary);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .input-prompt {
+            width: 80%;
+            height: 120px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--accent-primary);
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Rubik', sans-serif;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .btn:hover {
+            background: var(--accent-secondary);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* ================= שאלות אמריקאיות (Quiz) ================= */
+        .quiz-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .quiz-question {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--accent-secondary);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--accent-primary);
+        }
+
+        .quiz-feedback {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            animation: fadeIn 0.5s;
+        }
+
+        .feedback-correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-right: 5px solid var(--success);
+        }
+
+        .feedback-wrong {
+            background: rgba(239, 68, 68, 0.2);
+            border-right: 5px solid var(--danger);
+        }
+
+        .hint-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px dashed var(--text-muted);
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        .hint-text {
+            display: none;
+            color: var(--accent-secondary);
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* סמן גלילה למטה */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--accent-primary);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+        
+        .author-tag {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--accent-secondary);
+            color: var(--accent-secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="slide visible" id="slide1">
+        <div class="glow-circle" style="top: -100px; right: -100px;"></div>
+        <div style="text-align: center; max-width: 900px; margin: 0 auto;">
+            <i class="fa-solid fa-chart-line" style="font-size: 5rem; color: var(--accent-primary); margin-bottom: 30px;"></i>
+            <h1 style="font-size: 5rem; line-height: 1.1; margin-bottom: 20px;">בינה עסקית<br><span style="color: var(--accent-secondary);">וכלים פיננסיים</span></h1>
+            <p style="font-size: 2rem; color: var(--text-muted);">שיעור 5: סקרייפינג נתונים, API ובניית אפליקציות Web</p>
+            <div class="author-tag">מרצה: ד״ר שי צבאן</div>
+            <p style="margin-top: 30px; font-size: 1.2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                בשיעור זה נלמד לקחת את הידע התיאורטי שלנו ולהפוך אותו למוצר טכנולוגי חי ונושם. ניקח נתונים מהעולם האמיתי, נמשוך אותם באוטומציה, ונציג אותם בצורה ויזואלית מרהיבה.
+            </p>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('slide2').scrollIntoView();">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section class="slide" id="slide2">
+        <div class="slide-header">
+            <h2>איפה אנחנו נמצאים? 🗺️</h2>
+            <div class="subtitle">הפער בין נתונים מתים לנתונים חיים</div>
+        </div>
+        
+        <div class="grid-2">
+            <div>
+                <p>עד עכשיו בקורס, בנינו מודלים, דיברנו על מדדים פיננסיים, ולמדנו להציג נתונים במערכות כמו Tableau. <strong>אבל הייתה לנו מגבלה אחת גדולה:</strong></p>
+                <div class="info-box" style="border-right-color: var(--danger);">
+                    <i class="fa-solid fa-file-excel" style="color: var(--danger);"></i>
+                    <strong>הסתמכנו על קובצי Excel סטטיים.</strong><br>
+                    הורדנו קובץ, טענו אותו, וניתחנו. מה קורה מחר כשהבורסה נפתחת והנתונים משתנים? האם נוריד קובץ מחדש כל בוקר?
+                </div>
+                <p>היום אנחנו עוברים מ"אנליסטים שעובדים קשה" ל"מפתחי מערכות מידע שעובדים חכם". אנחנו נבנה מנגנון שעושה את זה עבורנו.</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <ul class="big-list">
+                    <li><i class="fa-solid fa-robot"></i> <span><strong>אוטומציה מלאה:</strong> הסקריפט עובד בשבילנו 24/7.</span></li>
+                    <li><i class="fa-solid fa-globe"></i> <span><strong>חיבור לעולם:</strong> שאיבת נתוני מניות בזמן אמת.</span></li>
+                    <li><i class="fa-solid fa-window-maximize"></i> <span><strong>ממשק משתמש:</strong> יצירת "פרונט-אנד" (Frontend) שמאפשר לכל משתמש פשוט ללחוץ על כפתור ולקבל תובנות.</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide3">
+        <div class="glow-circle" style="bottom: 0; left: -100px;"></div>
+        <div class="slide-header">
+            <h2>הכירו את Google Apps Script 🚀</h2>
+            <div class="subtitle">המנוע השקט שמאחורי הקלעים (Back-end)</div>
+        </div>
+        
+        <p>כדי לבצע אוטומציות ברשת, אנחנו צריכים "שרת". מחשב שתמיד דולק ומחכה לפקודות שלנו. גוגל מספקת לנו אחד כזה בחינם לחלוטין!</p>
+        
+        <div class="info-box">
+            <i class="fa-brands fa-google"></i>
+            <h3>מה זה בכלל GAS?</h3>
+            <p>Google Apps Script היא שפת תכנות (מבוססת JavaScript, למעשה זו אותה שפה) שרצה ישירות על השרתים של גוגל בענן. היא מאפשרת לנו לגשת לג'ימייל, לגוגל שיטס, וחשוב מכל - <strong>לצאת לאינטרנט החיצוני (למשל לאתר גוגל פיננס) ולשאוב ממנו מידע!</strong></p>
+        </div>
+
+        <h3 style="margin-top: 40px; color: var(--accent-primary);">איך ניגשים לזה? פשוט מאוד:</h3>
+        <ul class="big-list">
+            <li><i class="fa-solid fa-1"></i> פותחים גוגל דרייב.</li>
+            <li><i class="fa-solid fa-2"></i> יוצרים קובץ Google Sheets חדש.</li>
+            <li><i class="fa-solid fa-3"></i> בתפריט העליון לוחצים על: <strong>הרחבות (Extensions) ➔ Apps Script</strong>.</li>
+            <li><i class="fa-solid fa-4"></i> בום 💥 - נפתח לכם עורך קוד ריק. זה המטבח שלכם.</li>
+        </ul>
+    </section>
+
+    <section class="slide" id="slide4">
+        <div class="slide-header">
+            <h2>איך כותבים את הקוד? AI כשותף 🤖</h2>
+            <div class="subtitle">אין לכם רקע בתכנות? אין שום בעיה.</div>
+        </div>
+
+        <p>בעידן של היום, מערכות המידע לא דורשות מכם לשנן סינטקס בעל פה. הן דורשות מכם <strong>לדעת להנדס את הבקשה (Prompt Engineering)</strong>.</p>
+        
+        <div class="grid-2">
+            <div>
+                <p>אתם יכולים לגשת למודלי שפה (כמו שאנחנו עושים ממש עכשיו) ולבקש מהם לכתוב עבורכם את הסקריפט.</p>
+                <div class="info-box">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <strong>נוסחת הפרומפט המושלם:</strong><br>
+                    1. <strong>תפקיד:</strong> "אתה מפתח מומחה ב-Google Apps Script."<br>
+                    2. <strong>משימה:</strong> "כתוב לי פונקציה שמקבלת סימול של מניה..."<br>
+                    3. <strong>מקור נתונים:</strong> "...ושואבת את המחיר שלה מ-Google Finance."<br>
+                    4. <strong>פלט:</strong> "...תחזיר את הנתון כמספר עשרוני."
+                </div>
+            </div>
+            
+            <div class="interactive-zone">
+                <h3 style="margin-bottom: 20px; color: var(--accent-secondary);">זמן התנסות: נסחו פרומפט</h3>
+                <p style="font-size: 1rem; margin-bottom: 15px;">איך הייתם מבקשים מ-AI לכתוב סקריפט ששואב את שער הדולר העדכני מול השקל?</p>
+                <textarea class="input-prompt" id="studentPrompt" placeholder="הקלד את הפרומפט שלך כאן... (למשל: 'כתוב קוד שמביא את שער הדולר...')"></textarea>
+                <button class="btn" onclick="checkPrompt()">שלח לבדיקה מדומה</button>
+                <div id="promptFeedback" class="quiz-feedback" style="background: rgba(14, 165, 233, 0.1); border: 1px solid var(--accent-primary);"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide5">
+        <div class="glow-circle" style="top: 20%; right: 20%;"></div>
+        <div class="slide-header">
+            <h2>סקרייפינג ו-API: מאיפה באים הנתונים? 🕸️</h2>
+            <div class="subtitle">איך המחשב קורא עיתון כלכלי</div>
+        </div>
+
+        <div class="grid-2">
+            <div>
+                <h3 style="color: var(--accent-secondary); margin-bottom: 15px;">מה זה סקרייפינג (Scraping)?</h3>
+                <p>קצירת נתונים. במקום שאדם ייכנס לאתר, יסמן את המחיר של מניית טסלה, יעשה "העתק" וידביק באקסל, אנחנו כותבים סקריפט שקורא את קוד ה-HTML של האתר, מחפש את המילה "מחיר", ושולף רק את המספר שלידה.</p>
+                
+                <h3 style="color: var(--accent-secondary); margin-top: 30px; margin-bottom: 15px;">מה זה API?</h3>
+                <p>(Application Programming Interface). זה המלצר במסעדה. במקום שהסקריפט שלנו (הלקוח) יפרוץ למטבח (האתר הפיננסי) ויחטט בסירים (ב-HTML) כדי למצוא נתונים, ה-API הוא תפריט מסודר. האתר אומר לנו: "רוצה את מחיר המניה? פשוט תשלח לי בקשה לכתובת הזו, ואני אחזיר לך קובץ נתונים נקי ומוכן".</p>
+            </div>
+            
+            <div class="info-box" style="background: #000;">
+                <h4 style="color: var(--success); margin-bottom: 10px;">// דוגמה לנתון שמגיע מ-API (פורמט JSON)</h4>
+                <div class="code-block">
+{
+  "ticker": "TSLA",
+  "price": 185.32,
+  "currency": "USD",
+  "time": "2026-04-28 10:00:00"
+}
+                </div>
+                <p style="font-size: 1.1rem; color: #888;">הסקריפט שלנו לוקח את הנתון הנקי הזה, ומעביר אותו אלינו.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide6">
+        <div class="slide-header">
+            <h2>חיבור ה-HTML ל-GAS 🔗</h2>
+            <div class="subtitle">הלקוח פוגש את המטבח</div>
+        </div>
+
+        <p>זוכרים את המהלך שעשינו? יש לנו את אתר הקורס הראשי. שם יש לנו קובץ <strong>HTML</strong>. זה ה"פרונט-אנד" (Frontend) שלנו. שם הסטודנט, או מנהל הכספים, רואה כפתורים יפים, שדות חיפוש וגרפים צבעוניים. ויש לנו את קובץ ה- <strong>.gs</strong> (ב-GAS) שהוא ה"בק-אנד" (Backend) שעושה את העבודה הקשה.</p>
+        
+        <div class="info-box" style="text-align: center; background: rgba(14, 165, 233, 0.1);">
+            <h3 style="color: var(--text-main);">איך הם מדברים אחד עם השני?</h3>
+            <p style="font-size: 1.5rem; margin: 20px 0;">
+                HTML Button Click ➔ <span style="color: var(--accent-secondary); font-weight: bold;">google.script.run</span> ➔ GAS Script
+            </p>
+            <p>באמצעות פקודת קסם ב-JavaScript בצד ה-HTML, האתר פונה לשרת של גוגל, מפעיל את הפונקציה שכתבנו, ממתין לתשובה, וכשהמחיר חוזר - הוא מציג אותו למשתמש!</p>
+        </div>
+        
+        <div style="background: rgba(245, 158, 11, 0.1); border-right: 4px solid var(--accent-secondary); padding: 15px; border-radius: 5px; margin-top: 20px;">
+            <strong>📌 הערה חשובה לסטודנטים:</strong> כל הקודים המלאים קיימים באתר הקורס הראשי! גם ה-HTML וגם ה-GS. אתם מוזמנים להוריד אותם, לפתוח את ה-HTML בדפדפן, ולהתחיל לשחק עם הקוד.
+        </div>
+    </section>
+
+    <section class="slide" id="slide7">
+        <div class="slide-header">
+            <h2>בואו נבדוק מה הבנו 🤔</h2>
+            <div class="subtitle">שאלות חשיבה למערכות מידע</div>
+        </div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">1. היכן רץ (מתבצע) קוד ה-Google Apps Script ששואב את הנתונים הפיננסיים?</div>
+            <div class="quiz-options">
+                <div class="quiz-option" onclick="showFeedback('q1', false, 'wrong')">א. על המחשב הנייד שלי (בדפדפן שמציג את ה-HTML).</div>
+                <div class="quiz-option" onclick="showFeedback('q1', false, 'wrong')">ב. בשרתי GitHub Pages בהם פרסמנו את אתר הפרונט-אנד.</div>
+                <div class="quiz-option" onclick="showFeedback('q1', true, 'correct')">ג. בשרתים של גוגל בענן.</div>
+                <div class="quiz-option" onclick="showFeedback('q1', false, 'wrong')">ד. בתוך מסד הנתונים של Tableau.</div>
+            </div>
+            <button class="hint-btn" onclick="document.getElementById('hint1').style.display='block'">רמז...</button>
+            <div id="hint1" class="hint-text">חשבו מי מספק את שירות ה-GAS ולמה קוראים לזה "צד שרת" (Backend).</div>
+            <div id="q1-feedback" class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">2. שאלה מתחכמת: האם אפשר לבנות תהליך של סקרייפינג ואיסוף נתוני מניות באופן יומיומי ללא קובץ HTML (פרונט-אנד) כלל?</div>
+            <div class="quiz-options">
+                <div class="quiz-option" onclick="showFeedback('q2', false, 'wrong')">א. לא, ה-HTML הוא זה שנותן את פקודת ההפעלה (ה"טריגר").</div>
+                <div class="quiz-option" onclick="showFeedback('q2', true, 'correct')">ב. כן בהחלט. אפשר להגדיר ב-GAS מנגנון אוטומטי (Time-driven trigger) שירוץ לבד בכל בוקר.</div>
+                <div class="quiz-option" onclick="showFeedback('q2', false, 'wrong')">ג. כן, אבל הנתונים יימחקו ברגע שנסגור את הדפדפן.</div>
+                <div class="quiz-option" onclick="showFeedback('q2', false, 'wrong')">ד. לא, ה-HTML אחראי על שמירת הנתונים בבסיס הנתונים.</div>
+            </div>
+            <button class="hint-btn" onclick="document.getElementById('hint2').style.display='block'">רמז...</button>
+            <div id="hint2" class="hint-text">מה תפקיד הפרונט-אנד לעומת הבק-אנד? האם ה"מטבח" יכול לבשל גם אם אין לקוחות במסעדה?</div>
+            <div id="q2-feedback" class="quiz-feedback"></div>
+        </div>
+    </section>
+
+    <section class="slide" id="slide8">
+        <div class="slide-header">
+            <h2>איך מפרסמים את הקסם הזה? 🌐</h2>
+            <div class="subtitle">שלבי Deployement (פריסה)</div>
+        </div>
+
+        <p>כדי שה-HTML שלנו יוכל לדבר עם ה-GAS, אנחנו חייבים להפוך את הסקריפט שלנו לנגיש ברשת, כ"אפליקציית רשת" (Web App).</p>
+        
+        <div class="info-box" style="background: rgba(255,255,255,0.02);">
+            <ol style="margin-right: 30px; line-height: 2;">
+                <li>במסך של ה-Apps Script, לחצו בצד ימין למעלה על <strong>Deploy</strong> (פריסה).</li>
+                <li>בחרו ב- <strong>New deployment</strong>.</li>
+                <li>לחצו על גלגל השיניים ובחרו סוג: <strong>Web app</strong>.</li>
+                <li>הגדירו גישה: "Anyone" (כדי שגם המשתמשים שיפתחו את ה-HTML יוכלו למשוך נתונים ללא הרשאות גוגל מיוחדות).</li>
+                <li>העתיקו את ה-URL (כתובת ה-API שלכם!) והדביקו אותו בקוד ה-HTML במקום המסומן.</li>
+            </ol>
+        </div>
+
+        <p style="margin-top: 30px;">את דף ה-HTML עצמו (הפרונט-אנד), כפי שלמדנו בעבר, אתם מפרסמים בחינם ב- <strong>GitHub Pages</strong>. עכשיו יש לכם מערכת מלאה באוויר, מבוססת ענן, מנתחת נתונים בזמן אמת, ומוכנה להצגה בפני הנהלת החברה.</p>
+
+        <div style="text-align: center; margin-top: 50px;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 3rem; color: var(--accent-secondary);"></i>
+            <h3 style="margin-top: 20px;">עבודה נעימה!</h3>
+            <p>חזרו למערכת ניהול הלמידה כדי להוריד את קבצי התרגול.</p>
+        </div>
+    </section>
+
+    <script>
+        // אנימציית הופעה בגלילה (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.15 // מפעיל את האנימציה כשהרכיב מופיע ב-15% מהמסך
+        });
+
+        document.querySelectorAll('.slide').forEach((slide) => {
+            observer.observe(slide);
+        });
+
+        // פונקציה לבדיקת הפרומפט של הסטודנט
+        function checkPrompt() {
+            const val = document.getElementById('studentPrompt').value.trim();
+            const feedbackBox = document.getElementById('promptFeedback');
+            feedbackBox.style.display = 'block';
+            
+            if (val.length < 10) {
+                feedbackBox.innerHTML = "📝 הפרומפט קצר מדי. נסה להיות ספציפי יותר: מי ה-AI? מה עליו לעשות? מהו מקור הנתונים?";
+            } else if (!val.includes('סקריפט') && !val.includes('קוד') && !val.includes('פונקציה')) {
+                feedbackBox.innerHTML = "💡 כיוון טוב, אבל זכור לבקש במפורש 'קוד' או 'פונקציה ב-Google Apps Script' כדי שהמודל יבין את הפלט המצופה.";
+            } else {
+                feedbackBox.innerHTML = "🎉 מצוין! ניסוח כזה יעזור ל-AI להבין בדיוק מה אתה רוצה. זכור תמיד לציין את המטרה, מקור הנתונים והפורמט המבוקש.";
+            }
+        }
+
+        // פונקציה למשוב שאלות אמריקאיות
+        function showFeedback(questionId, isCorrect, type) {
+            const feedbackBox = document.getElementById(questionId + '-feedback');
+            feedbackBox.style.display = 'block';
+            feedbackBox.className = 'quiz-feedback'; // איפוס מחלקות
+            
+            if (isCorrect) {
+                feedbackBox.classList.add('feedback-correct');
+                if (questionId === 'q1') {
+                    feedbackBox.innerHTML = "<i class='fa-solid fa-circle-check'></i> <strong>תשובה נכונה! (ג')</strong> ה-HTML שלכם הוא רק חלון הראווה. ה-GAS רץ על שרתי הענן העוצמתיים של גוגל ומבצע שם את כל החישובים הכבדים וקריאות הרשת.";
+                } else if (questionId === 'q2') {
+                    feedbackBox.innerHTML = "<i class='fa-solid fa-circle-check'></i> <strong>תשובה נכונה! (ב')</strong> כל הכבוד! הפרונט-אנד נועד רק לנוחות המשתמש. מנוע ה-BI שלנו (ה-GAS) יכול לרוץ על בסיס שעון פנימי, למשוך נתונים כל לילה ולשמור אותם באקסל, ללא התערבות אדם כלל.";
+                }
+            } else {
+                feedbackBox.classList.add('feedback-wrong');
+                feedbackBox.innerHTML = "<i class='fa-solid fa-circle-xmark'></i> <strong>לא מדויק.</strong> נסה/י לקרוא את הרמז או לחשוב על חלוקת התפקידים בין 'צד הלקוח' (מה שהמשתמש רואה) לבין 'צד השרת' (איפה שמתבצעת העבודה האמיתית).";
+            }
+        }
+    </script>
+</body>
+</html>
