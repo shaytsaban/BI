@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>טעויות נפוצות בכתיבת שאלוני עמדות לפרויקטי גמר</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1a1a1a;
+    --ink-soft:   #2c2c2c;
+    --paper:      #faf7f2;
+    --paper-soft: #f0ebe0;
+    --rule:       #d8d2c4;
+    --accent:     #8b1e1e;        /* deep academic red */
+    --accent-2:   #4a5d3a;        /* moss green */
+    --accent-3:   #b8862f;        /* aged gold */
+    --highlight:  #fff3a8;
+    --warn-bg:    #fdf3e9;
+    --good-bg:    #ecf3e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Heebo', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(139,30,30,0.03) 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(74,93,58,0.04) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.masthead {
+    border-bottom: 3px double var(--ink);
+    padding: 60px 40px 40px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--paper-soft) 0%, var(--paper) 100%);
+    position: relative;
+  }
+  header.masthead::before {
+    content: "";
+    position: absolute;
+    top: 14px; left: 14px; right: 14px; bottom: 14px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+  h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-weight: 900;
+    font-size: clamp(28px, 4.5vw, 48px);
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto 14px;
+    letter-spacing: -0.01em;
+  }
+  .deck {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(15px, 1.6vw, 19px);
+    color: var(--ink-soft);
+    font-style: italic;
+    max-width: 720px;
+    margin: 0 auto 26px;
+    font-weight: 400;
+  }
+  .meta-line {
+    display: inline-flex;
+    gap: 26px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .meta-line span strong { color: var(--accent); font-weight: 700; margin-left: 4px; }
+
+  /* ---------- LAYOUT ---------- */
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 50px 30px 80px;
+  }
+
+  /* ---------- INTRO ---------- */
+  .intro {
+    background: var(--paper-soft);
+    border-right: 4px solid var(--accent);
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    font-size: 16px;
+    line-height: 1.85;
+  }
+  .intro p + p { margin-top: 14px; }
+  .intro strong { color: var(--accent); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-header {
+    margin: 60px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .section-header .num {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .section-header .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    display: block;
+  }
+  .section-header h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+
+  /* ---------- MISTAKE CARDS ---------- */
+  .mistake {
+    margin-bottom: 44px;
+    padding: 28px 32px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-right: 4px solid var(--accent);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02), 4px 4px 0 -1px var(--paper-soft);
+    position: relative;
+  }
+  .mistake-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .mistake-num {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--accent);
+    background: var(--paper);
+  }
+  .mistake h3 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(19px, 2.4vw, 24px);
+    font-weight: 700;
+    line-height: 1.3;
+    flex: 1;
+    padding-top: 4px;
+  }
+  .mistake .principle {
+    background: var(--warn-bg);
+    border-right: 3px solid var(--accent-3);
+    padding: 14px 18px;
+    margin: 16px 0 22px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .mistake .principle::before {
+    content: "העיקרון";
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .mistake .what-to-do {
+    background: var(--good-bg);
+    border-right: 3px solid var(--accent-2);
+    padding: 14px 18px;
+    margin: 16px 0 0;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .mistake .what-to-do::before {
+    content: "מה לעשות במקום";
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  /* ---------- EXAMPLES ---------- */
+  .examples-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin: 22px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .example {
+    margin: 16px 0;
+    padding: 14px 18px;
+    background: var(--paper);
+    border-radius: 2px;
+    border: 1px solid var(--rule);
+    font-size: 14.5px;
+  }
+  .example .wrong, .example .right {
+    display: block;
+    line-height: 1.6;
+  }
+  .example .wrong {
+    color: var(--ink-soft);
+    text-decoration: line-through;
+    text-decoration-color: rgba(139,30,30,0.4);
+    text-decoration-thickness: 1px;
+    margin-bottom: 6px;
+  }
+  .example .wrong::before {
+    content: "✗ ";
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    margin-left: 4px;
+  }
+  .example .right {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .example .right::before {
+    content: "✓ ";
+    color: var(--accent-2);
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .example .note {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  /* Direct quotes from comments (real examples) */
+  .real-quote {
+    margin: 14px 0;
+    padding: 14px 18px;
+    background: rgba(255, 243, 168, 0.3);
+    border-right: 3px solid var(--accent-3);
+    font-size: 14.5px;
+    line-height: 1.65;
+    position: relative;
+  }
+  .real-quote::before {
+    content: "מתוך ההערות";
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .real-quote em {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- SUMMARY TABLE ---------- */
+  .summary {
+    margin: 50px 0 0;
+    padding: 32px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 0;
+    position: relative;
+  }
+  .summary::before {
+    content: "";
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+  }
+  .summary h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: white;
+  }
+  .summary > p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .checklist {
+    list-style: none;
+    counter-reset: checkitem;
+    margin-top: 12px;
+  }
+  .checklist li {
+    counter-increment: checkitem;
+    padding: 14px 0 14px 0;
+    padding-right: 50px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: counter(checkitem, decimal-leading-zero);
+    position: absolute;
+    right: 0;
+    top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-3);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .checklist li strong {
+    color: var(--accent-3);
+    font-weight: 700;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer.colophon {
+    text-align: center;
+    padding: 40px 30px 30px;
+    margin-top: 60px;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  footer.colophon p + p { margin-top: 8px; }
+
+  /* ---------- TOC ---------- */
+  .toc {
+    background: var(--paper-soft);
+    padding: 24px 28px;
+    margin-bottom: 50px;
+    border: 1px solid var(--rule);
+  }
+  .toc-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 700;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+    columns: 2;
+    column-gap: 28px;
+  }
+  .toc ol li {
+    counter-increment: toc;
+    padding: 5px 0;
+    font-size: 14px;
+    break-inside: avoid;
+    position: relative;
+    padding-right: 30px;
+  }
+  .toc ol li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    position: absolute;
+    right: 0;
+    top: 6px;
+  }
+  .toc ol li a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted transparent;
+    transition: border-color 0.2s;
+  }
+  .toc ol li a:hover {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+
+  @media (max-width: 720px) {
+    main { padding: 30px 18px 60px; }
+    header.masthead { padding: 40px 20px 28px; }
+    .mistake { padding: 22px 20px; }
+    .toc ol { columns: 1; }
+    .meta-line { gap: 16px; font-size: 10px; }
+    .summary { padding: 24px 20px; }
+    .checklist li { padding-right: 36px; font-size: 14px; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .mistake { box-shadow: none; page-break-inside: avoid; }
+    header.masthead { page-break-after: avoid; }
+    .summary { background: white; color: var(--ink); border: 2px solid var(--ink); }
+    .summary h2, .checklist li strong { color: var(--accent); }
+    .checklist li { border-bottom: 1px solid var(--rule); }
+    .checklist li::before { color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="kicker">מדריך לסטודנטים · פרויקט גמר במנהל עסקים</div>
+  <h1>טעויות נפוצות בכתיבת שאלוני עמדות</h1>
+  <p class="deck">סיכום של הליקויים החוזרים בנספח&nbsp;ג׳ של פרויקטי גמר —<br>מהמלכודות הנפוצות ועד עקרונות העבודה הנכונים</p>
+  <div class="meta-line">
+    <span>נבנה מתוך <strong>שבעה שאלונים</strong></span>
+    <span>בשבעה תחומים שונים</span>
+    <span>גרסה לתלמידים</span>
+  </div>
+</header>
+
+<main>
+
+<section class="intro">
+  <p>מסמך זה מסכם את הטעויות שחזרו על עצמן בקריאת נספחי&nbsp;ג׳ (שאלוני עמדות) של מספר פרויקטים השנה. כל הדוגמאות לקוחות משאלונים אמיתיים אך נוסחו מחדש <strong>ללא פרטים מזהים</strong> של הסטודנטים, של חברות ושל אזכורי חברים בקבוצות.</p>
+  <p>חשוב לי שתבינו: שאלון אינו רק כלי לאיסוף נתונים — הוא <strong>הכלי המרכזי לתיקוף ההנחות העסקיות</strong> של הפרויקט. שאלון מנוסח גרוע יחזיר אליכם נתונים גרועים, וכל הניתוח שיגיע אחריו יחטא למטרה. לכן ההשקעה בניסוח חכם וקפדני היא לא טכניקה — היא ליבת המחקר.</p>
+  <p>קראו את כל הקטגוריות לפני שאתם מתחילים לבנות שאלון, ואחר כך — לפני שאתם <em>שולחים</em> אותו — חזרו לסכמה בסוף וודאו שעמדתם בכל סעיף.</p>
+</section>
+
+<nav class="toc" aria-label="תוכן עניינים">
+  <div class="toc-title">תוכן העניינים</div>
+  <ol>
+    <li><a href="#m1">מבנה השאלון: דמוגרפיה בסוף, סינון בהתחלה</a></li>
+    <li><a href="#m2">מיפוי הכאב לפני בדיקת הפתרון</a></li>
+    <li><a href="#m3">הימנעות משאלות מוטות (Leading Questions)</a></li>
+    <li><a href="#m4">פירוק שאלות מורכבות לרכיבים נפרדים</a></li>
+    <li><a href="#m5">שימוש נכון בסולמות ליקרט</a></li>
+    <li><a href="#m6">הגדרה ברורה של מושגי המפתח</a></li>
+    <li><a href="#m7">כללי דילוג (Skip Logic) ושאלות סינון</a></li>
+    <li><a href="#m8">שאלות אופרציונליות במקום כלליות</a></li>
+    <li><a href="#m9">רלוונטיות וסדר השאלות לפי שלבי הקנייה</a></li>
+    <li><a href="#m10">אזהרות נוספות וחובות פורמליות</a></li>
+  </ol>
+</nav>
+
+<!-- ============== SECTION 1: STRUCTURE ============== -->
+<div class="section-header">
+  <span class="num">I</span>
+  <div>
+    <span class="label">חלק ראשון</span>
+    <h2>מבנה השאלון וסדר השאלות</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m1">
+  <div class="mistake-head">
+    <div class="mistake-num">1</div>
+    <h3>מתחילים בדמוגרפיה במקום בסינון</h3>
+  </div>
+  <p>הטעות הנפוצה ביותר — סטודנטים פותחים את השאלון בשורת שאלות דמוגרפיות (גיל, מגדר, אזור מגורים), ורק אחר כך מגיעים לעיקר. זה גורם לשני נזקים: (א) משיבים שאינם רלוונטיים מבזבזים זמן ומגיעים עד לשאלות החשובות; (ב) הדמוגרפיה בתחילה משדרת לקורא ש"זה עוד שאלון משעמם" ופוגעת בשיעור ההשלמה.</p>
+
+  <div class="principle">
+    שאלות דמוגרפיה — בסוף השאלון. לא בהתחלה ולא באמצע. בהתחלה — שאלות סינון בלבד.
+  </div>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"אל תתחיל בשאלות דמוגרפיות. תתחיל בשאלות סינון, למשל, האם אתה נשוי / יש לך ילדים. אתה צריך לדעת את זה, שלא יענו סתם ותבזבז את השאלון. באופן כללי, שאלות דמוגרפיה שמים בסוף."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">שאלה 1: מהו גילך? · שאלה 2: מגדר · שאלה 3: אזור מגורים · שאלה 4: מה גילאי הילדים בביתך?</span>
+    <span class="right">שאלה 1: האם יש לך ילדים מתחת לגיל 12? (אם לא — סיום סקר). שאלה 2: כמה ילדים? באילו גילאים? · ... · רק בסוף השאלון: גיל המשיב, אזור מגורים, מצב משפחתי, עיסוק והכנסה.</span>
+    <span class="note">דמוגרפיה היא משתנה בלתי תלוי לניתוח, לא תנאי הסף לכניסה לסקר.</span>
+  </div>
+
+  <div class="what-to-do">
+    בנו במפורש שלושה רובדי שאלות: <strong>(1) סינון</strong> — האם המשיב נמצא בקהל היעד? <strong>(2) ליבה</strong> — מיפוי כאב, התנהגות נוכחית, תיקוף הצעת הערך. <strong>(3) דמוגרפיה</strong> — בסוף, רק לצורך ניתוח פילוחי.
+  </div>
+</article>
+
+<article class="mistake" id="m9_pre">
+  <div class="mistake-head">
+    <div class="mistake-num">2</div>
+    <h3>חזרה לדמוגרפיה אחרי שכבר עברתם הלאה</h3>
+  </div>
+  <p>טעות מבנה נוספת: סטודנטים שמים את הדמוגרפיה באמצע ואז חוזרים לשאלות הליבה — זה יוצר בלבול אצל המשיב ופוגע בקצב ההגיוני של השאלון.</p>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"סיימת עם הדמוגרפיה ועכשיו אתה חוזר שוב לשאלות רגילות? לא טוב. הדמוגרפיה בסוף."</em>
+  </div>
+
+  <div class="what-to-do">
+    שלושה בלוקים נפרדים, כל אחד עם הקדמה משלו: סינון → ליבה → דמוגרפיה. אין אזכור של דמוגרפיה לפני הבלוק האחרון.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 2: PAIN MAPPING ============== -->
+<div class="section-header">
+  <span class="num">II</span>
+  <div>
+    <span class="label">חלק שני</span>
+    <h2>מיפוי הכאב — לפני שמדברים על פתרון</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m2">
+  <div class="mistake-head">
+    <div class="mistake-num">3</div>
+    <h3>קופצים ישר לפיצ׳רים, מחירים ופתרונות</h3>
+  </div>
+  <p>זו הטעות המהותית ביותר — סטודנטים מתאהבים ברעיון שלהם ומיד מתחילים לשאול "כמה תשלם על המוצר", "האם תרצה התראות GPS", "איזה מודל מנוי תעדיף". <strong>זה מסדר שגוי לחלוטין</strong>. שאלות אלו מניחות שיש כאב ושהפתרון שלכם מתאים לו — שתיהן הנחות שיש לתקף לפני שמשאילים על השאלת מחיר ופיצ׳רים.</p>
+
+  <div class="principle">
+    קודם תמפו את הכאב. תוכיחו שהוא קיים, באילו מימדים הוא פוגע, ובאיזו תדירות. רק אחר כך — ובזהירות — תבדקו את ההצעה לפתרון. תמחור הוא כמעט תמיד שאלה <em>אחרונה</em>.
+  </div>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"מיד לשלם? חכה.... במה מדובר? תתחיל מלמפות את הכאב היום. תתחיל מלשאול שאלות שמבודדות את הטיפול בילד בכלים הקיימים ובאילו מישורים או מימדים הוא פוגע. זה הבסיס לתשלום בסוף. השאלה הזו תגיע הרבה יותר בסוף אם בכלל!"</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"באיזו מידה תכונה X תעודד אותך לדווח על מפגעים?"</span>
+    <span class="right">"בעבר, האם יצא לך לראות מפגעים שלא דיווחת עליהם? אם כן — מה היו הגורמים העיקריים שמנעו ממך לדווח?"</span>
+    <span class="note">השאלה הראשונה מניחה שיש בעיית דיווח. השנייה מתקפת אם בכלל קיימת בעיה כזו, ואיפה.</span>
+  </div>
+
+  <div class="example">
+    <span class="wrong">"כמה תהיה מוכן לשלם עבור שירות פרימיום?"</span>
+    <span class="right">"מהן ההוצאות הגבוהות ביותר שלך היום בקטגוריה X? באיזו מידה אתה חש שהחזרי המס שלך לוקים בחסר? כמה זמן ניהול חשבונות צורך ממך בחודש?" — ורק לאחר שהוכחת שיש כאב כספי או תפעולי, הצג מחיר.</span>
+  </div>
+
+  <div class="what-to-do">
+    תכננו את השאלון בארבעה גלים: (א) האם הבעיה קיימת? (ב) באילו ממדים היא פוגעת? (ג) באילו תדירויות? (ד) רק כאן — האם הפתרון שלי נראה לך כמועיל, ובמה. תמחור — בסוף.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 3: LEADING QUESTIONS ============== -->
+<div class="section-header">
+  <span class="num">III</span>
+  <div>
+    <span class="label">חלק שלישי</span>
+    <h2>שאלות מוטות וניסוחים שמכוונים לתשובה</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m3">
+  <div class="mistake-head">
+    <div class="mistake-num">4</div>
+    <h3>שאלות שכל אדם נורמלי יענה עליהן "כן"</h3>
+  </div>
+  <p>שאלה כמו "עד כמה חשוב לך לקבל תוכנית אימון מותאמת אישית, ולא תוכנית גנרית?" — לא תוסיף שום מידע. כולם יסמנו "חשוב מאוד". שאלה שאין בה אפשרות אמיתית לתשובה שלילית פירושה ששאלת באוויר.</p>
+
+  <div class="principle">
+    אם אתם יכולים לחזות את התפלגות התשובות מבלי לשאול — השאלה מיותרת. שאלה טובה מבחינה אם המשיבים שונים זה מזה.
+  </div>
+
+  <div class="real-quote">
+    הערות לדוגמה:
+    <em>"כללי מדי. כולם יגידו חשוב מאד כנראה."</em> · <em>"לא, ברור שיגיד שחשוב מאד. תכלול כל מיני אפשרויות..."</em> · <em>"זה לא ברור. ברור שיגיד יופי בינה מלאכותית זה מדהים."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"עד כמה חשוב לך שהמערכת תשתמש בבינה מלאכותית כדי לתעדף מקרים דחופים?"</span>
+    <span class="right">"באיזו תדירות בעבר הרגשת שדיווחים על מקרים דחופים לא טופלו במהירות מספקת?" + שאלה נפרדת על המקור הנתפס של הבעיה.</span>
+    <span class="note">השאלה הראשונה היא מילת באז. השנייה מודדת חוויה ממשית.</span>
+  </div>
+
+  <div class="example">
+    <span class="wrong">"באיזו מידה היית מעוניין באפליקציה אחת המרכזת את כלל הספקים?"</span>
+    <span class="right">"עד כמה מפריע לך השוני בין אפליקציות הסליקה של מפעילים שונים? (1 = לא מפריע כלל, 5 = מפריע מאוד)" — שאלת כאב, לא שאלת התלהבות.</span>
+  </div>
+
+  <div class="what-to-do">
+    הנחה: אם הניסוח נשמע כמו פיץ׳ של המוצר ("האם היית רוצה X שיפתור Y") — פסול. ניסוח טוב מתאר מצב נתון ומבקש מהמשיב להעריך אותו, מבלי לרמוז על הכיוון הרצוי.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 4: COMPOUND QUESTIONS ============== -->
+<div class="section-header">
+  <span class="num">IV</span>
+  <div>
+    <span class="label">חלק רביעי</span>
+    <h2>פירוק שאלות מורכבות</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m4">
+  <div class="mistake-head">
+    <div class="mistake-num">5</div>
+    <h3>אגרוף של שני נושאים בשאלה אחת</h3>
+  </div>
+  <p>שאלה כמו "עבור כיסוי הגנה ואימות ביטחוני, איזו תוספת תשלם?" שואלת בעצם <em>שתי</em> שאלות בנשימה אחת — כיסוי ביטוחי הוא נושא אחד, אימות ביטחוני הוא נושא אחר לגמרי. המשיב מסמן תשובה אחת, וזה נתון רעיל.</p>
+
+  <div class="principle">
+    שאלה אחת — מושג אחד. תמיד.
+  </div>
+
+  <div class="real-quote">
+    הערות לדוגמה: <em>"לא ברור, לפצל לשאלות קודם כל. כיסוי הגנה ואימות בטחוני שונה לגמרי, ולא ברור מה זה אימות בטחוני."</em> · <em>"תפרקו את סוגי המפגעים לחלקים. למשל בורות בכביש ומדרכות שבורות זה משהו אחד, צינורות תקולים או תאורה תקולה זה ברמת התשתיות וזה אחר, ועל כל אחד שתהיה סקאלה."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"באילו אפליקציות אתה משתמש לניווט?" + רשימה של אפליקציות עם בחירה מרובה.</span>
+    <span class="right">לכל אפליקציה (Waze, Google Maps, Apple Maps), שאלה נפרדת בסולם 1-5: "באיזו תדירות אתה משתמש ב־___?" — מ"כלל לא" ועד "במידה רבה מאוד".</span>
+    <span class="note">בחירה מרובה איננה תחליף לסולם. היא איננה מאפשרת ניתוח על עצמת השימוש.</span>
+  </div>
+
+  <div class="example">
+    <span class="wrong">"דרג את חשיבות המאפיינים: זמינות / מחיר / איכות / תקשורת"</span>
+    <span class="right">לכל מאפיין סולם נפרד מ־1 עד 5. דירוג סדרתי (כלומר 1 = הכי חשוב) מאבד מידע — שני אנשים יכולים לסמן "מחיר" כראשון אבל בעוצמות שונות לחלוטין.</span>
+  </div>
+
+  <div class="what-to-do">
+    כל פעם שאתם רואים בשאלה את המילים "ו־", "או", "/", או רשימה של פריטים בתוך אותה שאלה — עצרו ופצלו.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 5: LIKERT ============== -->
+<div class="section-header">
+  <span class="num">V</span>
+  <div>
+    <span class="label">חלק חמישי</span>
+    <h2>סולמות ליקרט — שימוש נכון</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m5">
+  <div class="mistake-head">
+    <div class="mistake-num">6</div>
+    <h3>קטגוריות בינאריות במקום סולם</h3>
+  </div>
+  <p>נטייה לשאול שאלות בכן/לא או "תמיד / לפעמים / אף פעם" כשהתופעה הנמדדת היא רציפה. זה מאבד מידע יקר ערך. סולם 1–5 (או 1–7) הוא כמעט תמיד עדיף.</p>
+
+  <div class="principle">
+    כל שאלת "באיזו מידה" — סולם. כל שאלת "תדירות" — סולם או טווחים. בחירה בינארית רק כשהתופעה באמת בינארית.
+  </div>
+
+  <div class="real-quote">
+    הערות לדוגמה: <em>"תתן יותר אפשרויות. אולי סקאלה."</em> · <em>"באופן קבוע זה לפעמים גם פעם בשבוע, ולכן פשוט צריך לתת סקאלה."</em> · <em>"אני חושב שלשאול על מספר מדויק זה פושינג איט. מאיפה האדם זוכר? למה לא לעשות סקאלה?"</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"כמה פעמים בחודש האחרון הרגשת שזמן ההמתנה ארוך?" — תשובה: ___ פעמים.</span>
+    <span class="right">"באיזו תדירות בחודש האחרון הרגשת שזמן ההמתנה ארוך מדי?" — בחירה מתוך: פעם בשבוע / בין פעם לפעמיים בשבוע / פעם בחודש / לא זוכר.</span>
+    <span class="note">משיבים לא זוכרים מספרים מדויקים. אל תכריחו אותם להמציא.</span>
+  </div>
+
+  <div class="example">
+    <span class="wrong">"האם אתה משתמש באפליקציות תדלוק? כן / לא"</span>
+    <span class="right">"באיזו מידה אתה משתמש באפליקציה X לתדלוק? (1 = כלל לא, 5 = במידה רבה מאוד)" — שאלה נפרדת לכל אפליקציה.</span>
+  </div>
+
+  <div class="what-to-do">
+    כל פעם שמתעוררת אצלכם שאלה בינארית — שאלו את עצמכם: "האם בעולם האמיתי, התופעה הזו דיכוטומית, או שיש בה דרגות?" אם יש דרגות — סולם.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 6: DEFINITIONS ============== -->
+<div class="section-header">
+  <span class="num">VI</span>
+  <div>
+    <span class="label">חלק שישי</span>
+    <h2>הגדרת מושגים — לא להניח שהמשיב יודע מה התכוונת</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m6">
+  <div class="mistake-head">
+    <div class="mistake-num">7</div>
+    <h3>מונחים מקצועיים ללא הסבר</h3>
+  </div>
+  <p>סטודנטים שטופלים בנושא חודשים שלמים שוכחים שלמשיב יש 30 שניות. כשאתם כותבים "מפגש כלבים", "התראות חיוניות", "מיומנות טכנולוגית", "כאב" — אתם יודעים למה התכוונתם. המשיב לא.</p>
+
+  <div class="principle">
+    כל מונח שאינו ברור באופן מיידי לאדם זר — חייב הגדרה במשפט קצר, או שיש לפרק אותו לפריטים מוחשיים.
+  </div>
+
+  <div class="real-quote">
+    הערות לדוגמה: <em>"בבקשה תגדיר מפגש כלבים. אולי זה נשמע לך שכולם יודעים מה זה, תאמין לי, יהיו לקוחות שלא ידעו."</em> · <em>"זה לא מספיק ברור. מה זה מיומנות טכנולוגית? אילו אפליקציות?"</em> · <em>"לא ברור לי מה זה כאב. תנסח אחרת."</em> · <em>"התראות באיזה קטע? תסביר. אנשים לא יודעים למה אתה מתכוון."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"איך היית מגדיר את רמת המיומנות הטכנולוגית שלך?"</span>
+    <span class="right">לפצל לשאלות מוחשיות: "האם ביצעת אי פעם רכישה דרך אפליקציה?", "האם פתרת תקלה במכשיר ללא עזרה חיצונית בשלושת החודשים האחרונים?", "באיזו תדירות אתה מתקין אפליקציות חדשות?" — כל שאלה בסולם.</span>
+  </div>
+
+  <div class="example">
+    <span class="wrong">"האם יש כאב נוסף בתחום שתרצה לשתף?"</span>
+    <span class="right">"האם יש מצבים נוספים שבהם הרגשת תסכול, חוסר נוחות או חוסר יעילות? אנא תאר/י בקצרה."</span>
+    <span class="note">"כאב" הוא ז׳רגון של מנהל מוצר. במשיב הוא מעורר בלבול.</span>
+  </div>
+
+  <div class="what-to-do">
+    הקריאו את השאלון לאדם זר לחלוטין מהתחום (סבא, חבר ממקצוע אחר). כל פעם שהוא עוצר ושואל "מה הכוונה?" — שם נמצאת בעיית הגדרה.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 7: SKIP LOGIC ============== -->
+<div class="section-header">
+  <span class="num">VII</span>
+  <div>
+    <span class="label">חלק שביעי</span>
+    <h2>כללי דילוג ושאלות סינון</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m7">
+  <div class="mistake-head">
+    <div class="mistake-num">8</div>
+    <h3>שואלים את כולם על מה שרלוונטי רק לחלקם</h3>
+  </div>
+  <p>שאלות לציי רכב נשאלות מנהג פרטי, שאלות על אפליקציות תדלוק נשאלות מנוסע ברכבת, שאלות על שירות בטלפון נשאלות ממי שלא משתמש בטלפון. נתונים מאנשים לא רלוונטיים — לא רק חסרי תועלת, הם מזהמים את ניתוח הנתונים.</p>
+
+  <div class="principle">
+    כללי דילוג (Skip Logic) הם חלק חיוני בעיצוב כל שאלון מודרני. אם שאלה רלוונטית רק לתת־קבוצה — סננו אליה.
+  </div>
+
+  <div class="real-quote">
+    הערות לדוגמה: <em>"מצויין אבל עם כלל דילוג מתאים שלא כולם יצטרכו לענות."</em> · <em>"וזה צריך להיות הרבה יותר למעלה ועם כללי דילוג מתאימים רק לציי רכב, וצריך שאלת הפנייה מתאימה של 'האם אתה מנהל צי' שיפנה לפה."</em> · <em>"מה? אבל השאלון הוא למתאמנים. אם לא, צריך להבהיר את זה. צריך כללי דילוג מתאימים."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">חטיבה בשאלון העוסקת רק במנהלי ציי רכב — נשאלת מכל המשיבים.</span>
+    <span class="right">שאלה מסננת בתחילת החטיבה: "האם אתה מנהל צי רכב או נהג עסקי?" — אם לא, דלג לחטיבה הבאה.</span>
+  </div>
+
+  <div class="what-to-do">
+    סרטטו את עץ הזרימה של השאלון לפני שאתם מקלידים שאלה אחת ב־Google Forms. סמנו אילו ענפים מי ניגש אליהם.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 8: OPERATIONAL ============== -->
+<div class="section-header">
+  <span class="num">VIII</span>
+  <div>
+    <span class="label">חלק שמיני</span>
+    <h2>שאלות אופרציונליות — מה לא איך</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m8">
+  <div class="mistake-head">
+    <div class="mistake-num">9</div>
+    <h3>"עד כמה אתה מתקשה" — שאלה מופשטת ולא מדידה</h3>
+  </div>
+  <p>שאלה כמו "עד כמה אתה מתקשה למצוא X?" שואלת על תחושה כללית. היא קשה למדידה, נתונה לפרשנות סובייקטיבית, וקשה להפיק ממנה תובנה תפעולית. עדיף להמיר אותה לשאלה אופרציונלית — כמה זמן? כמה ניסיונות? כמה פעמים נכשלת?</p>
+
+  <div class="principle">
+    מדדו פעולות וזמנים, לא תחושות. תחושות שייכות לשאלות הסיכום, לא לליבה.
+  </div>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"מה זה עד כמה אתה מתקשה? אולי שאלה יותר אופרציונלית? כמה זמן לוקח לך למצוא? או כמה פעמים אתה רוצה לקיים מפגש, ולא מצליח לאור היעדר גישה? אפשר לפרק לכמה שאלות."</em>
+  </div>
+
+  <div class="examples-label">דוגמאות</div>
+
+  <div class="example">
+    <span class="wrong">"עד כמה אתה מתקשה לתאם מפגש?"</span>
+    <span class="right">"בחודש האחרון, כמה פעמים רצית לקיים פעילות X ולא הצלחת? · כמה זמן בממוצע לוקח לך לתאם? · מה היו הסיבות העיקריות לאי־הצלחה?"</span>
+  </div>
+
+  <div class="what-to-do">
+    כל שאלה מופשטת ניתנת לפירוק לכמה שאלות מוחשיות. עברו על כל "עד כמה..." בשאלון שלכם וחשבו האם אפשר להמיר אותה לזמן, מספר, תדירות או חוויה ספציפית.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 9: RELEVANCE & ORDER ============== -->
+<div class="section-header">
+  <span class="num">IX</span>
+  <div>
+    <span class="label">חלק תשיעי</span>
+    <h2>רלוונטיות, סדר וזרימה</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m9">
+  <div class="mistake-head">
+    <div class="mistake-num">10</div>
+    <h3>שאלות בקרה כשאלות מרכזיות</h3>
+  </div>
+  <p>שאלות לפילוח (כמו "האם אתה משתמש באפליקציות On-Demand?") שייכות בסוף השאלון, ככלי לסיווג המשיבים בעת הניתוח. אין להעלות אותן לראש השאלון כשאלות עיקריות — זה מבזבז את "תקציב הקשב" של המשיב.</p>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"ואיך זה קשור? קשה להשוות את זה לסוגיית X — זה שונה לגמרי. לפחות לא כשאלה עיקרית. אפשר להשאיר אותה כשאלת בקרה בסוף כדי לפלח לפי אוריינטציה טכנולוגית."</em>
+  </div>
+
+  <div class="what-to-do">
+    שאלות בקרה (אוריינטציה טכנולוגית, אורח חיים, אזור מגורים) — בסוף, יחד עם הדמוגרפיה.
+  </div>
+</article>
+
+<article class="mistake">
+  <div class="mistake-head">
+    <div class="mistake-num">11</div>
+    <h3>טקסט חופשי בלי הצדקה</h3>
+  </div>
+  <p>שאלות פתוחות הן יקרות — הן דורשות זמן מהמשיב, מקטינות את שיעור ההשלמה, וקשות לניתוח. השתמשו בהן בחיסכון, רק כשהמטרה היא איסוף ניואנסים שלא ניתן לצפות מראש.</p>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"לא, עדיף לציין איזור מגורים. שורט אנסר לא יאפשר ניתוח כלל."</em>
+  </div>
+
+  <div class="what-to-do">
+    כל שאלה שניתן להציג בה רשימה סגורה של אפשרויות — הציגו רשימה סגורה (עם "אחר ___" כברירת מחדל). שאלת "אחר" אחת בסוף עבור הערות חופשיות מספיקה.
+  </div>
+</article>
+
+
+<!-- ============== SECTION 10: FORMAL ============== -->
+<div class="section-header">
+  <span class="num">X</span>
+  <div>
+    <span class="label">חלק עשירי</span>
+    <h2>חובות פורמליות — שאלות חובה ואיכות הניסוח</h2>
+  </div>
+</div>
+
+<article class="mistake" id="m10">
+  <div class="mistake-head">
+    <div class="mistake-num">12</div>
+    <h3>"חובה לכל השאלות" ללא הקדמה למשיב</h3>
+  </div>
+  <p>סטודנטים נבונים מסמנים את כל השאלות כ־Required כדי לא לקבל נתונים חלקיים. זה נכון, אבל יש דרך נכונה לעשות את זה.</p>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"בעייתי לגבי הדמוגרפי. אם עושים את זה, צריך להסביר בתחילת השאלון שחובה לענות על כל השאלות, ובמידה ואין מוכנות לכך — ניתן להמנע מלהשיב."</em>
+  </div>
+
+  <div class="what-to-do">
+    בתחילת השאלון: הקדמה קצרה — "השאלון מכיל שאלות חובה. אם אינך מוכן/ה לענות על שאלה כלשהי, אנא המנע/י מהשבת השאלון. אורך השאלון: 3 דקות. השאלון אנונימי לחלוטין." זה גם משפר אמון וגם מצמצם נשירה אמצע.
+  </div>
+</article>
+
+<article class="mistake">
+  <div class="mistake-head">
+    <div class="mistake-num">13</div>
+    <h3>חזרות, דמיון בין שאלות והעדר רלוונטיות</h3>
+  </div>
+  <p>שאלות שחוזרות על אותו רעיון בנוסחים שונים, או חטיבות שלמות שלא מקושרות להצעת הערך — מעייפות את המשיב. כל שאלה צריכה להיות מנומקת בשאלת מחקר ספציפית.</p>
+
+  <div class="real-quote">
+    הערה לדוגמה: <em>"זה לא קצת כפילות עם קודם? לדעתי, צריך לומר בצורה אחרת..."</em> · <em>"שאלה מיותרת. לכולם יש סמארטפון."</em>
+  </div>
+
+  <div class="what-to-do">
+    לפני השליחה, ערכו טבלה: כל שאלה — שאלת מחקר → מטרה → מדד → רלוונטיות ל־PRD. שאלות שאינן עוברות את השורה הזו — הסירו.
+  </div>
+</article>
+
+
+<!-- ============== SUMMARY ============== -->
+<section class="summary">
+  <h2>צ'קליסט סיכום: לפני שאתם שולחים שאלון</h2>
+  <p>13 השאלות שתשאלו את עצמכם לפני לחיצת "שלח"</p>
+  <ol class="checklist">
+    <li><strong>סינון או דמוגרפיה?</strong> — האם השאלון פותח בשאלות סינון בלבד, והדמוגרפיה דחויה לסוף?</li>
+    <li><strong>כאב לפני פתרון?</strong> — האם תיקפתי את קיום הבעיה, ממדיה ותדירותה לפני שהצגתי שאלות על המוצר?</li>
+    <li><strong>תמחור בסוף?</strong> — האם שאלות המחיר מופיעות אך ורק בסוף, ורק לאחר שהוכחתי שיש כאב?</li>
+    <li><strong>אין שאלות מוטות?</strong> — האם עברתי על כל שאלה ובדקתי שאי־אפשר לחזות מראש את התשובה?</li>
+    <li><strong>שאלה אחת — מושג אחד?</strong> — האם פיצלתי כל שאלה מורכבת לרכיבים נפרדים?</li>
+    <li><strong>סולמות במקום בינארי?</strong> — האם כל שאלת "באיזו מידה" מופיעה כסולם 1–5 ולא ככן/לא?</li>
+    <li><strong>הגדרות ברורות?</strong> — האם כל מונח מקצועי הוסבר במשפט אחד או הוחלף במונח פשוט?</li>
+    <li><strong>כללי דילוג?</strong> — האם שאלות שרלוונטיות רק לתת־קבוצה כוללות שאלת סינון מקדימה?</li>
+    <li><strong>אופרציונלי או מופשט?</strong> — האם המרתי שאלות תחושה לשאלות מדידות (זמן, תדירות, מספר)?</li>
+    <li><strong>סדר הגיוני?</strong> — האם השאלון זורם בסדר אחד: סינון → ליבה (כאב→פתרון→תמחור) → דמוגרפיה?</li>
+    <li><strong>שאלות חובה — מוסבר?</strong> — האם הסברתי בהקדמה שזהו שאלון חובה ומה אורכו הצפוי?</li>
+    <li><strong>אין כפילויות ושאלות מיותרות?</strong> — האם כל שאלה משרתת שאלת מחקר ספציפית?</li>
+    <li><strong>בדיקה עם זרים?</strong> — האם הקראתי את השאלון לפחות לאדם אחד מחוץ לתחום, וודאתי שאין נקודות בלבול?</li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="colophon">
+  <p>מסמך לימודי · בהתבסס על שאלוני נספח&nbsp;ג׳ של פרויקטי גמר</p>
+  <p>ללא פרטים מזהים · לשימוש בכיתה ולעיון אישי</p>
+</footer>
+
+</body>
+</html>
