@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Analyzer – Dr. Shay Tsaban | CAPM Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a; --card: #1e293b; --card-hover: #334155;
+      --text: #e2e8f0; --muted: #94a3b8; --accent: #3b82f6;
+      --success: #22c55e; --warning: #eab308; --danger: #ef4444;
+      --border: #334155; --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 2rem 1rem; line-height: 1.6; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 2rem; margin: 0 0 0.25rem; background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; color: transparent; }
+    .subtitle { text-align: center; color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    
+    .controls { background: var(--card); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.85rem; color: var(--muted); }
+    input, select { width: 100%; padding: 0.65rem; background: #0b1120; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+    input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
+    .btn-group { grid-column: 1 / -1; display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    button { padding: 0.7rem 1.2rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; }
+    #analyzeBtn { background: var(--accent); color: white; }
+    #analyzeBtn:hover:not(:disabled) { background: #2563eb; }
+    #analyzeBtn:disabled { background: #475569; cursor: not-allowed; }
+    #bypassCache { background: var(--warning); color: #0f172a; }
+    #bypassCache:hover { background: #ca8a04; }
+    #toggleReturnChart { background: #6366f1; color: white; margin-top: 1rem; width: 100%; }
+    #toggleReturnChart:hover { background: #4f46e5; }
+
+    #status { background: var(--card); padding: 1rem; border-radius: 10px; text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; min-height: 3rem; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
+    
+    .dashboard { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .card { background: var(--card); padding: 1.25rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card h3 { margin: 0 0 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; }
+    canvas { width: 100% !important; height: 300px !important; }
+
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .metric-box { background: #0b1120; padding: 0.9rem; border-radius: 10px; text-align: center; border: 1px solid var(--border); position: relative; }
+    .metric-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 0.35rem; }
+    .metric-value { font-size: 1.25rem; font-weight: 700; margin-top: 0.3rem; }
+    .metric-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+    .rec-box { grid-column: span 2; background: #0b1120; padding: 1rem; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
+    .rec-tag { display: inline-block; padding: 0.35rem 0.8rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem; margin-top: 0.4rem; }
+    .rec-buy { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+    .rec-sell { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+    .rec-hold { background: rgba(234,179,8,0.15); color: var(--warning); border: 1px solid rgba(234,179,8,0.3); }
+    .rec-reason { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.4; }
+
+    .info-icon { cursor: help; color: var(--accent); font-size: 0.85rem; }
+    .tooltip { display: none; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: #0f172a; border: 1px solid var(--accent); padding: 0.6rem; border-radius: 8px; font-size: 0.78rem; width: 220px; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-align: left; color: var(--text); }
+    .metric-box:hover .tooltip { display: block; }
+
+    .edu-panel { background: var(--card); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+    .edu-panel h3 { margin-top: 0; color: var(--accent); }
+    .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .edu-card { background: #0b1120; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent); }
+    .edu-card h4 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+    .edu-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+    #downloadCsv { display: block; margin: 0 auto 2rem; padding: 0.75rem 1.5rem; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    #downloadCsv:disabled { background: #475569; cursor: not-allowed; }
+
+    .disclaimer { background: #111827; padding: 1.25rem; border-radius: 10px; font-size: 0.8rem; color: #6b7280; border: 1px solid #374151; line-height: 1.5; }
+    .disclaimer strong { color: #9ca3af; }
+
+    @media (max-width: 800px) { .dashboard { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📈 Stock Analyzer (CAPM)</h1>
+    <p class="subtitle">Empirical CAPM Dashboard | Historical Close Prices | Beta, Alpha & Risk Metrics</p>
+
+    <div class="controls">
+      <div><label>🏷️ Symbol</label><input type="text" id="symbol" value="AAPL" placeholder="e.g., AAPL, MSFT, TSLA"></div>
+      <div><label>📅 Start Date</label><input type="date" id="startDate"></div>
+      <div><label>📅 End Date</label><input type="date" id="endDate"></div>
+      <div><label>⚙️ Interval</label>
+        <select id="interval">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="btn-group">
+        <button id="analyzeBtn">🚀 Run Analysis</button>
+        <button id="bypassCache">🔄 Force Fresh Fetch</button>
+      </div>
+    </div>
+
+    <div id="status">Ready. Enter a ticker and click Run Analysis.</div>
+
+    <div class="dashboard">
+      <div class="card"><h3>📊 Close Price History</h3><canvas id="priceChart"></canvas></div>
+      <div class="card"><h3>📉 CAPM Metrics <span style="font-size:0.75rem; color:var(--muted); font-weight:400;">(Annualized)</span></h3>
+        <div class="metrics">
+          <div class="metric-box">
+            <div class="metric-label">Actual Total Return <span class="info-icon">ℹ️</span></div>
+            <div class="metric-value" id="valActualRet">–</div>
+            <div class="metric-sub">Over selected period</div>
+            <div class="tooltip">Simple price return: (End Price − Start Price) / Start Price. Does not include dividends.</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Beta (β) <span class="info-icon">ℹ️</span></div>
+            <div class="metric-value" id="valBeta">–</div>
+            <div class="metric-sub">Market sensitivity</div>
+            <div class="tooltip">Measures how much the stock moves relative to the market (SPY). β=1 → market-like. β>1 → more volatile. β<1 → less volatile.</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Alpha (α) <span class="info-icon">ℹ️</span></div>
+            <div class="metric-value" id="valAlpha">–</div>
+            <div class="metric-sub">Excess return vs CAPM</div>
+            <div class="tooltip">Return above/below what CAPM predicts given the stock's beta. Positive α suggests outperformance; negative α suggests underperformance.</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Expected Return <span class="info-icon">ℹ️</span></div>
+            <div class="metric-value" id="valExpRet">–</div>
+            <div class="metric-sub">CAPM model output</div>
+            <div class="tooltip">E(R) = Rf + β×(Rm−Rf). The return CAPM says you should expect given the stock's risk. Based on historical SPY & 4.25% Rf.</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Volatility (σ) <span class="info-icon">ℹ️</span></div>
+            <div class="metric-value" id="valVol">–</div>
+            <div class="metric-sub" id="valVolInterp">–</div>
+            <div class="tooltip">Annualized standard deviation of periodic returns. Measures total price risk. Higher σ = wider return swings.</div>
+          </div>
+          <div class="rec-box">
+            <div class="metric-label">Model Signal</div>
+            <div class="rec-tag" id="valRec">–</div>
+            <div class="rec-reason" id="recReason">Run analysis to generate signal.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="toggleReturnChart" disabled>📈 Show Expected vs Actual Cumulative Return</button>
+    <div id="returnComparisonContainer" style="display:none; margin-top:1.5rem;" class="card">
+      <h3>📉 Expected vs Actual Cumulative Return <span class="info-icon" title="Expected path compounds the CAPM annualized expected return periodically. Actual path compounds real price changes.">ℹ️</span></h3>
+      <canvas id="returnChart"></canvas>
+    </div>
+
+    <button id="downloadCsv" disabled>📥 Download CSV (Date, Close)</button>
+
+    <div class="edu-panel">
+      <h3>📘 CAPM Components & Assumptions</h3>
+      <div class="edu-grid">
+        <div class="edu-card"><h4>❓ What is Alpha?</h4><p>Alpha (α) is the difference between the stock's actual annualized return and the return predicted by CAPM. It represents manager/skill or mispricing. α > 0 means the stock beat its risk-adjusted benchmark.</p></div>
+        <div class="edu-card"><h4>❓ Expected Return?</h4><p>Calculated as <code>Rf + β × (Market Return − Rf)</code>. It's the compensation CAPM says investors should demand for taking on the stock's systematic risk. Based on historical data, not a guarantee.</p></div>
+        <div class="edu-card"><h4>❓ Why BUY/SELL/HOLD?</h4><p>Signals are heuristic: <b>BUY</b> if α > 1% (stock outperformed its risk profile), <b>SELL</b> if α < −1%, <b>HOLD</b> if near zero. These are model-based flags, not financial advice.</p></div>
+        <div class="edu-card"><h4>❓ Key Assumptions</h4><p>• Linear risk-return relationship<br>• SPY proxies the true market portfolio<br>• 4.25% static risk-free rate<br>• Historical returns proxy future expectations<br>• Returns are normally distributed (for σ)</p></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>⚠️ Disclaimer:</strong> This tool is for educational and research purposes only. It implements an empirical CAPM model using historical price data and a static 4.25% risk-free rate. CAPM is a theoretical framework with known limitations (e.g., assumes efficient markets, single risk factor, constant beta). Signals (BUY/SELL/HOLD) are generated from arbitrary alpha thresholds and do not constitute financial, investment, or trading advice. Past performance does not guarantee future results. Always consult a licensed financial advisor before making investment decisions. Data sourced via Yahoo Finance, Alpha Vantage, and Google Finance. Created by Dr. Shay Tsaban.
+    </div>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzVRdmUPOZio8woVBKY7pDScMjo1zAQ94Ag9xCcPejr2RYasjnRBk5WDfV3EF7fYY0xIA/exec";
+    let chartPrice = null, chartReturn = null, csvData = [];
+    let analysisState = { prices: [], dates: [], capm: null, interval: 'daily' };
+
+    const today = new Date();
+    const oneYearAgo = new Date(); oneYearAgo.setFullYear(today.getFullYear() - 1);
+    document.getElementById('endDate').valueAsDate = today;
+    document.getElementById('startDate').valueAsDate = oneYearAgo;
+
+    document.getElementById('analyzeBtn').addEventListener('click', () => runAnalysis(false));
+    document.getElementById('bypassCache').addEventListener('click', () => runAnalysis(true));
+    document.getElementById('toggleReturnChart').addEventListener('click', toggleReturnComparison);
+
+    async function runAnalysis(bypassCache) {
+      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      const interval = document.getElementById('interval').value;
+      const statusEl = document.getElementById('status');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const downloadBtn = document.getElementById('downloadCsv');
+      const toggleBtn = document.getElementById('toggleReturnChart');
+
+      if (!symbol || !start || !end) { statusEl.textContent = "⚠️ Please fill in Symbol, Start Date, and End Date."; return; }
+
+      analyzeBtn.disabled = true; downloadBtn.disabled = true; toggleBtn.disabled = true;
+      statusEl.innerHTML = "🔄 Fetching & calculating CAPM...<br><span style='color:var(--muted)'>Yahoo → Alpha Vantage → GoogleFinance fallback</span>";
+
+      const params = new URLSearchParams({ action: 'analyze', symbol, startDate: start, endDate: end, interval, nocache: bypassCache ? '1' : '0' });
+      const fetchUrl = `${GAS_URL}?${params.toString()}`;
+      console.log("🐛 Debug: Fetching", fetchUrl);
+
+      try {
+        const res = await fetch(fetchUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        console.log("🐛 Debug: Response", data);
+
+        if (!data.success) throw new Error(data.error || "API error");
+        if (!data.chartData?.dates?.length) throw new Error("No price data returned");
+
+        // Store state
+        analysisState.prices = data.chartData.prices;
+        analysisState.dates = data.chartData.dates;
+        analysisState.capm = data.capm;
+        analysisState.interval = interval;
+
+        // CSV
+        csvData = data.chartData.dates.map((d, i) => ({ date: d, close: data.chartData.prices[i] }));
+        downloadBtn.disabled = false;
+        toggleBtn.disabled = false;
+
+        // Actual total return
+        const firstP = data.chartData.prices[0];
+        const lastP = data.chartData.prices[data.chartData.prices.length - 1];
+        const actualTotalRet = (lastP - firstP) / firstP;
+
+        updateMetrics(data.capm, actualTotalRet);
+        statusEl.innerHTML = `✅ Analysis complete. <b>${data.dataPoints}</b> ${interval} points | Source: ${data.source}`;
+        renderPriceChart(data.chartData.dates, data.chartData.prices);
+        
+        // Reset comparison chart if visible
+        document.getElementById('returnComparisonContainer').style.display = 'none';
+        toggleBtn.textContent = '📈 Show Expected vs Actual Cumulative Return';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = `❌ ${err.message}`;
+      } finally { analyzeBtn.disabled = false; }
+    }
+
+    function updateMetrics(capm, actualTotalRet) {
+      const pct = v => v != null ? (v * 100).toFixed(2) + '%' : '–';
+      document.getElementById('valActualRet').textContent = pct(actualTotalRet);
+      document.getElementById('valBeta').textContent = capm.beta?.toFixed(3) || '–';
+      document.getElementById('valAlpha').textContent = pct(capm.alpha);
+      document.getElementById('valExpRet').textContent = pct(capm.expectedReturn);
+      document.getElementById('valVol').textContent = pct(capm.volatility);
+      document.getElementById('valVolInterp').textContent = capm.interpretation || '–';
+
+      const rec = capm.recommendation || 'HOLD';
+      const recEl = document.getElementById('valRec');
+      recEl.textContent = rec;
+      recEl.className = 'rec-tag ' + (rec.includes('BUY') ? 'rec-buy' : rec.includes('SELL') ? 'rec-sell' : 'rec-hold');
+
+      const alphaPct = capm.alpha != null ? (capm.alpha * 100).toFixed(2) : 0;
+      let reason = '';
+      if (rec.includes('BUY')) reason = `Annualized alpha is +${alphaPct}%. The stock historically outperformed its CAPM risk-adjusted benchmark, suggesting relative strength.`;
+      else if (rec.includes('SELL')) reason = `Annualized alpha is ${alphaPct}%. The stock underperformed relative to its systematic risk (beta), indicating potential overvaluation or weakness.`;
+      else reason = `Alpha is near zero (${alphaPct}%). Returns align closely with CAPM expectations given the stock's market risk. No strong model signal.`;
+      document.getElementById('recReason').textContent = reason;
+    }
+
+    function renderPriceChart(dates, prices) {
+      const ctx = document.getElementById('priceChart').getContext('2d');
+      if (chartPrice) chartPrice.destroy();
+      chartPrice = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Close Price',
+            data: prices,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.15)',
+            fill: true,
+            tension: 0.25,
+            pointRadius: 0,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, backgroundColor: '#1e293b', titleColor: '#e2e8f0', bodyColor: '#94a3b8', borderColor: '#334155', borderWidth: 1 } },
+          scales: { x: { ticks: { color: '#64748b', maxTicksLimit: 8 }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } } }
+        }
+      });
+    }
+
+    function toggleReturnComparison() {
+      const container = document.getElementById('returnComparisonContainer');
+      const btn = document.getElementById('toggleReturnChart');
+      if (container.style.display === 'none') {
+        renderReturnChart();
+        container.style.display = 'block';
+        btn.textContent = '📉 Hide Expected vs Actual Cumulative Return';
+      } else {
+        container.style.display = 'none';
+        btn.textContent = '📈 Show Expected vs Actual Cumulative Return';
+      }
+    }
+
+    function renderReturnChart() {
+      const { prices, dates, capm, interval } = analysisState;
+      if (!prices.length || !capm) return;
+
+      const periodsPerYear = { daily: 252, weekly: 52, monthly: 12 }[interval] || 252;
+      const expectedAnnual = capm.expectedReturn || 0;
+      const expectedPeriodic = Math.pow(1 + expectedAnnual, 1 / periodsPerYear) - 1;
+
+      let actualCum = [0], expectedCum = [0];
+      let cumA = 0, cumE = 0;
+
+      for (let i = 1; i < prices.length; i++) {
+        const r = (prices[i] - prices[i-1]) / prices[i-1];
+        cumA = (1 + cumA) * (1 + r) - 1;
+        cumE = (1 + cumE) * (1 + expectedPeriodic) - 1;
+        actualCum.push(cumA);
+        expectedCum.push(cumE);
+      }
+
+      const ctx = document.getElementById('returnChart').getContext('2d');
+      if (chartReturn) chartReturn.destroy();
+      chartReturn = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [
+            { label: 'Actual Cumulative Return', data: actualCum, borderColor: '#22c55e', backgroundColor: 'transparent', borderWidth: 2, tension: 0.2, pointRadius: 0 },
+            { label: 'CAPM Expected Path', data: expectedCum, borderColor: '#ef4444', borderDash: [5, 5], backgroundColor: 'transparent', borderWidth: 2, tension: 0.1, pointRadius: 0 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#e2e8f0' } },
+            tooltip: {
+              mode: 'index', intersect: false, backgroundColor: '#1e293b', titleColor: '#e2e8f0', bodyColor: '#94a3b8', borderColor: '#334155', borderWidth: 1,
+              callbacks: { label: ctx => `${ctx.dataset.label}: ${(ctx.parsed.y * 100).toFixed(2)}%` }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#64748b', maxTicksLimit: 8 }, grid: { color: '#1e293b' } },
+            y: { ticks: { color: '#64748b', callback: v => (v*100).toFixed(0)+'%' }, grid: { color: '#1e293b' } }
+          }
+        }
+      });
+    }
+
+    document.getElementById('downloadCsv').addEventListener('click', () => {
+      if (!csvData.length) return;
+      const csv = 'Date,Close\n' + csvData.map(r => `${r.date},${r.close}`).join('\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+      a.download = `${document.getElementById('symbol').value}_close.csv`; a.click();
+    });
+  </script>
+</body>
+</html>
