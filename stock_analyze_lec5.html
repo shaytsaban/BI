@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Analyzer – Dr. Shay Tsaban | CAPM & Close Prices</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --primary: #0d6efd; --bg: #f8f9fa; --card: #ffffff; --text: #333; --muted: #6c757d; --success: #198754; --warning: #ffc107; --danger: #dc3545; }
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; background: var(--bg); color: var(--text); line-height: 1.5; }
+    h1 { text-align: center; margin-bottom: 0.25rem; font-size: 1.8rem; }
+    .subtitle { text-align: center; color: var(--muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; background: var(--card); padding: 1.25rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.85rem; }
+    input, select { width: 100%; padding: 0.55rem; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; }
+    .buttons { display: flex; gap: 0.5rem; margin-top: 0.5rem; grid-column: 1 / -1; flex-wrap: wrap; }
+    button { padding: 0.6rem 1.1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: 0.2s; }
+    #analyzeBtn { background: var(--primary); color: white; }
+    #analyzeBtn:disabled { background: #6c757d; cursor: not-allowed; }
+    #bypassCache { background: var(--warning); color: #212529; }
+    #status { margin: 1rem 0; padding: 0.85rem; background: #e9ecef; border-radius: 6px; text-align: center; font-size: 0.9rem; min-height: 2.5rem; }
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem; }
+    .chart-box { background: var(--card); padding: 1rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .chart-box h3 { margin: 0 0 0.75rem; font-size: 1rem; text-align: center; }
+    canvas { width: 100% !important; height: 280px !important; }
+    .capm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .capm-card { background: #f1f3f5; padding: 0.75rem; border-radius: 8px; text-align: center; }
+    .capm-card .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .capm-card .value { font-size: 1.1rem; font-weight: 600; margin-top: 0.25rem; }
+    .rec-buy { color: var(--success); } .rec-sell { color: var(--danger); } .rec-hold { color: var(--warning); }
+    #downloadCsv { display: block; margin: 1.5rem auto; padding: 0.65rem 1.5rem; background: var(--success); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+    #downloadCsv:disabled { background: #6c757d; cursor: not-allowed; }
+    footer { text-align: center; margin-top: 2rem; font-size: 0.8rem; color: var(--muted); line-height: 1.6; border-top: 1px solid #dee2e6; padding-top: 1rem; }
+    @media (max-width: 720px) { .charts { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>📈 Stock Analyzer (CAPM)</h1>
+  <p class="subtitle">Close prices only | Daily / Weekly / Monthly | Beta & Alpha</p>
+
+  <div class="controls">
+    <div><label>📌 Symbol</label><input type="text" id="symbol" value="AAPL" placeholder="e.g., AAPL, MSFT"></div>
+    <div><label>📅 Start Date</label><input type="date" id="startDate"></div>
+    <div><label>📅 End Date</label><input type="date" id="endDate"></div>
+    <div><label>⏱️ Interval</label>
+      <select id="interval">
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+    </div>
+    <div class="buttons">
+      <button id="analyzeBtn">🚀 Analyze</button>
+      <button id="bypassCache">⚡ Bypass cache (force fresh fetch — slower)</button>
+    </div>
+  </div>
+
+  <div id="status">Ready. Enter a symbol and click Analyze.</div>
+
+  <div class="charts">
+    <div class="chart-box"><h3>📉 Close Price History</h3><canvas id="priceChart"></canvas></div>
+    <div class="chart-box"><h3>📊 CAPM Analysis</h3>
+      <div id="capmResults" class="capm-grid">
+        <div class="capm-card"><div class="label">Beta</div><div class="value" id="valBeta">–</div></div>
+        <div class="capm-card"><div class="label">Alpha (Annual)</div><div class="value" id="valAlpha">–</div></div>
+        <div class="capm-card"><div class="label">Expected Return</div><div class="value" id="valExpRet">–</div></div>
+        <div class="capm-card"><div class="label">Volatility</div><div class="value" id="valVol">–</div></div>
+        <div class="capm-card" style="grid-column: span 2;"><div class="label">Recommendation</div><div class="value" id="valRec">–</div></div>
+      </div>
+    </div>
+  </div>
+
+  <button id="downloadCsv" disabled>📥 Download CSV (Date, Close)</button>
+
+  <footer>
+    Created by Dr. Shay Tsaban | Data: Yahoo Finance → Alpha Vantage → Google Finance (fallback) | Market proxy: SPY | Risk‑free rate: 4.25%<br>
+    🔧 Debug: open browser console to see the raw API response on every request
+  </footer>
+
+  <script>
+    // 🔗 Your Google Apps Script Web App URL
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbz1lvxGzo5IMSOY8-jHnElEnwdbDXg7UukXOuQAYCC0UuwT10YFeonJt6mG_5QbUy6-ew/exec";
+    
+    let chartPrice = null;
+    let csvData = [];
+
+    // Set default dates (1 year back)
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+    document.getElementById('endDate').valueAsDate = today;
+    document.getElementById('startDate').valueAsDate = oneYearAgo;
+
+    document.getElementById('analyzeBtn').addEventListener('click', () => runAnalysis(false));
+    document.getElementById('bypassCache').addEventListener('click', () => runAnalysis(true));
+
+    async function runAnalysis(bypassCache) {
+      const symbol = document.getElementById('symbol').value.trim().toUpperCase();
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      const interval = document.getElementById('interval').value;
+      const statusEl = document.getElementById('status');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const downloadBtn = document.getElementById('downloadCsv');
+
+      if (!symbol || !start || !end) {
+        statusEl.textContent = "⚠️ Please fill in Symbol, Start Date, and End Date.";
+        return;
+      }
+
+      analyzeBtn.disabled = true;
+      downloadBtn.disabled = true;
+      statusEl.innerHTML = "Fetching data: Yahoo → Alpha Vantage → GoogleFinance ...<br>⏱️ Usually under 5 sec on Yahoo; up to 20s if all fall back to GoogleFinance";
+
+      // 🔑 Parameter names MUST match your GAS exactly
+      const params = new URLSearchParams({
+        action: 'analyze',
+        symbol: symbol,
+        startDate: start,
+        endDate: end,
+        interval: interval,
+        nocache: bypassCache ? '1' : '0'
+      });
+      const fetchUrl = `${GAS_URL}?${params.toString()}`;
+      console.log("🔧 Debug: Fetching from", fetchUrl);
+
+      try {
+        const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        console.log("🔧 Debug: Raw API response", data);
+
+        // ✅ Parse your exact GAS response structure
+        if (!data.success) throw new Error(data.error || "API returned an error");
+        if (!data.chartData || !data.chartData.dates || !data.chartData.prices) {
+          throw new Error("Missing chart data in response");
+        }
+
+        // Store for CSV
+        csvData = data.chartData.dates.map((d, i) => ({ date: d, close: data.chartData.prices[i] }));
+        downloadBtn.disabled = false;
+
+        // Update CAPM panel
+        updateCapmPanel(data.capm, data.summary);
+
+        statusEl.innerHTML = `✅ Data loaded (${data.source || 'API'}). <b>${data.dataPoints}</b> points analyzed.`;
+        renderPriceChart(data.chartData.dates, data.chartData.prices);
+
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = `❌ Error: ${err.message}. Check console for details.`;
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    }
+
+    function updateCapmPanel(capm, summary) {
+      const fmtPct = v => v !== undefined && v !== null ? (v * 100).toFixed(2) + '%' : '–';
+      document.getElementById('valBeta').textContent = capm.beta?.toFixed(3) || '–';
+      document.getElementById('valAlpha').textContent = fmtPct(capm.alpha);
+      document.getElementById('valExpRet').textContent = fmtPct(capm.expectedReturn);
+      document.getElementById('valVol').textContent = capm.interpretation || '–';
+      
+      const recEl = document.getElementById('valRec');
+      recEl.textContent = capm.recommendation || '–';
+      recEl.className = 'value ' + (capm.recommendation?.includes('BUY') ? 'rec-buy' : capm.recommendation?.includes('SELL') ? 'rec-sell' : 'rec-hold');
+    }
+
+    function renderPriceChart(dates, prices) {
+      const ctx = document.getElementById('priceChart').getContext('2d');
+      if (chartPrice) chartPrice.destroy();
+      chartPrice = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Close Price',
+            data: prices,
+            borderColor: '#0d6efd',
+            backgroundColor: 'rgba(13,110,253,0.1)',
+            fill: true,
+            tension: 0.2,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { maxTicksLimit: 10 } } }
+        }
+      });
+    }
+
+    document.getElementById('downloadCsv').addEventListener('click', () => {
+      if (!csvData.length) return;
+      let csv = 'Date,Close\n';
+      csvData.forEach(row => csv += `${row.date},${row.close}\n`);
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${document.getElementById('symbol').value}_close.csv`;
+      a.click(); URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
