@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן ידע מקיף — 50 שאלות | בינה עסקית, Tableau, שאלונים & ויזואליזציה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f6fb; --surface: #ffffff; --surface2: #f8f9fc; --surface3: #eef1f7;
+            --border: #dde2ee; --accent: #2563eb; --accent2: #16a34a; --accent3: #dc2626;
+            --text: #1a1f36; --text-muted: #4a5270; --text-dim: #9ba3c0;
+            --correct-bg: #f0fdf4; --correct-border: #86efac; --correct-text: #15803d;
+            --wrong-bg: #fff1f0; --wrong-border: #fca5a5; --wrong-text: #b91c1c;
+            --selected-bg: #eff6ff; --selected-border: #2563eb;
+            --radius: 12px; --radius-sm: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text);
+            min-height: 100vh; direction: rtl; line-height: 1.65; font-size: 16px;
+        }
+        .hero {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%);
+            padding: 50px 40px 40px; text-align: center; color: #fff;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 300px;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-tag {
+            display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: #bfdbfe; background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3); padding: 4px 14px; border-radius: 20px;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px;
+        }
+        .hero h1 { font-size: clamp(26px, 4.5vw, 44px); font-weight: 900; line-height: 1.15; margin-bottom: 10px; }
+        .hero p { font-size: 15px; color: #dbeafe; max-width: 600px; margin: 0 auto 20px; }
+        .stats-bar { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 8px; }
+        .stat-item { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #bfdbfe; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .stat-dot.blue { background: #93c5fd; } .stat-dot.green { background: #86efac; } .stat-dot.orange { background: #fcd34d; }
+        .progress-section {
+            position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            padding: 12px 40px; display: flex; align-items: center; gap: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .progress-label { font-size: 13px; color: var(--text-muted); white-space: nowrap; font-weight: 600; }
+        .progress-bar-wrap { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+        .score-display { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); white-space: nowrap; }
+        .main { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+        .section-divider { display: flex; align-items: center; gap: 14px; margin: 44px 0 22px; }
+        .section-divider-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+        .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+        .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 18px; overflow: hidden; animation: slideIn 0.35s ease both; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .question-header { padding: 18px 22px 0; display: flex; align-items: flex-start; gap: 12px; }
+        .q-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); background: var(--surface3); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; white-space: nowrap; margin-top: 2px; flex-shrink: 0; }
+        .question-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.6; flex: 1; }
+        .difficulty-badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; font-weight: 600; }
+        .diff-easy { background: #dcfce7; color: #166534; } .diff-medium { background: #fef3c7; color: #92400e; } .diff-hard { background: #fee2e2; color: #991b1b; }
+        .options-block { padding: 4px 22px 18px; display: flex; flex-direction: column; gap: 7px; }
+        .option-btn { display: flex; align-items: flex-start; gap: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 15px; cursor: pointer; text-align: right; direction: rtl; transition: all 0.16s; font-family: 'Heebo', sans-serif; width: 100%; color: var(--text); font-size: 14px; }
+        .option-btn:hover:not(:disabled) { background: var(--surface3); border-color: #3d444d; transform: translateX(-2px); }
+        .option-btn:disabled { cursor: default; }
+        .option-circle { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); flex-shrink: 0; transition: all 0.16s; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-circle { border-color: var(--accent); color: var(--accent); }
+        .option-text { flex: 1; line-height: 1.5; }
+        .option-btn.selected { background: var(--selected-bg); border-color: var(--selected-border); }
+        .option-btn.selected .option-circle { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .option-btn.correct { background: var(--correct-bg); border-color: var(--correct-border); }
+        .option-btn.correct .option-circle { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+        .option-btn.correct .option-text { color: var(--correct-text); }
+        .option-btn.wrong { background: var(--wrong-bg); border-color: var(--wrong-border); }
+        .option-btn.wrong .option-circle { background: var(--accent3); border-color: var(--accent3); color: #fff; }
+        .option-btn.wrong .option-text { color: var(--wrong-text); }
+        .option-btn.dimmed { opacity: 0.4; }
+        .check-btn-wrap { padding: 0 22px 18px; display: flex; justify-content: flex-start; }
+        .check-btn { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), #1f6feb); color: #fff; border: none; border-radius: var(--radius-sm); padding: 9px 20px; font-size: 13.5px; font-weight: 700; font-family: 'Heebo', sans-serif; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(88,166,255,0.2); }
+        .check-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(88,166,255,0.35); }
+        .check-btn:disabled { opacity: 0.4; cursor: default; transform: none; box-shadow: none; }
+        .explanation-block { margin: 0 22px 22px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); animation: expandIn 0.3s ease both; }
+        @keyframes expandIn { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 2000px; } }
+        .explanation-header { display: flex; align-items: center; gap: 10px; padding: 11px 15px; font-size: 13px; font-weight: 700; }
+        .explanation-header.correct-header { background: rgba(63,185,80,0.12); color: var(--correct-text); border-bottom: 1px solid rgba(63,185,80,0.18); }
+        .explanation-header.wrong-header { background: rgba(247,129,102,0.12); color: var(--wrong-text); border-bottom: 1px solid rgba(247,129,102,0.18); }
+        .explanation-body { background: var(--surface2); padding: 15px; font-size: 13.5px; color: var(--text-muted); line-height: 1.75; }
+        .explanation-body strong { color: var(--text); font-weight: 700; }
+        .explanation-body .quote { background: #fef9e7; border-right: 3px solid #f59e0b; padding: 10px 14px; margin: 10px 0; font-style: italic; color: #92400e; border-radius: 4px; }
+        .explanation-body .quote::before { content: "📄 ציטוט מהקובץ: "; font-weight: 700; font-style: normal; display: block; margin-bottom: 4px; color: #b45309; font-size: 11px; }
+        .final-score { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 44px 32px; text-align: center; margin-top: 40px; display: none; animation: slideIn 0.5s ease both; }
+        .final-score.show { display: block; }
+        .score-ring { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--border); margin: 0 auto 22px; display: flex; align-items: center; justify-content: center; flex-direction: column; position: relative; background: #fff; }
+        .score-ring::before { content: ''; position: absolute; inset: -3px; border-radius: 50%; background: conic-gradient(var(--accent2) var(--pct, 0%), var(--surface3) 0%); z-index: -1; }
+        .score-number { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; color: var(--accent); line-height: 1; }
+        .score-total { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .final-score h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+        .final-score p { color: var(--text-muted); font-size: 15px; line-height: 1.7; max-width: 460px; margin: 0 auto 24px; }
+        .reset-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 11px 26px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; font-family: 'Heebo', sans-serif; cursor: pointer; transition: all 0.2s; }
+        .reset-btn:hover { background: var(--surface3); border-color: var(--accent); color: var(--accent); }
+        footer { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 20px; }
+        @media (max-width: 600px) {
+            .hero { padding: 34px 18px 28px; } .progress-section { padding: 10px 16px; }
+            .main { padding: 22px 10px 50px; } .question-header, .options-block, .check-btn-wrap, .explanation-block { padding-left: 14px; padding-right: 14px; }
+            .stats-bar { gap: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-tag">📊 BI · Tableau · שאלונים · ויזואליזציה</div>
+    <h1>מבחן ידע מקיף — 50 שאלות</h1>
+    <p>בינה עסקית, ויזואליזציית נתונים, Tableau, בניית שאלונים, איסוף נתונים, Google Apps Script & API<br>כל תשובה מלווה בציטוט מדויק מהקבצים</p>
+    <div class="stats-bar">
+        <div class="stat-item"><span class="stat-dot blue"></span>50 שאלות</div>
+        <div class="stat-item"><span class="stat-dot green"></span>5 אפשרויות כל אחת</div>
+        <div class="stat-item"><span class="stat-dot orange"></span>ציטוטים מהמקור</div>
+    </div>
+</div>
+
+<div class="progress-section">
+    <span class="progress-label">התקדמות</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <span class="score-display" id="scoreDisplay">0 / 50</span>
+</div>
+
+<div class="main" id="quizMain">
+    <div class="final-score" id="finalScore">
+        <div class="score-ring" id="scoreRing">
+            <span class="score-number" id="finalNum">0</span>
+            <span class="score-total" id="finalTotal">/ 50</span>
+        </div>
+        <h2 id="finalTitle">סיימת את המבחן! 🎉</h2>
+        <p id="finalMsg">כל הכבוד! חזור על הנושאים שלא צלחת.</p>
+        <button class="reset-btn" onclick="resetQuiz()">🔄 התחל מחדש</button>
+    </div>
+</div>
+
+<footer>© מבחן ידע — בינה עסקית | ד"ר שי צבאן | מבוסס על חומרי הקורס</footer>
+
+<script>
+const questions = [
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 1: יסודות הבינה העסקית (8 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "easy",
+    text: "מהי ההגדרה המדויקת של Business Intelligence (BI) על פי ההרצאות?",
+    options: [
+      "מערכת לניהול קשרי לקוחות (CRM) בארגון",
+      "מערך של טכנולוגיות, תהליכים, ארכיטקטורות ומערכות, הממירים נתונים גולמיים (Raw Data) למידע בעל משמעות ולתובנות עסקיות מניעות-פעולה (Actionable Insights)",
+      "תוכנה ליצירת מצגות וגרפים בלבד",
+      "שם נרדף למערכת ERP",
+      "אלגוריתם של בינה מלאכותית לחיזוי מכירות"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב' — ההגדרה המלאה של BI.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "Business Intelligence היא מערך של טכנולוגיות, תהליכים, ארכיטקטורות ומערכות, הממירים נתונים גולמיים (Raw Data) למידע בעל משמעות ולתובנות עסקיות מניעות-פעולה (Actionable Insights). מטרת העל של מערכות ה-BI היא לתמוך ולשפר את איכות קבלת ההחלטות הניהוליות בארגון."</div>
+    <strong>הסבר:</strong> BI אינו כלי בודד אלא מערך שלם. הוא לא CRM, לא ERP (שהיא מערכת תפעולית להזנת נתונים — OLTP), ולא AI. המטרה שלו היא להמיר נתונים גולמיים לתובנות שמובילות לפעולה — Actionable Insights.`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "easy",
+    text: "מה מייצגת פירמידת DIKW על פי המודל שהוצג בהרצאה 1?",
+    options: [
+      "Data → Integration → Knowledge → Wisdom",
+      "Data → Information → Knowledge → Wisdom",
+      "Design → Implementation → Knowledge → Workflow",
+      "Database → Interface → Kernel → Web",
+      "Data → Intelligence → Knowledge → Work"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב' — Data → Information → Knowledge → Wisdom.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "כדי להבין את תפקיד ה-BI, יש להבחין בין ארבעה מושגי יסוד הנבנים זה על גבי זה. המודל הזה נקרא פירמידת DIKW (ראשי תיבות של Data, Information, Knowledge, Wisdom)."</div>
+    <strong>הסבר:</strong> הפירמידה מתארת את התהליך מנתון גולמי (Data) — עובדות חסרות הקשר כמו המספר "1200" — דרך מידע (Information) — נתונים שקיבלו הקשר ("1200 שקלים פדיון") — דרך ידע (Knowledge) — זיהוי תבניות ("פדיון שולחנות משפחתיים נמוך ב-30% בימי שלישי") — ועד Wisdom — קבלת החלטה ("נשיק מבצע"). המודל מיוחס ל-Russell Ackoff (1989).`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "medium",
+    text: "מה ההבדל בין OLTP ל-OLAP כפי שהוסבר בהרצאה 1?",
+    options: [
+      "OLTP מיועד לניתוח נתונים; OLAP מיועד להזנת נתונים",
+      "OLTP מעבד טרנזקציות בודדות בזמן אמת; OLAP מנתח כמויות גדולות של נתונים לצורך קבלת החלטות",
+      "שניהם אותו דבר בדיוק",
+      "OLTP עובד רק בענן; OLAP עובד רק בשרתים מקומיים",
+      "OLTP משמש ממשלות בלבד; OLAP משמש עסקים"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "OLTP (Online Transaction Processing): עיבוד פעולות בודדות בזמן אמת. כשקופאית סורקת מוצר בסופר — זו טרנזקציה. כשעובד מזין חשבונית ל-SAP — גם זו טרנזקציה... OLAP (Online Analytical Processing): ניתוח כמויות גדולות של נתונים. כשסמנכ\"ל שואל 'מה מגמת הרווחיות של כל הסניפים ב-5 השנים האחרונות?' — המערכת צריכה לסרוק מיליארדי רשומות ולהציג תשובה. זה OLAP, וזו הליבה של BI."</div>
+    <strong>הסבר:</strong> OLTP = עיבוד טרנזקציות בודדות (מערכת קופה, SAP). OLAP = ניתוח כמויות ענק (דשבורד BI). BI מבוסס על OLAP.`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "medium",
+    text: "מה תפקידו של תהליך ETL כפי שהוסבר בהרצאה 1?",
+    options: [
+      "לעצב את הדשבורד עבור המשתמש הסופי",
+      "למחוק נתונים ישנים ממסד הנתונים",
+      "לשאוב נתונים ממקורות שונים, לנקות ולעבד אותם, ולטעון אותם למחסן נתונים (Data Warehouse)",
+      "להצפין נתונים לפני שליחתם לענן",
+      "לתזמן פגישות בין אנליסטים למנהלים"
+    ],
+    answer: 2,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ג'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "ETL (Extract, Transform, Load) — זהו השלב בו 'שואבים' נתונים ממקורות שונים, 'מנקים' אותם, ו'טוענים' אותם למקום מרכזי... ETL = צוות ההכנה של המטבח. הם מקבלים סחורה ממספקים שונים... שואבים (Extract) את הסחורה, שוטפים, חותכים ומנקים אותה (Transform), ומאחסנים אותה מסודרת במקרר הגדול (Load)."</div>
+    <strong>הסבר:</strong> ETL הוא שלב קריטי בשרשרת ה-BI. הוא לא קשור לעיצוב דשבורדים, הצפנה או מחיקת נתונים — אלא להכנת נתונים ממקורות שונים לטעינה מסודרת למחסן הנתונים.`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "hard",
+    text: "מהו ההבדל בין Data Warehouse (DWH) ל-Data Lake כפי שהוסבר בהרצאה 1?",
+    options: [
+      "DWH מאחסן נתונים גולמיים בלבד; Data Lake מאחסן נתונים מעובדים",
+      "DWH הוא מסד נתונים מסודר (Schema-on-Write); Data Lake מאחסן הכל בצורה גולמית (Schema-on-Read)",
+      "אין הבדל — אלו שמות נרדפים",
+      "Data Lake מיועד רק לתמונות; DWH מיועד רק למספרים",
+      "DWH רץ רק בענן; Data Lake רץ רק On-Premise"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "מחסן נתונים (DWH) = ספרייה מסודרת. כל ספר ממוין לפי נושא, מקוטלג, ועומד על המדף הנכון... היתרון: מהיר, מדויק, מוכן לשימוש. החיסרון: צריך להשקיע מראש בסידור (Schema-on-Write)... אגם נתונים (Data Lake) = מחסן ענק. זורקים פנימה הכל — ספרים, תמונות, סרטונים, קבצים בכל פורמט. אין סדר מוקדם — מסדרים רק כשצריך (Schema-on-Read)."</div>
+    <strong>הסבר:</strong> DWH (כמו Snowflake, BigQuery) דורש עיבוד מראש — Schema-on-Write. Data Lake (כמו Amazon S3) מאפשר אחסון גולמי — Schema-on-Read. קיימת גם ארכיטקטורת Lakehouse (Databricks) המשלבת את שניהם.`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "easy",
+    text: "מהו 'Modern Data Stack' על פי הרצאה 1?",
+    options: [
+      "תוכנה אחת ענקית שעושה הכל — משאיבת נתונים ועד דשבורדים",
+      "שרשרת של כלי ענן מתמחים — כל אחד עושה דבר אחד מצוין (Fivetran, Snowflake, dbt, Tableau)",
+      "שם של מסד נתונים ישן משנות ה-90",
+      "גישה לפיתוח אפליקציות מובייל",
+      "שיטה לניהול משאבי אנוש"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "כל תחנה היא כלי ענן נפרד שמתמחה בדבר אחד ועושה אותו מצוין. זה כמו 'לגו' — מרכיבים מהחלקים הטובים ביותר במקום לקנות מערכת אחת ענקית ומגושמת."</div>
+    <strong>הסבר:</strong> ה-Modern Data Stack מורכב מכלים מתמחים: Fivetran/Airbyte (שאיבה), Snowflake/BigQuery (אחסון), dbt (עיבוד), ו-Tableau/Power BI (הצגה).`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "medium",
+    text: "מהו מסמך BRD בהקשר של BI על פי הרצאה 1?",
+    options: [
+      "Business Report Dashboard — דשבורד סיכום עסקי",
+      "Business Requirements Document — מסמך דרישות עסקיות המתווך בין השפה העסקית לטכנית",
+      "Big Raw Data — קובץ נתונים גולמיים גדול",
+      "Budget Review Document — מסמך סקירת תקציב",
+      "Backup Recovery Disk — דיסק גיבוי לשחזור"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "מסמך Business Requirements Document (BRD) מתווך בין 'השפה העסקית' של המנכ\"ל לבין 'השפה הטכנית' של המפתח. הוא מפרט בדיוק לאיזה מידע הארגון זקוק ואת הלוגיקה העסקית לחישוב המדדים."</div>
+    <strong>הסבר:</strong> BRD כולל: תקציר מנהלים, רקע עסקי, יעדים ו-KPIs, בעלי עניין, דרישות פונקציונליות, הגדרות עסקיות (Business Glossary), מקורות נתונים, דרישות לא-פונקציונליות, לוח זמנים ותקציב.`
+  },
+  {
+    section: "יסודות הבינה העסקית",
+    difficulty: "hard",
+    text: "סמנכ\"ל כספים וסמנכ\"ל שיווק מציגים בישיבה מספרי רווח שונים לאותו רבעון. מה סביר שהבעיה על פי החומר בהרצאות?",
+    options: [
+      "אחד מהם משקר בכוונה",
+      "כל אחד משתמש בהגדרה שונה של 'רווח' — הפתרון הוא Business Glossary ומערכת BI אחת כ'גרסת אמת אחת'",
+      "מערכת ה-ERP שלהם מקולקלת",
+      "הדשבורד לא מעודכן בצבעים הנכונים",
+      "זו בעיה שאין לה פתרון"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html, שאלה 9 במבחן המסכם: "כל אחד השתמש בהגדרה שונה של 'רווח' (בלי/עם הובלה, בלי/עם מע\"מ). הפתרון: הגדרת Business Glossary במסמך BRD + 'גרסת אמת אחת' במערכת BI."</div>
+    <strong>הסבר:</strong> זוהי בעיית "גרסאות אמת מרובות" — כשאין הגדרות אחידות (Business Glossary), כל מחלקה מחשבת אחרת. מערכת BI מרכזית אחת פותרת זאת בכך שכל הארגון רואה את אותם מספרים.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 2: סוגי גרפים וויזואליזציה (8 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "easy",
+    text: "באיזה גרף נשתמש כדי להציג מגמה לאורך זמן על פי הרצאה 2?",
+    options: [
+      "גרף עוגה (Pie Chart)",
+      "גרף קו (Line Chart)",
+      "גרף פיזור (Scatter Plot)",
+      "גרף עמודות (Bar Chart)",
+      "מפת חום (Heatmap)"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב' — Line Chart.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "גרף קו (Line Chart) — מציג מגמה לאורך זמן... ציר X צריך להיות תמיד זמני (ימים, שבועות, חודשים, שנים). אם הציר אינו זמני — השתמש בגרף עמודות."</div>
+    <strong>הסבר:</strong> גרף קו מתאים כשציר X הוא זמן רציף. גרף עוגה מתאים להרכב (חלקים מתוך שלם). גרף פיזור מתאים לבדיקת קשר בין שני משתנים.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "easy",
+    text: "מהו Funnel Chart (גרף משפך) ומתי נשתמש בו על פי הרצאה 2?",
+    options: [
+      "גרף להצגת התפלגות משתנה רציף — כמו גיל לקוחות",
+      "גרף להצגת שלבים בתהליך שמצטמצם — כמו משפך מכירות (לידים → פגישות → סגירות)",
+      "גרף להשוואת שתי סדרות על אותו ציר",
+      "גרף להצגת נתונים גיאוגרפיים על מפה",
+      "גרף עוגה עם חור באמצע"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Funnel Chart (גרף משפך) — מתי: הצגת שלבים ברצף שמצטמצם - כמה מתחילים בשלב ראשון וכמה 'שורדים' לשלב הבא. דוגמה BI: משפך מכירות (Sales Funnel): 1000 לידים → 400 פגישות → 150 הצעות מחיר → 60 סגירות."</div>
+    <strong>הסבר:</strong> Funnel Chart שימושי במיוחד בשיווק דיגיטלי, מכירות SaaS, ו-E-Commerce לזיהוי צווארי בקבוק בתהליך.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "medium",
+    text: "מה ההבדל המהותי בין היסטוגרמה (Histogram) לגרף עמודות (Bar Chart) על פי הרצאה 2?",
+    options: [
+      "אין הבדל — אלו שני שמות לאותו דבר",
+      "היסטוגרמה מציגה התפלגות של משתנה רציף (טווחים צמודים, ללא רווחים); Bar Chart מציג קטגוריות נפרדות (יש רווח בין העמודות)",
+      "היסטוגרמה תמיד אופקית; Bar Chart תמיד אנכי",
+      "היסטוגרמה משתמשת רק בצבעים; Bar Chart משתמש רק בשחור-לבן",
+      "היסטוגרמה קיימת רק ב-Tableau; Bar Chart קיים רק ב-Excel"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Bar Chart מציג קטגוריות נפרדות (סניפים, מוצרים) ויש רווח בין העמודות. Histogram מציג התפלגות של משתנה רציף (גיל, סכום, זמן) - העמודות צמודות כי הטווחים רציפים. בהיסטוגרמה, סדר העמודות משמעותי; בעמודות רגילות ניתן לשנות סדר."</div>
+    <strong>הסבר:</strong> ההבדל המהותי הוא שבהיסטוגרמה אין רווחים בין העמודות (כי הטווחים רציפים) וסדר העמודות אינו ניתן לשינוי.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "medium",
+    text: "מתי נשתמש ב-Waterfall Chart (גרף מפל) על פי הרצאה 2?",
+    options: [
+      "כשרוצים להציג מגמת מכירות לאורך 12 חודשים",
+      "כשרוצים להראות איך הגענו מערך התחלתי לערך סופי — פירוק מרכיבי שינוי (למשל מהכנסות לרווח נקי)",
+      "כשמשווים בין קטגוריות מוצרים שונות",
+      "כשמציגים התפלגות גילאי לקוחות",
+      "כשמציגים מיקום גיאוגרפי של סניפים"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Waterfall Chart (גרף מפל) — מתי: הצגת פירוט ההשפעה של מרכיבים שונים על תוצאה סופית. 'מה גרם לנו לעבור מהכנסות של ₪10M לרווח נקי של ₪2M?'... שימושי במיוחד ל: סמנכ\"לי כספים (CFOs), מנתחי השקעות, ודיוני דירקטוריון."</div>
+    <strong>הסבר:</strong> גרף מפל מציג "גשר" — מתחיל בערך פתיחה, מפחית/מוסיף כל מרכיב ב"מדרגות", ומסיים בערך סגירה.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "hard",
+    text: "מה טוען Edward Tufte לגבי 'Chart Junk' על פי הרצאה 2?",
+    options: [
+      "כדאי להוסיף כמה שיותר אלמנטים דקורטיביים כדי שהגרף ייראה מרשים",
+      "כל אלמנט ויזואלי שאינו תורם להבנת הנתונים צריך להיות מוסר — 'Data-Ink Ratio' צריך להיות גבוה ככל האפשר",
+      "חובה להשתמש באפקט תלת-ממדי בכל גרף",
+      "צריך להוסיף תמונות רקע מאחורי כל גרף",
+      "Chart Junk הוא מונח שמתייחס לנתונים פגומים, לא לעיצוב"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Chart Junk — כל אלמנט ויזואלי שלא תורם להבנת הנתונים הוא 'זבל גרפי'. דוגמאות: אפקט 3D על עמודות או עוגה - מעוות את התפיסה. תמונות רקע מאחורי גרף - מפריעות לקריאה. קווי רשת כבדים - צריכים להיות עדינים או להיעלם... כלל האצבע: אם תוכל למחוק אלמנט והגרף עדיין מובן — מחק אותו."</div>
+    <strong>הסבר:</strong> Tufte, בספרו The Visual Display of Quantitative Information, טבע את המונח Data-Ink Ratio — היחס בין "דיו של נתונים" לבין סך הדיו בגרף צריך להיות מקסימלי.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "medium",
+    text: "סמנכ\"ל שיווק רוצה לבדוק אם יש קשר בין תקציב קמפיין באינסטגרם לבין מספר הלידים שנכנסו. איזה גרף הכי מתאים על פי הרצאה 2?",
+    options: [
+      "גרף עוגה (Pie Chart)",
+      "גרף קו (Line Chart)",
+      "גרף פיזור (Scatter Plot)",
+      "גרף עמודות (Bar Chart)",
+      "מפת חום (Heatmap)"
+    ],
+    answer: 2,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ג' — Scatter Plot.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "גרף פיזור (Scatter Plot) — חושף קשרים בין שני משתנים... ציר X=תקציב שיווק, ציר Y=מכירות... כל נקודה = הזמנה אחת."</div>
+    <strong>הסבר:</strong> Scatter Plot מאפשר לבדוק קורלציה בין שני משתנים מספריים. ניתן להוסיף קו מגמה (Trend Line) להמחשת הקשר.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "hard",
+    text: "למה אסור להתחיל ציר Y של גרף עמודות מערך שאינו 0 על פי הרצאה 2?",
+    options: [
+      "זה חוק במדינת ישראל",
+      "כי Tableau לא מאפשר זאת טכנית",
+      "זה גורם להבדלים קטנים להיראות גדולים בצורה מטעה — עמודה של 95 תיראה כפולה מעמודה של 90 אם הציר מתחיל מ-85",
+      "כי הגרף לא יישמר בפורמט PNG",
+      "כי צבעי העמודות יתהפכו"
+    ],
+    answer: 2,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ג'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "ציר חתוך (Truncated Axis) הוא אחת מטכניקות ה-'Misleading Charts' הנפוצות. בגרף עמודות, האורך החזותי צריך להיות פרופורציונלי לערך. הערה: בגרף קו, חיתוך הציר לעיתים מקובל כדי להראות שינויים עדינים - אך יש לציין זאת בבירור."</div>
+    <strong>הסבר:</strong> ציר Y חתוך מטעה את הצופה — הפרש של 5% יכול להיראות כמו 200%. זהו עיוות ויזואלי חמור.`
+  },
+  {
+    section: "סוגי גרפים וויזואליזציה",
+    difficulty: "easy",
+    text: "מהו 'עיקרון 5 השניות' בדשבורד BI על פי הרצאה 2?",
+    options: [
+      "הדשבורד חייב להיטען תוך 5 שניות",
+      "מקבל ההחלטות צריך להיות מסוגל לענות על השאלה 'מה המצב?' תוך 5 שניות של הסתכלות על הדשבורד",
+      "יש לרענן כל גרף כל 5 שניות",
+      "אסור שיהיו יותר מ-5 גרפים בדשבורד",
+      "כל גרף צריך להכיל מקסימום 5 נקודות נתונים"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "דשבורד טוב צריך לענות על השאלה 'מה המצב?' תוך 5 שניות של הסתכלות. אם המנהל צריך 'לחפש' את התובנה — העיצוב נכשל. העין צריכה לזרום מ-KPIs ראשיים בראש → לגרפי מגמה באמצע → לפרטים בתחתית."</div>
+    <strong>הסבר:</strong> KPIs בולטים בראש, צבעי אדום/ירוק, וחיצי מגמה — כולם משרתים את עיקרון 5 השניות.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 3: Tableau — ממשק ומושגים (10 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "easy",
+    text: "ב-Tableau, מה ההבדל בין Dimension (ממד) ל-Measure (מדד) על פי החומר?",
+    options: [
+      "Dimension הוא תמיד מספרי; Measure הוא תמיד טקסטואלי",
+      "Dimension הוא שדה קטגוריאלי ('לפי מה מפלחים' — סניף, מוצר, תאריך); Measure הוא שדה מספרי שניתן לאגרג ('מה מודדים' — סכום, ממוצע)",
+      "אין הבדל — אפשר להחליף ביניהם תמיד",
+      "Dimension מופיע בירוק; Measure מופיע בכחול",
+      "Dimension קיים רק ב-Tableau Public; Measure קיים רק ב-Tableau Desktop"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Dimension (ממד) — שדה קטגוריאלי / תיאורי - לפי מה אנחנו מפלחים. דוגמה: שם סניף, קטגוריית מוצר, אזור... Measure (מדד) — שדה מספרי שניתן לאגרג (לחשב סכום, ממוצע, ספירה) - מה אנחנו מודדים. דוגמה: סכום מכירות, כמות יחידות, רווח."</div>
+    <strong>הסבר:</strong> ב-Tableau, Dimensions מופיעים בכחול ו-Measures בירוק. ממד עונה על "מי? איפה? מתי?"; מדד עונה על "כמה?".`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "easy",
+    text: "מה התפקיד של תיבת Marks ב-Tableau על פי ההרצאות?",
+    options: [
+      "לשמור את הקובץ",
+      "לקבוע את סוג הגרף (Bar, Line, Circle, Square, Map, Text) ולהוסיף מאפייני צבע, גודל, תווית ופירוט",
+      "להתחבר למקורות נתונים",
+      "לסנן נתונים לפי תאריך",
+      "לייצא את הדשבורד ל-PDF"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Marks (סימנים) — סוג הוויזואליזציה (Bar, Line, Circle, Square, Map, Text) + מאפייני צבע, גודל, תווית."</div>
+    <strong>הסבר:</strong> תיבת Marks שולטת בסוג הגרף ובמאפיינים הוויזואליים שלו: Color (צבע לפי קטגוריה), Size (גודל סימונים), Label (תוויות), Detail (פירוט), Tooltip (הסבר בריחוף).`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "easy",
+    text: "מה התפקיד של אזורי ה-Columns וה-Rows ב-Tableau על פי החומר?",
+    options: [
+      "Columns = ציר Y (אנכי); Rows = ציר X (אופקי)",
+      "Columns = ציר X (אופקי); Rows = ציר Y (אנכי)",
+      "שני האזורים משמשים רק לסינון נתונים",
+      "Columns משמש לצבע; Rows משמש לגודל",
+      "אזורים אלו קיימים רק ב-Power BI, לא ב-Tableau"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Rows & Columns (שורות ועמודות) — ה'מדפים' (Shelves) שעליהם גוררים שדות. Columns = ציר X, Rows = ציר Y. גרור 'חודש' ל-Columns ו'מכירות' ל-Rows → גרף קו."</div>
+    <strong>הסבר:</strong> זהו הכלל הבסיסי ביותר ב-Tableau: Columns = ציר X (אופקי), Rows = ציר Y (אנכי). ניתן להוסיף מספר משתנים לכל אזור.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "medium",
+    text: "מהו Dual Axis ב-Tableau ומתי נשתמש בו על פי ההרצאות?",
+    options: [
+      "כלי ליצירת גיבוי של הקובץ",
+      "אפשרות להציג שני צירי Y על אותו גרף — למשל ציר שמאלי למכירות (עמודות) וציר ימני לאחוז רווח (קו)",
+      "מצב תצוגה כפול של אותו דשבורד",
+      "חיבור לשתי מסדות נתונים במקביל",
+      "שם של פילטר מתקדם"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Dual Axis — שני צירי Y על אותו גרף (Combo Chart). ציר שמאלי: מכירות (עמודות). ציר ימני: % רווח (קו)."</div>
+    <strong>הסבר:</strong> Dual Axis מאפשר להציג שני מדדים בסקאלות שונות על אותו גרף. ב-Tableau: גרירת Measure שני ל-Rows, לחיצה ימנית → Dual Axis → Synchronize Axis.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "medium",
+    text: "מהו Calculated Field (שדה מחושב) ב-Tableau על פי החומר?",
+    options: [
+      "שדה שמגיע אוטומטית ממקור הנתונים",
+      "נוסחה שהמשתמש יוצר — כמו עמודה מחושבת באקסל (למשל Profit Margin = [Profit] / [Sales])",
+      "שדה שמוגבל רק למספרים שלמים",
+      "שם של פילטר אוטומטי",
+      "סוג של גרף מובנה"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Calculated Field (שדה מחושב) — נוסחה שאתה יוצר - כמו עמודה מחושבת באקסל. דוגמה: Profit Margin = [Profit] / [Sales]."</div>
+    <strong>הסבר:</strong> ניתן להשתמש גם בפונקציות IF, DATEDIFF, ו-LOD Expressions (Level of Detail) — אלו מהכלים החזקים ביותר ב-Tableau.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "medium",
+    text: "מה עושה פונקציית Show Me ב-Tableau על פי החומר?",
+    options: [
+      "מציגה את הדשבורד למנהל בגרסת Full Screen",
+      "מציגה פאנל של כל סוגי הגרפים הזמינים ומסמנת אילו מהם מתאימים לשדות שנבחרו",
+      "שולחת את הדשבורד במייל",
+      "מציגה את קוד ה-SQL מאחורי הגרף",
+      "מציגה את כל השדות בטבלה"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Show Me הוא 'עוזר חכם' שמזהה אילו סוגי גרפים מתאימים לשדות שגררת. אם יש לך Date + Measure, הוא ימליץ Line. אם יש Geographic dimension, הוא ימליץ Map."</div>
+    <strong>הסבר:</strong> Show Me מציג את כל סוגי הגרפים ומסמן אילו זמינים על בסיס השדות שנבחרו: 1 Dimension + 1 Measure → Bar/Pie/Treemap; Date + Measure → Line; 2 Measures → Scatter.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "easy",
+    text: "מה ההבדל בין Tableau Public ל-Tableau Desktop על פי החומר?",
+    options: [
+      "אין הבדל — אלו שני שמות לאותו מוצר",
+      "Tableau Public הוא גרסה חינמית ששומרת עבודות באופן פומבי בלבד; Tableau Desktop הוא גרסה מקצועית בתשלום עם שמירה מקומית",
+      "Tableau Desktop הוא חינמי; Tableau Public בתשלום",
+      "Tableau Public רץ רק על Mac; Tableau Desktop רץ רק על Windows",
+      "Tableau Desktop מיועד לסטודנטים בלבד"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Tableau Public — גרסה חינמית, שומרת עבודות רק באופן פומבי (לא לנתונים חסויים). מושלמת לסטודנטים וללימוד. Tableau Desktop — הגרסה המקצועית (כ-$70/חודש). חיבור למקורות נתונים מגוונים, שמירה מקומית."</div>
+    <strong>הסבר:</strong> Tableau Public הוא כלי מצוין ללמידה ולבניית פורטפוליו, אך אסור להשתמש בו עם נתונים חסויים של חברה.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "medium",
+    text: "מהו Continuous (רציף) מול Discrete (דידב) ב-Tableau על פי הרצאה 3?",
+    options: [
+      "Continuous = ערכים שלמים; Discrete = ערכים עשרוניים",
+      "Continuous = ציר זמן/ערך רציף (Tableau בוחרת גרף קו); Discrete = כל ערך בנפרד (Tableau בוחרת גרף עמודות)",
+      "אין הבדל — שני המושגים זהים",
+      "Continuous קיים רק בשדות מספריים; Discrete קיים רק בשדות תאריך",
+      "Continuous = צבע כחול; Discrete = צבע ירוק"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "Continuous (רציף) הוא משתנה שנמדד ללא הגדרה של ערכים שלמים – הוא מתוחם על ציר רציף... Discrete (דידב) הוא משתנה שבנוי בערכים שלמים נפרדים, וכאשר מוגדר כך כל ערך מוצג בנפרד... Year כ-Continuous → Tableau בוחרת גרף קו כברירת מחדל (Automatic). שינוי Year ל-Discrete ישנה את הגרף מקו לעמודות."</div>
+    <strong>הסבר:</strong> שנה כ-Continuous = קו; שנה כ-Discrete = עמודות. השינוי משפיע על סוג הגרף ש-Tableau בוחרת אוטומטית.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "hard",
+    text: "מהו Pages (דפים) ב-Tableau ומה ההבדל בינו לבין Filters על פי הרצאה 3?",
+    options: [
+      "Pages ו-Filters הם אותו הדבר בדיוק",
+      "Pages יוצר 'ספר דפדפן' עם גרף לכל ערך; Filters מסנן נתונים ומחביא אותם",
+      "Pages מסנן נתונים; Filters יוצר דפדוף",
+      "Pages עובד רק עם תאריכים; Filters עובד רק עם טקסט",
+      "Pages הוא סוג של גרף; Filters הוא סוג של טבלה"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "Pages ו-Filters שונים מהותית: Pages יוצר 'ספר דפדפן' עם גרף לכל ערך, בעוד Filters מסנן נתונים ומחביא אותם."</div>
+    <strong>הסבר:</strong> Pages שימושי כשרוצים לדמות מצגת דינמית — ניתן לנווט בין ערכים שונים עם חצי ניווט או Play אוטומטי. Filters פשוט מסתיר שורות לא רלוונטיות.`
+  },
+  {
+    section: "Tableau — ממשק ומושגים",
+    difficulty: "medium",
+    text: "מהו Dashboard ב-Tableau ומה ההבדל בינו לבין Worksheet על פי החומר?",
+    options: [
+      "Dashboard ו-Worksheet הם שמות שונים לאותו דבר",
+      "Worksheet הוא גרף/ויזואליזציה בודדת; Dashboard הוא קנבס שמרכז מספר Worksheets בתצוגה אחת",
+      "Dashboard מיועד להזנת נתונים; Worksheet מיועד לניתוח",
+      "Worksheet קיים רק ב-Tableau Desktop; Dashboard קיים רק ב-Tableau Public",
+      "Dashboard הוא סוג של פילטר"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_2_bi.html: "Dashboard — קנבס שמרכז מספר Worksheets (גרפים) בתצוגה אחת. Worksheet — גרף/ויזואליזציה בודדת. מספר Worksheets מרכיבים Dashboard."</div>
+    <strong>הסבר:</strong> תהליך העבודה: תחילה בונים Sheets (גרפים בודדים), ואז מרכיבים אותם ל-Dashboard אחד. את ה-Dashboard מפרסמים ב-Tableau Public ומקבלים קישור URL.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 4: בניית שאלונים וטעויות נפוצות (10 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "easy",
+    text: "מהו הסדר הנכון של חלקי השאלון על פי lecture4.html?",
+    options: [
+      "דמוגרפיה → סינון → שאלות תוכן → שאלה פתוחה",
+      "שאלות תוכן → דמוגרפיה → סינון → תודה",
+      "מבוא → סינון → שאלות תוכן (חוויה נוכחית + עמדות) → דמוגרפיה → תודה",
+      "סינון → דמוגרפיה → שאלות תוכן → מבוא",
+      "מבוא → דמוגרפיה → סינון → שאלות תוכן"
+    ],
+    answer: 2,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ג'.</strong>
+    <div class="quote">מתוך lecture4.html: "חלק 1: מבוא — מי אתם ולמה... חלק 2: שאלות סינון (1–2 שאלות)... חלק 3: חוויה נוכחית + עמדות כלפי הפתרון... חלק 4: דמוגרפיה — תמיד בסוף!"</div>
+    <strong>הסבר:</strong> הסדר הקריטי: מבוא (מי, למה, כמה זמן, אנונימיות) → סינון (רק קהל יעד ממשיך) → תוכן (מיפוי כאב, עמדות, נכונות לשלם) → דמוגרפיה (בסוף, לא חובה) → תודה.`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "easy",
+    text: "מהו סולם ליקרט (Likert Scale) על פי lecture4.html?",
+    options: [
+      "שאלה פתוחה שהמשיב כותב תשובה חופשית",
+      "דירוג על סולם, בדרך כלל 1 עד 5, המודד עוצמת עמדה — 'עד כמה אתה מסכים?'",
+      "שאלה עם שתי אפשרויות: כן או לא",
+      "שאלה המדרגת פריטים לפי סדר חשיבות",
+      "שאלה הבודקת נכונות לשלם"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html: "סולם ליקרט (Likert Scale) — מה זה: דירוג על סולם, בדרך כלל 1 עד 5. מודד עוצמת עמדה — 'עד כמה אתה מסכים?'... ב-Google Forms: בחרו 'סולם לינארי' (Linear Scale), הגדירו 1 עד 5, רשמו תוויות לקצוות."</div>
+    <strong>הסבר:</strong> ליקרט מייצר מדד (Measure) — מספר שאפשר לחשב עליו ממוצע, סטיית תקן ולבנות גרפים ב-Tableau.`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "easy",
+    text: "מה ההבדל בין 'בחירה מרובה' (Multiple Choice) ל'תיבות סימון' (Checkboxes) ב-Google Forms על פי lecture4.html?",
+    options: [
+      "אין הבדל — שניהם אותו דבר",
+      "בחירה מרובה = תשובה אחת בלבד (עיגול ○); תיבות סימון = אפשר לסמן כמה תשובות (ריבוע ☐)",
+      "בחירה מרובה = טקסט חופשי; תיבות סימון = אפשרויות סגורות",
+      "תיבות סימון מתאימות רק לשאלות דמוגרפיות",
+      "בחירה מרובה קיימת רק ב-Google Forms; תיבות סימון קיימות רק ב-Excel"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך survey_guidance.html: "בחירה מרובה (Multiple choice) = המשיב בוחר תשובה אחת בלבד (עיגול ○). תיבות סימון (Checkboxes) = המשיב יכול לסמן כמה תשובות (ריבוע ☐). בחרו לפי מה שמתאים: 'מהי הסיבה העיקרית?' = בחירה מרובה. 'באילו פלטפורמות אתה משתמש?' = תיבות סימון."</div>
+    <strong>הסבר:</strong> ההבדל המרכזי: עיגול = תשובה אחת; ריבוע = כמה תשובות.`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "medium",
+    text: "מהי 'שאלה מנחה' (Leading Question) ומדוע היא בעייתית על פי lec5_survey.html?",
+    options: [
+      "שאלה שמובילה את המשיב לשלב הבא בשאלון",
+      "שאלה שמנוסחת כך שהיא דוחפת את המשיב לתשובה מסוימת — כולם יענו אותו דבר, והנתונים חסרי ערך",
+      "שאלה המכילה שני נושאים שונים",
+      "שאלה ללא אפשרות 'אחר'",
+      "שאלה המופיעה בתחילת השאלון"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lec5_survey.html: "שאלה כמו 'עד כמה חשוב לך לקבל תוכנית אימון מותאמת אישית, ולא תוכנית גנרית?' — לא תוסיף שום מידע. כולם יסמנו 'חשוב מאוד'. שאלה שאין בה אפשרות אמיתית לתשובה שלילית פירושה ששאלת באוויר."</div>
+    <strong>הסבר:</strong> עיקרון: "אם אתם יכולים לחזות את התפלגות התשובות מבלי לשאול — השאלה מיותרת. שאלה טובה מבחינה אם המשיבים שונים זה מזה."`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "medium",
+    text: "מהי 'שאלה כפולה' (Double-barreled Question) על פי lec5_survey.html?",
+    options: [
+      "שאלה שמופיעה פעמיים בשאלון",
+      "שאלה המכילה שני נושאים שונים — 'האם השירות מהיר ואמין?' — מהיר ≠ אמין",
+      "שאלה עם שתי אפשרויות תשובה",
+      "שאלה הפונה לשני סוגי קהל יעד",
+      "שאלה עם שני סולמות ליקרט"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lec5_survey.html: "שאלה אחת — מושג אחד. תמיד. 'אגרוף של שני נושאים בשאלה אחת' — שאלה כמו 'עבור כיסוי הגנה ואימות ביטחוני, איזו תוספת תשלם?' שואלת בעצם שתי שאלות בנשימה אחת."</div>
+    <strong>הסבר:</strong> הכלל: "כל פעם שאתם רואים בשאלה את המילים 'ו־', 'או', '/', או רשימה של פריטים בתוך אותה שאלה — עצרו ופצלו."`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "medium",
+    text: "למה חשוב להתחיל במיפוי כאב (Pain Mapping) לפני ששואלים על הפתרון על פי lec5_survey.html?",
+    options: [
+      "כי השאלון יהיה קצר יותר",
+      "כי שאלות על פתרון מניחות שיש כאב ושהפתרון מתאים — שתיהן הנחות שיש לתקף לפני ששואלים על מחיר ופיצ'רים",
+      "כי Google Forms דורש את הסדר הזה",
+      "כי זו דרישה של הקורס בלבד",
+      "כי משיבים מעדיפים לענות על שאלות כאב"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lec5_survey.html: "קודם תמפו את הכאב. תוכיחו שהוא קיים, באילו מימדים הוא פוגע, ובאיזו תדירות. רק אחר כך — ובזהירות — תבדקו את ההצעה לפתרון. תמחור הוא כמעט תמיד שאלה אחרונה."</div>
+    <strong>הסבר:</strong> תכננו בארבעה גלים: (א) האם הבעיה קיימת? (ב) באילו ממדים היא פוגעת? (ג) באילו תדירויות? (ד) רק כאן — האם הפתרון נראה מועיל.`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "hard",
+    text: "מהו 'כלל דילוג' (Skip Logic) ומדוע הוא חיוני על פי lec5_survey.html?",
+    options: [
+      "כלל הקובע שכל השאלות הן חובה",
+      "כלל המנתב משיבים לשאלות רלוונטיות בלבד — מי שלא שייך לתת-קבוצה מדלג על חטיבה שלמה, ומונע זיהום נתונים",
+      "כלל הקובע את סדר השאלות",
+      "כלל המגביל את מספר השאלות ל-15",
+      "כלל המחייב שימוש בסולם ליקרט"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lec5_survey.html: "כללי דילוג (Skip Logic) הם חלק חיוני בעיצוב כל שאלון מודרני. אם שאלה רלוונטית רק לתת־קבוצה — סננו אליה."</div>
+    <strong>הסבר:</strong> בלי Skip Logic, שואלים "את כולם על מה שרלוונטי רק לחלקם" — וזה מזהם את הנתונים. סרטטו את עץ הזרימה לפני שאתם מקלידים שאלה אחת ב-Google Forms.`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "medium",
+    text: "למה דמוגרפיה חייבת להיות בסוף השאלון על פי lecture4.html ו-lec5_survey.html?",
+    options: [
+      "כי Google Forms דורש זאת",
+      "כי שאלות על גיל, מגדר והכנסה בתחילת הסקר מפחידות, מעייפות, ופוגעות בשיעור ההשלמה — המשיב כבר השקיע ויותר סביר שיישאר",
+      "כי הדמוגרפיה פחות חשובה משאר השאלות",
+      "כי צריך לסנן קודם לפי דמוגרפיה",
+      "כי זו דרישה של הקורס"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html: "דמוגרפיה — תמיד בסוף! גיל, מגדר, מיקום, השכלה. תמיד בסוף (כדי לא להפחיד), תמיד 'לא חובה'... טעות קלאסית: שמים דמוגרפיה בהתחלה → אנשים מפחדים / מתעייפים → נוטשים לפני השאלות החשובות."</div>
+    <strong>הסבר:</strong> בסוף — המשיב כבר השקיע ופחות סביר שיינטוש. השתמשו בנתונים אלו להצלבות (האם אימהות בצפון עונות שונה מאימהות במרכז?).`
+  },
+  {
+    section: "בניית שאלונים和טעויות נפוצות",
+    difficulty: "hard",
+    text: "מהו 'פיילוט' (Pilot) ומדוע אסור לדלג עליו על פי lecture4.html?",
+    options: [
+      "פרסום השאלון בקבוצות פייסבוק",
+      "ניסוי מקדים על 5–10 אנשים — שולחים את הסקר, שואלים מה לא הבינו, כמה זמן לקח, ומתקנים לפני ההפצה הרחבה",
+      "גרסה מקוצרת של השאלון",
+      "שליחת השאלון לחברים ומשפחה",
+      "בדיקת השאלון בנייד"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html: "5 אנשים בפיילוט חוסכים לכם 100 תגובות מקולקלות... טעות קלאסית: שולחים את הסקר ל-100 איש, ואז מגלים שהשאלה הכי חשובה לא ברורה, או שאנשים בוחרים 'אחר' ב-40% מהתגובות כי האפשרויות לא מספיקות. ברגע שיצאתם לשטח — אין חזרה."</div>
+    <strong>הסבר:</strong> בפיילוט שואלים: האם הייתה שאלה שלא הבנת? כמה זמן לקח? חסרה תשובה? יש שאלות כפולות? הניתוב עבד?`
+  },
+  {
+    section: "בניית שאלונים וטעויות נפוצות",
+    difficulty: "medium",
+    text: "כמה תגובות צריך כדי שהמחקר יהיה תקף על פי lecture4.html?",
+    options: [
+      "מספיק 5 תגובות",
+      "מינימום 30 (סטטיסטי), אידיאלי 100–150, תעשייה 100–400",
+      "לפחות 1000 תגובות",
+      "10 תגובות מכל קבוצת גיל",
+      "אין מספר מינימלי"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html: "מינימום: 30. מתחת לזה — זה לא מחקר, זה אוסף דעות אקראיות. אידיאלי: 100–150. מספיק כדי לפלח לתת-קבוצות (לפחות 30 בכל קבוצה). תעשייה: 100–400. מאפשר ניתוח מתקדם, רגרסיות, ומסקנות מוצקות."</div>
+    <strong>הסבר:</strong> ב-Tableau, כל משיב הוא שורה אחת. עם 30 שורות — רק גרפים בסיסיים. עם 100+ — אפשר Pivot Tables, סינונים והצלבות אמיתיות.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 5: Google Forms, Apps Script & API (7 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "easy",
+    text: "איך מחלקים שאלון ב-Google Forms לסעיפים (Sections) על פי survey_guidance.html?",
+    options: [
+      "אי אפשר לחלק שאלון לסעיפים ב-Google Forms",
+      "לוחצים על האייקון 'שתי שורות אופקיות' (≡≡) בסרגל הכלים הצדדי להוספת סעיף חדש — וכך יוצרים חלוקה לעמודים נפרדים",
+      "משתמשים בתוסף צד שלישי",
+      "כותבים כותרת מודגשת בין השאלות",
+      "מייצאים ל-Word ומחלקים שם"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך survey_guidance.html: "לחצו על האייקון 'שתי שורות אופקיות' בסרגל הכלים הצדדי כדי להוסיף סעיף חדש. חלקו את הסקר ל: חלק 1: שאלות סינון... חלק 2: חוויה נוכחית... חלק 3: עמדות כלפי הפתרון המוצע... חלק 4: שאלות דמוגרפיות (תמיד בסוף!)"</div>
+    <strong>הסבר:</strong> "חלוקה לסעיפים מציגה את הסקר עמוד-אחר-עמוד ולא ככתב יד ארוך, מה שמקטין נטישה דרמטית."`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "medium",
+    text: "איך מגדירים ניתוב (Skip Logic) ב-Google Forms על פי survey_guidance.html?",
+    options: [
+      "ניתוב אינו אפשרי ב-Google Forms",
+      "בשאלת 'בחירה מרובה' (Multiple Choice) — לוחצים על שלוש הנקודות (⋮) → 'מעבר לסעיף על סמך תשובה' (Go to section based on answer)",
+      "משתמשים בנוסחה מיוחדת",
+      "מוסיפים הערה למשיב לדלג ידנית",
+      "מפעילים את האפשרות בתוסף חיצוני"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך survey_guidance.html: "לחצו על שלוש הנקודות (⋮) בשאלת בחירה מרובה → 'מעבר לסעיף על סמך תשובה'. כך מי שעונה 'לא, אין לי כלב' מועבר ישר לעמוד 'תודה' ולא ממשיך לסקר."</div>
+    <strong>הסבר:</strong> אזהרה: "ניתוב עובד רק בשאלות 'בחירה מרובה' (Multiple Choice) ורק ברמת סעיף (Section). תכננו מראש את מבנה הסעיפים!"`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "medium",
+    text: "מהי ההגדרה הנכונה של Google Apps Script על פי lecture5.html?",
+    options: [
+      "תוסף ל-Google Chrome",
+      "שפת תכנות (מבוססת JavaScript) שרצה על השרתים של גוגל בענן — מאפשרת לגשת לג'ימייל, לגוגל שיטס, ולצאת לאינטרנט לשאוב מידע",
+      "כלי ליצירת מצגות",
+      "מנוע חיפוש בתוך Google Sheets",
+      "שם של מסד נתונים"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture5.html: "Google Apps Script היא שפת תכנות (מבוססת JavaScript, למעשה זו אותה שפה) שרצה ישירות על השרתים של גוגל בענן. היא מאפשרת לנו לגשת לג'ימייל, לגוגל שיטס, וחשוב מכל - לצאת לאינטרנט החיצוני (למשל לאתר גוגל פיננס) ולשאוב ממנו מידע!"</div>
+    <strong>הסבר:</strong> GAS רץ על שרתי גוגל — לא על המחשב האישי. זהו ה-Backend. ה-HTML הוא ה-Frontend.`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "hard",
+    text: "מה ההבדל בין סקרייפינג (Scraping) ל-API על פי lecture5.html?",
+    options: [
+      "אין הבדל — אלו שני שמות לאותה פעולה",
+      "סקרייפינג = קריאת קוד HTML של אתר וחיפוש ידני של נתונים; API = 'מלצר במסעדה' — בקשה לכתובת מסודרת שמחזירה נתונים נקיים בפורמט JSON",
+      "API = קריאת HTML; סקרייפינג = שימוש בשירות ענן",
+      "סקרייפינג = חוקי; API = לא חוקי",
+      "API = חינמי; סקרייפינג = בתשלום"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture5.html: "סקרייפינג (Scraping) — קצירת נתונים. במקום שאדם ייכנס לאתר, יסמן את המחיר של מניית טסלה, יעשה 'העתק' וידביק באקסל, אנחנו כותבים סקריפט שקורא את קוד ה-HTML... API — זה המלצר במסעדה. במקום שהסקריפט שלנו (הלקוח) יפרוץ למטבח (האתר) ויחטט בסירים (ב-HTML) כדי למצוא נתונים, ה-API הוא תפריט מסודר."</div>
+    <strong>הסבר:</strong> API מחזיר נתונים נקיים בפורמט JSON. דוגמה: {"ticker": "TSLA", "price": 185.32, "currency": "USD"}.`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "medium",
+    text: "איך HTML (Frontend) ו-Google Apps Script (Backend) מתקשרים זה עם זה על פי lecture5.html?",
+    options: [
+      "הם לא יכולים לתקשר — כל אחד רץ בנפרד",
+      "באמצעות הפקודה google.script.run ב-JavaScript — ה-HTML שולח בקשה ל-GAS, ממתין לתשובה, ומציג אותה למשתמש",
+      "באמצעות Bluetooth",
+      "דרך Google Drive",
+      "באמצעות Excel"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture5.html: "איך הם מדברים אחד עם השני? HTML Button Click ➔ google.script.run ➔ GAS Script... האתר פונה לשרת של גוגל, מפעיל את הפונקציה שכתבנו, ממתין לתשובה, וכשהמחיר חוזר - הוא מציג אותו למשתמש!"</div>
+    <strong>הסבר:</strong> זהו ה-Flow: המשתמש לוחץ על כפתור בדף ה-HTML ← הפקודה google.script.run קוראת לפונקציה ב-GAS ← הפונקציה מושכת נתונים מהאינטרנט ← מחזירה תוצאה ל-HTML ← מוצגת למשתמש.`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "easy",
+    text: "מהו Deploy (פריסה) ב-Google Apps Script על פי lecture5.html?",
+    options: [
+      "מחיקת הסקריפט",
+      "הפיכת הסקריפט לנגיש כשירות Web App — מגדירים 'Anyone' יכולים לגשת, ומקבלים URL ייחודי שאותו מדביקים בקוד ה-HTML",
+      "שמירת הסקריפט במחשב האישי",
+      "שליחת הסקריפט במייל",
+      "פרסום הסקריפט ב-Google Drive"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture5.html: "כדי שה-HTML שלנו יוכל לדבר עם ה-GAS, אנחנו חייבים להפוך את הסקריפט שלנו לנגיש ברשת, כ'אפליקציית רשת' (Web App)... לוחצים על Deploy → New deployment → Web app → מגדירים Anyone → מעתיקים URL → מדביקים בקוד ה-HTML."</div>
+    <strong>הסבר:</strong> את דף ה-HTML מפרסמים ב-GitHub Pages. את ה-GAS מפרסמים כ-Web App. כעת יש מערכת מלאה בענן.`
+  },
+  {
+    section: "Google Forms, Apps Script & API",
+    difficulty: "hard",
+    text: "האם אפשר לבנות תהליך איסוף נתוני מניות יומיומי אוטומטי ללא HTML (Frontend) כלל על פי lecture5.html?",
+    options: [
+      "לא — HTML הוא זה שנותן את פקודת ההפעלה",
+      "כן — אפשר להגדיר ב-GAS טריגר מבוסס-זמן (Time-driven trigger) שירוץ אוטומטית כל בוקר וימשוך נתונים",
+      "כן, אבל הנתונים יימחקו בסגירת הדפדפן",
+      "לא — GAS לא יכול לגשת לאינטרנט",
+      "כן, אבל רק דרך Python"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture5.html, שאלה 2: "כן בהחלט. אפשר להגדיר ב-GAS מנגנון אוטומטי (Time-driven trigger) שירוץ לבד בכל בוקר... הפרונט-אנד נועד רק לנוחות המשתמש. מנוע ה-BI שלנו (ה-GAS) יכול לרוץ על בסיס שעון פנימי, למשוך נתונים כל לילה ולשמור אותם באקסל, ללא התערבות אדם כלל."</div>
+    <strong>הסבר:</strong> ה-HTML הוא רק ממשק משתמש. המנוע האמיתי (GAS) יכול לעבוד עצמאית עם טריגרים מתוזמנים.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 6: BI Analyst, KPIs & תפקידים (5 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "BI Analyst, KPIs & תפקידים",
+    difficulty: "easy",
+    text: "מה ההבדל בין Data Analyst ל-Data Engineer על פי lecture1_bi_intro.html?",
+    options: [
+      "אין הבדל — אלו תפקידים זהים",
+      "Data Analyst מנתח ומפיק תובנות; Data Engineer בונה את התשתית (צינורות ETL, מחסני נתונים) שמאפשרת את הניתוח",
+      "Data Engineer עובד רק עם Excel; Data Analyst עובד רק עם Python",
+      "Data Analyst מנהל צוותים; Data Engineer עובד לבד",
+      "Data Analyst עוסק רק בויזואליזציה; Data Engineer עוסק רק ב-SQL"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "Data Engineer — 'האינסטלטור' שבונה צינורות ETL, מחסני נתונים. Data Analyst — מנתח נתונים לעומק, סטטיסטיקה, דוחות Ad-Hoc, זיהוי מגמות."</div>
+    <strong>הסבר:</strong> Data Engineer בונה תשתית; Data Analyst מנתח ומפיק תובנות; Analytics Engineer מגשר ביניהם (בונה מודלים של נתונים עם dbt).`
+  },
+  {
+    section: "BI Analyst, KPIs & תפקידים",
+    difficulty: "medium",
+    text: "מהו KPI (Key Performance Indicator) על פי lecture1_bi_intro.html?",
+    options: [
+      "Knowledge Process Integration",
+      "מדד ביצוע מרכזי — מדד כמותי שמכמת מטרות מופשטות למספר שאפשר לעקוב אחריו בדשבורד (למשל: Retention Rate, Churn Rate, CAC)",
+      "Key Programming Interface",
+      "שם של כלי BI",
+      "סוג של גרף ב-Tableau"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "KPI (Key Performance Indicator) — מדד ביצוע מרכזי. KPI טוב הוא כמותי, רלוונטי, מוגבל בזמן, ובר-השפעה."</div>
+    <strong>הסבר:</strong> דוגמאות: Average Order Value (פדיון ÷ עסקאות), Churn Rate (לקוחות שעזבו ÷ לקוחות בתחילת תקופה), CAC (הוצאות שיווק ÷ לקוחות חדשים).`
+  },
+  {
+    section: "BI Analyst, KPIs & תפקידים",
+    difficulty: "hard",
+    text: "חברת SaaS רוצה לדעת כמה עולה לה לגייס לקוח חדש. באיזה KPI מדובר על פי lecture1_bi_intro.html?",
+    options: [
+      "Churn Rate",
+      "CAC (Customer Acquisition Cost)",
+      "NPS (Net Promoter Score)",
+      "MRR (Monthly Recurring Revenue)",
+      "LTV (Lifetime Value)"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב' — CAC.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html, טבלת KPIs: "CAC = Customer Acquisition Cost = הוצאות שיווק ÷ לקוחות חדשים. מדד קריטי בחברות SaaS."</div>
+    <strong>הסבר:</strong> CAC עונה על השאלה "כמה עולה לגייס לקוח חדש?" Churn Rate מודד נטישה, NPS מודד שביעות רצון, MRR מודד הכנסות חודשיות קבועות.`
+  },
+  {
+    section: "BI Analyst, KPIs & תפקידים",
+    difficulty: "medium",
+    text: "מהי נקודת הכניסה המומלצת לסטודנט למנהל עסקים עם התמחות במערכות מידע על פי lecture1_bi_intro.html?",
+    options: [
+      "Data Scientist — בניית מודלים של למידת מכונה",
+      "BI Analyst / Data Analyst — משלב הבנה עסקית עם ידע טכני בסיסי (SQL, Tableau)",
+      "Data Engineer — בניית תשתיות",
+      "Software Developer — כתיבת קוד",
+      "Product Manager — ניהול מוצר"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "אם אתם לומדים מנהל עסקים עם התמחות במערכות מידע ואין לכם ניסיון טכני קודם — נקודת הכניסה הטבעית והריאלית ביותר היא תפקיד BI Analyst (אנליסט בינה עסקית) או Data Analyst (מנתח נתונים). למה? הם דורשים בדיוק את השילוב שלכם: הבנה עסקית + ידע טכני בסיסי."</div>
+    <strong>הסבר:</strong> המיומנויות הנדרשות: SQL, Tableau, Excel מתקדם, והכי חשוב — חשיבה עסקית. "היכולת לתרגם שאלה עסקית לשאילתת נתונים — זו המיומנות שמפרידה בין אנליסט טוב למצוין."`
+  },
+  {
+    section: "BI Analyst, KPIs & תפקידים",
+    difficulty: "medium",
+    text: "מהו NPS (Net Promoter Score) על פי survey_guidance.html?",
+    options: [
+      "מדד למדידת הכנסה חודשית",
+      "שאלה בודדת — 'בסולם 0-10, עד כמה היית ממליץ על השירות לחבר?' — 9-10=מקדמים, 7-8=פסיביים, 0-6=מלעיזים. NPS = %מקדמים - %מלעיזים",
+      "מדד למדידת עלות גיוס לקוח",
+      "שיטת תמחור מוצר",
+      "סוג של סולם ליקרט"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך survey_guidance.html: "NPS — Net Promoter Score. 'בסולם 0-10, עד כמה היית ממליץ על השירות לחבר?' — שאלה בודדת, עוצמתית. 9-10 = מקדמים, 7-8 = פסיביים, 0-6 = מלעיזים. NPS = %מקדמים - %מלעיזים."</div>
+    <strong>הסבר:</strong> NPS נחשב למדד פשוט אך רב-עוצמה לנאמנות לקוחות. ציון מעל 50 נחשב מצוין.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 7: מקרה בוחן TechNova & ניתוח נתונים (5 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "מקרה בוחן TechNova",
+    difficulty: "medium",
+    text: "במקרה הבוחן של TechNova (lecture_3_bi.html), מה הייתה 'התעלומה העסקית'?",
+    options: [
+      "החברה לא ידעה מי הלקוחות שלה",
+      "ההכנסות (Sales) היו בשיא כל הזמנים — אבל הרווח הנקי (Profit) היה בירידה, ובחודשים האחרונים החברה אף הפסידה כסף",
+      "החברה לא הצליחה להתרחב לשווקים חדשים",
+      "המערכת לא אספה נתונים כלל",
+      "כל הסניפים הפסידו כסף"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "שנת המכירות 2026 בעיצומה, ומחלקות המכירות חוגגות: שורת ההכנסות (Sales) נמצאת בשיא של כל הזמנים. אבל, בישיבת ההנהלה, מנהל הכספים מציג בעיה חמורה: למרות שההכנסות גבוהות מאי פעם, הרווח הנקי (Profit) של החברה נמצא בירידה, ובחודשים האחרונים החברה אף מפסידה כסף. כלומר, מוכרים הרבה - אבל מפסידים על המכירות."</div>
+    <strong>הסבר:</strong> פרדוקס: הכנסות בשיא, רווח בצניחה. המשימה: לגלות היכן בדיוק נוצרים ההפסדים ולמה.`
+  },
+  {
+    section: "מקרה בוחן TechNova",
+    difficulty: "medium",
+    text: "אילו שלושה גרפים נבנו ב-Tableau כדי לפתור את תעלומת TechNova על פי lecture_3_bi.html?",
+    options: [
+      "עוגה, פיזור, מפה",
+      "גרף קו (לזהות 'מתי') → גרף עמודות (לזהות 'איפה') → גרף פיזור (לזהות 'למה')",
+      "שלושה גרפי עוגה",
+      "גרף קו, גרף קו, גרף קו",
+      "Heatmap, Funnel, Waterfall"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "גרף 1: תרשים קווים (Line Chart) – מתי התחילה הבעיה?... גרף 2: תרשים עמודות (Bar Chart) – איפה הבעיה?... גרף 3: תרשים פיזור (Scatter Plot) – למה זה קורה?"</div>
+    <strong>הסבר:</strong> שלושת הגרפים יוצרים מסלול חקירה: קו → מתי (חציון שני). עמודות → איפה (אזור דרום). פיזור → למה (הנחות ענק של 30%-50%).`
+  },
+  {
+    section: "מקרה בוחן TechNova",
+    difficulty: "hard",
+    text: "מה הייתה הסיבה האמיתית להפסדים של TechNova על פי lecture_3_bi.html?",
+    options: [
+      "הלקוחות הפסיקו לקנות",
+      "מנהל אזור 'דרום' חילק הנחות ענק של 30%-50% בחציון השני כדי לנפח מספרי מכירות — אך מתמחר בהפסד",
+      "המוצרים היו פגומים",
+      "המתחרים הורידו מחירים",
+      "מערכת ה-ERP קרסה"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "תרשים פיזור מציג קורלציה. בבירור ניתן לראות שברגע שאחוז ההנחה (ציר X) עובר את ה-20% (0.2), כל העסקאות נופלות אל מתחת לקו האפס בציר ה-Y (הפסד). מסקנה סופית: מנהל אזור 'דרום' מחלק הנחות ענק של 30%-50% בחציון השני של השנה כדי לנפח את מספרי המכירות שלו, אך הוא מתמחר את המוצרים בהפסד לחברה."</div>
+    <strong>הסבר:</strong> גרף הפיזור חשף קורלציה: ככל שההנחה גבוהה יותר (מעל 20%) — העסקה בהפסד. הסיבה: מנהל שמנפח מכירות על חשבון רווחיות.`
+  },
+  {
+    section: "מקרה בוחן TechNova",
+    difficulty: "easy",
+    text: "בגרף 1 (Line Chart) של TechNova, אילו שני מדדים הוצגו על גבי ציר ה-Y על פי lecture_3_bi.html?",
+    options: [
+      "מכירות (Sales) ורווח (Profit) — שניהם על אותו ציר Y",
+      "מכירות (Sales) ומספר לקוחות",
+      "רווח (Profit) ומספר עובדים",
+      "מכירות (Sales) ואחוז הנחה (Discount)",
+      "הכנסות (Revenue) והוצאות (Expenses)"
+    ],
+    answer: 0,
+    explanation: `<strong>התשובה הנכונה היא אפשרות א'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "גררו את המשתנה Sales (מכירות) לאזור ה-Rows (שורות למעלה). תקבלו קו ראשון. כדי לראות במקביל את הרווח, גררו את המשתנה Profit (רווח) לאזור ה-Rows, ממש ליד המשתנה הקודם."</div>
+    <strong>הסבר:</strong> בגרף הקו, קו המכירות עולה (שיאים) אבל קו הרווח צונח מתחת לאפס — זהו הפרדוקס שהתגלה.`
+  },
+  {
+    section: "מקרה בוחן TechNova",
+    difficulty: "medium",
+    text: "מהי התובנה העסקית שהתגלתה מגרף 3 (Scatter Plot) של TechNova?",
+    options: [
+      "אין קשר בין הנחה לרווח",
+      "ככל שאחוז ההנחה גבוה יותר — הרווח נמוך יותר, ומעל 20% הנחה כל העסקאות בהפסד",
+      "הנחות גבוהות תמיד טובות לעסק",
+      "הלקוחות מעדיפים מוצרים יקרים",
+      "אזור צפון הוא הרווחי ביותר"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture_3_bi.html: "בבירור ניתן לראות שברגע שאחוז ההנחה (ציר X) עובר את ה-20% (0.2), כל העסקאות נופלות אל מתחת לקו האפס בציר ה-Y (הפסד)."</div>
+    <strong>הסבר:</strong> גרף פיזור חושף קורלציה שלילית: X = אחוז הנחה, Y = רווח. ב-0.2 (20%) — נקודת המפנה. כל עסקה מעל 20% הנחה = הפסד.`
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SECTION 8: שאלות סיכום אינטגרטיביות (4 שאלות)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    section: "שאלות סיכום אינטגרטיביות",
+    difficulty: "hard",
+    text: "איך כלי BI כמו Tableau מתחבר לנתונים שמגיעים משאלון Google Forms על פי החומר?",
+    options: [
+      "אין קשר — שאלונים לא קשורים ל-BI",
+      "כל שאלה בשאלון = עמודה בקובץ Google Sheets; כל משיב = שורה; מייצאים ל-Excel ומחברים ל-Tableau — שם Dimensions (דמוגרפיה) מפלחים ו-Measures (ליקרט) מנותחים",
+      "Tableau מייצר שאלונים אוטומטית",
+      "Google Forms מתחבר ישירות ל-Tableau Server",
+      "מעבירים את הנתונים ידנית בדוא\"ל"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html: "כל שאלה בשאלון שלכם תהפוך לעמודה בקובץ Excel. כל משיב = שורה. וב-Tableau: דמוגרפיה (גיל, מגדר, אזור) → ממד (Dimension) כחול. ליקרט (1–5) → מדד (Measure) ירוק."</div>
+    <strong>הסבר:</strong> תהליך מלא: Google Forms → Google Sheets → ייצוא ל-Excel/CSV ← חיבור ל-Tableau. Dimensions מפלחים (חיתוך לפי קטגוריות). Measures מאפשרים חישוב ממוצעים, סטיות תקן, גרפים.`
+  },
+  {
+    section: "שאלות סיכום אינטגרטיביות",
+    difficulty: "hard",
+    text: "מהי 'הטיית קירבה' (Acquaintance Bias) בהקשר של הפצת שאלונים על פי lecture4.html?",
+    options: [
+      "נטייה של חברים לענות בחיוב כי הם רוצים שתצליח — ולכן אין להפיץ סקרים לחברים ומשפחה",
+      "נטייה של זרים לענות בחיוב",
+      "העדפה של שאלות קצרות על פני ארוכות",
+      "נטייה לענות במהירות בלי לקרוא",
+      "הטייה סטטיסטית שנגרמת ממדגם קטן"
+    ],
+    answer: 0,
+    explanation: `<strong>התשובה הנכונה היא אפשרות א'.</strong>
+    <div class="quote">מתוך lecture4.html: "לא לחברים ולמשפחה! הם רוצים שתצליחו ויענו מה שנעים לכם לשמוע. זו 'הטיית קירבה' (Acquaintance Bias). אתם צריכים קהל בלתי תלוי."</div>
+    <strong>הסבר:</strong> הטיית קירבה מזהמת את הנתונים — המשיבים קרובים רוצים לרצות ועונים מה ש"נעים לשמוע" במקום מה שבאמת נכון.`
+  },
+  {
+    section: "שאלות סיכום אינטגרטיביות",
+    difficulty: "medium",
+    text: "מה המטרה של צ'קליסט סופי לבניית שאלון על פי lecture4.html?",
+    options: [
+      "להגיש לציון",
+      "לוודא שכל הרכיבים הקריטיים נמצאים לפני שליחת השאלון: שאלות סינון, ניסוח ניטרלי, דמוגרפיה בסוף, מקסימום 15 שאלות, פיילוט, בדיקה בנייד, וערוצי הפצה",
+      "לשלוח למנחה",
+      "לפרסם בקבוצות פייסבוק",
+      "להגיש כ-PDF"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture4.html, הצ'קליסט: "לפני שלוחצים 'שלח' — עברו על כל סעיף: שאלות מחקר ברורות, שאלות סינון, ניסוח ניטרלי, שאלה = נושא אחד, אפשרות 'אחר', דמוגרפיה בסוף, מקסימום 15 שאלות / 5 דקות, מבוא ברור, חלוקה לסעיפים, ניתוב עובד, פיילוט הושלם, בדיקה בנייד, הודעת סיום, ערוצי הפצה מתוכננים."</div>
+    <strong>הסבר:</strong> 14 סעיפים בצ'קליסט — כולם קריטיים. "נתונים גרועים גרועים יותר מחוסר נתונים כלל. הקפידו על בנייה נכונה."`
+  },
+  {
+    section: "שאלות סיכום אינטגרטיביות",
+    difficulty: "easy",
+    text: "מה הפירוש של Actionable Insights על פי lecture1_bi_intro.html?",
+    options: [
+      "נתונים גולמיים שלא עברו עיבוד",
+      "תובנות שלא רק מתארות מה קרה, אלא אומרות לך מה לעשות — ספציפיות, ברות-ביצוע, ומבוססות ראיות",
+      "מידע חסוי שלא ניתן לשתף",
+      "גרפים צבעוניים",
+      "דוחות כספיים רבעוניים"
+    ],
+    answer: 1,
+    explanation: `<strong>התשובה הנכונה היא אפשרות ב'.</strong>
+    <div class="quote">מתוך lecture1_bi_intro.html: "Actionable Insights — תובנות שלא רק מתארות מה קרה, אלא אומרות לך מה לעשות. זה ההבדל בין 'מידע מעניין' לבין 'מידע שמשנה החלטה'... תובנה מניעת-פעולה מאופיינת בשלושה מרכיבים: (1) ספציפית, (2) ברת-ביצוע, (3) מבוססת ראיות."</div>
+    <strong>הסבר:</strong> דוגמה: "שיעור הנטישה עלה ל-12%" = מידע. "לקוחות שלא השתמשו באפליקציה בחודש הראשון נוטשים ב-80%, ולכן צריך לשלוח מדריך שימוש ביום הראשון" = Actionable Insight.`
+  }
+];
+
+// ─── QUIZ STATE ─────────────────────────────────────────
+let answered = new Array(questions.length).fill(false);
+let correct = new Array(questions.length).fill(false);
+let totalAnswered = 0;
+let totalCorrect = 0;
+
+function buildQuiz() {
+  const main = document.getElementById('quizMain');
+  const finalScore = document.getElementById('finalScore');
+  main.innerHTML = '';
+  main.appendChild(finalScore);
+  let currentSection = '';
+
+  questions.forEach((q, qi) => {
+    if (q.section !== currentSection) {
+      currentSection = q.section;
+      const div = document.createElement('div');
+      div.className = 'section-divider';
+      div.innerHTML = `<div class="section-divider-line"></div><span class="section-divider-label">${q.section}</span><div class="section-divider-line"></div>`;
+      main.insertBefore(div, finalScore);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `q${qi}`;
+    card.style.animationDelay = `${qi * 0.03}s`;
+
+    const hdr = document.createElement('div');
+    hdr.className = 'question-header';
+    const diffBadge = q.difficulty === 'easy' ? 'diff-easy' : q.difficulty === 'medium' ? 'diff-medium' : 'diff-hard';
+    const diffText = q.difficulty === 'easy' ? 'קל' : q.difficulty === 'medium' ? 'בינוני' : 'קשה';
+    hdr.innerHTML = `<span class="q-number">שאלה ${qi + 1}</span><div class="question-text"><span class="difficulty-badge ${diffBadge}">${diffText}</span> ${q.text}</div>`;
+    card.appendChild(hdr);
+
+    const optsBlock = document.createElement('div');
+    optsBlock.className = 'options-block';
+    const optLetters = ['א', 'ב', 'ג', 'ד', 'ה'];
+    let selected = -1;
+
+    q.options.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.id = `q${qi}_o${oi}`;
+      btn.innerHTML = `<span class="option-circle">${optLetters[oi]}</span><span class="option-text">${opt}</span>`;
+      btn.addEventListener('click', () => {
+        if (answered[qi]) return;
+        selected = oi;
+        optsBlock.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        checkBtn.disabled = false;
+      });
+      optsBlock.appendChild(btn);
+    });
+    card.appendChild(optsBlock);
+
+    const checkWrap = document.createElement('div');
+    checkWrap.className = 'check-btn-wrap';
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'check-btn';
+    checkBtn.textContent = '🔍 בדוק אותי';
+    checkBtn.disabled = true;
+    checkBtn.addEventListener('click', () => {
+      if (answered[qi] || selected === -1) return;
+      answered[qi] = true;
+      totalAnswered++;
+      const isCorrect = selected === q.answer;
+      if (isCorrect) { correct[qi] = true; totalCorrect++; }
+
+      optsBlock.querySelectorAll('.option-btn').forEach((b, oi) => {
+        b.disabled = true;
+        if (oi === q.answer) { b.classList.remove('selected'); b.classList.add('correct'); }
+        else if (oi === selected && !isCorrect) { b.classList.remove('selected'); b.classList.add('wrong'); }
+        else { b.classList.add('dimmed'); }
+      });
+
+      const expBlock = document.createElement('div');
+      expBlock.className = 'explanation-block';
+      const isC = isCorrect;
+      expBlock.innerHTML = `
+        <div class="explanation-header ${isC ? 'correct-header' : 'wrong-header'}">
+          ${isC ? '✅ תשובה נכונה!' : '❌ לא מדויק — הנה ההסבר המלא:'}
+        </div>
+        <div class="explanation-body">${q.explanation}</div>`;
+      card.appendChild(expBlock);
+      card.classList.add('answered');
+      checkBtn.disabled = true;
+      checkBtn.textContent = isC ? '✅ נכון!' : '❌ שגוי';
+      checkBtn.style.background = isC ? 'linear-gradient(135deg,#2ea043,#1a6e32)' : 'linear-gradient(135deg,#da3633,#9c1a18)';
+
+      updateProgress();
+      if (totalAnswered === questions.length) {
+        setTimeout(showFinalScore, 600);
+      }
+    });
+
+    checkWrap.appendChild(checkBtn);
+    card.appendChild(checkWrap);
+    main.insertBefore(card, finalScore);
+  });
+}
+
+function updateProgress() {
+  const pct = (totalAnswered / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('scoreDisplay').textContent = `${totalCorrect} / ${questions.length}`;
+}
+
+function showFinalScore() {
+  const el = document.getElementById('finalScore');
+  el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('finalNum').textContent = totalCorrect;
+  document.getElementById('finalTotal').textContent = `/ ${questions.length}`;
+  const pct = Math.round((totalCorrect / questions.length) * 100);
+  document.getElementById('scoreRing').style.setProperty('--pct', `${pct}%`);
+  let title, msg;
+  if (pct >= 90) { title = 'מצוין! שולט בחומר 🏆'; msg = 'ביצועים מרשימים! אתה שולט היטב במושגי BI, Tableau ובניית שאלונים.'; }
+  else if (pct >= 70) { title = 'טוב מאוד! 👍'; msg = 'הבנה טובה של החומר. כדאי לחזור על הנושאים שלא עברו.'; }
+  else if (pct >= 50) { title = 'בסדר, יש מקום לשיפור 📚'; msg = 'קיים בסיס, אך חשוב לחזור על החומר.'; }
+  else { title = 'כדאי לחזור על החומר 💪'; msg = 'אל תתייאש! חזור על ההסברים ונסה שוב.'; }
+  document.getElementById('finalTitle').textContent = title;
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  correct = new Array(questions.length).fill(false);
+  totalAnswered = 0;
+  totalCorrect = 0;
+  document.getElementById('finalScore').classList.remove('show');
+  updateProgress();
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
