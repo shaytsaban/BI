@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תדריך מקיף לבניית מדדי ביצוע (KPIs) לאפליקציה שלכם | נספח ב'</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=David+Libre:wght@400;500;700&family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-1:#f6f4ff;
+  --bg-2:#eef0ff;
+  --bg-3:#ffffff;
+  --ink:#1a1547;
+  --ink-soft:#4b4582;
+  --muted:#6b6794;
+  --line:#e3e0f7;
+  --indigo:#5b5bd6;
+  --indigo-deep:#3d3aa8;
+  --violet:#8b5cf6;
+  --violet-deep:#6d28d9;
+  --sky:#3b82f6;
+  --rose:#f43f5e;
+  --emerald:#10b981;
+  --amber:#f59e0b;
+  --grad:linear-gradient(135deg,#5b5bd6 0%,#8b5cf6 55%,#a78bfa 100%);
+  --grad-soft:linear-gradient(135deg,#eef0ff 0%,#f5eeff 100%);
+  --shadow-sm:0 2px 8px rgba(91,91,214,.08);
+  --shadow:0 12px 40px rgba(91,91,214,.12);
+  --shadow-lg:0 24px 60px rgba(91,91,214,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"David Libre","Frank Ruhl Libre",Georgia,serif;
+  background:
+    radial-gradient(1200px 600px at 90% -10%, #e0d7ff 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, #d6e0ff 0%, transparent 55%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-size:18px;
+  line-height:1.85;
+  min-height:100vh;
+  padding-bottom:120px;
+}
+.container{max-width:1180px;margin:0 auto;padding:0 28px}
+.sans{font-family:"Heebo",sans-serif}
+.serif{font-family:"David Libre",serif}
+
+/* === HERO === */
+.hero{
+  position:relative;
+  padding:90px 0 70px;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(600px 300px at 20% 80%, rgba(139,92,246,.18), transparent 60%),
+    radial-gradient(500px 250px at 80% 20%, rgba(91,91,214,.18), transparent 60%);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:"Heebo",sans-serif;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  font-size:13px;
+  color:var(--violet-deep);
+  display:inline-flex;align-items:center;gap:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  padding:8px 18px;
+  border-radius:999px;
+  box-shadow:var(--shadow-sm);
+}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--grad);}
+h1{
+  font-family:"Frank Ruhl Libre","David Libre",serif;
+  font-weight:900;
+  font-size:clamp(38px,5.5vw,68px);
+  line-height:1.1;
+  margin:22px 0 18px;
+  letter-spacing:-.02em;
+}
+h1 .grad{
+  background:var(--grad);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.lead{
+  font-size:clamp(18px,2vw,22px);
+  color:var(--ink-soft);
+  max-width:780px;
+  line-height:1.7;
+}
+.hero-meta{
+  margin-top:40px;
+  display:flex;flex-wrap:wrap;gap:14px;
+}
+.tag{
+  font-family:"Heebo",sans-serif;
+  font-size:14px;font-weight:500;
+  background:#fff;
+  border:1px solid var(--line);
+  padding:10px 18px;border-radius:14px;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:var(--shadow-sm);
+}
+.tag svg{width:16px;height:16px;color:var(--indigo)}
+
+/* === TOC === */
+.toc{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:36px 40px;
+  margin:50px auto;
+  box-shadow:var(--shadow);
+  position:relative;
+}
+.toc::before{
+  content:"";position:absolute;top:-1px;right:30px;left:30px;height:3px;
+  background:var(--grad);border-radius:3px;
+}
+.toc h2{
+  font-family:"Heebo",sans-serif;
+  font-size:14px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--violet-deep);font-weight:700;margin-bottom:22px;
+}
+.toc ol{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 30px}
+.toc li{
+  counter-increment:toc;
+  font-family:"Heebo",sans-serif;
+  font-size:15px;
+  padding:8px 0;
+  border-bottom:1px dashed var(--line);
+  display:flex;align-items:center;gap:14px;
+}
+.toc li::before{
+  content:counter(toc,decimal-leading-zero);
+  font-family:"Heebo",sans-serif;
+  font-weight:700;font-size:12px;
+  color:var(--violet);
+  background:var(--bg-2);
+  width:32px;height:32px;border-radius:8px;
+  display:inline-flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.toc ol{counter-reset:toc}
+.toc a{color:var(--ink);text-decoration:none}
+.toc a:hover{color:var(--violet-deep)}
+
+/* === SECTIONS === */
+section{padding:60px 0;scroll-margin-top:20px}
+.sec-num{
+  font-family:"Heebo",sans-serif;
+  font-weight:700;letter-spacing:.2em;font-size:12px;text-transform:uppercase;
+  color:var(--violet-deep);
+  display:inline-flex;align-items:center;gap:12px;
+  margin-bottom:14px;
+}
+.sec-num .bar{width:48px;height:2px;background:var(--grad);border-radius:2px}
+h2.title{
+  font-family:"Frank Ruhl Libre","David Libre",serif;
+  font-weight:800;
+  font-size:clamp(30px,3.8vw,46px);
+  line-height:1.2;
+  letter-spacing:-.01em;
+  margin-bottom:18px;
+  max-width:900px;
+}
+h2.title .grad{
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+h3{
+  font-family:"Frank Ruhl Libre","David Libre",serif;
+  font-weight:700;
+  font-size:26px;
+  margin:34px 0 14px;
+  letter-spacing:-.005em;
+}
+h4{
+  font-family:"Heebo",sans-serif;
+  font-weight:700;font-size:18px;margin:22px 0 10px;color:var(--indigo-deep);
+}
+p{margin-bottom:14px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:700}
+.intro{
+  font-size:20px;color:var(--ink-soft);max-width:900px;line-height:1.8;margin-bottom:28px;
+}
+
+/* === CARDS === */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:22px;
+  padding:34px 36px;box-shadow:var(--shadow-sm);margin:22px 0;
+  position:relative;
+}
+.card.featured{
+  background:linear-gradient(135deg,#fff 0%,#fbf8ff 100%);
+  border:1px solid #d8d0fa;
+  box-shadow:var(--shadow);
+}
+.callout{
+  background:var(--grad-soft);
+  border-right:4px solid var(--violet);
+  border-radius:14px;
+  padding:22px 26px;margin:22px 0;
+}
+.callout .label{
+  font-family:"Heebo",sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--violet-deep);margin-bottom:6px;display:block;
+}
+.callout.warn{
+  background:linear-gradient(135deg,#fff8ec 0%,#fff1d6 100%);
+  border-right-color:var(--amber);
+}
+.callout.warn .label{color:#b45309}
+.callout.tip{
+  background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);
+  border-right-color:var(--emerald);
+}
+.callout.tip .label{color:#047857}
+.callout.danger{
+  background:linear-gradient(135deg,#fff1f2 0%,#ffe4e6 100%);
+  border-right-color:var(--rose);
+}
+.callout.danger .label{color:#be123c}
+
+.definition{
+  display:grid;grid-template-columns:auto 1fr;gap:22px;
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:24px;margin:20px 0;box-shadow:var(--shadow-sm);
+}
+.definition .ico{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--grad);color:#fff;
+  display:grid;place-items:center;font-size:24px;font-weight:900;
+  font-family:"Heebo",sans-serif;
+}
+.definition .body strong{
+  font-family:"Heebo",sans-serif;font-size:13px;letter-spacing:.15em;
+  color:var(--violet-deep);text-transform:uppercase;display:block;margin-bottom:4px;
+}
+.definition .body p{margin:0;color:var(--ink);font-size:17px;line-height:1.7}
+
+/* === STEPS === */
+.steps{display:flex;flex-direction:column;gap:18px;margin:30px 0}
+.step{
+  background:#fff;border:1px solid var(--line);border-radius:20px;
+  padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:24px;
+  box-shadow:var(--shadow-sm);transition:transform .25s,box-shadow .25s;
+}
+.step:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.step .num{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--grad);color:#fff;
+  display:grid;place-items:center;
+  font-family:"Heebo",sans-serif;font-weight:900;font-size:28px;
+  box-shadow:0 8px 24px rgba(139,92,246,.35);
+}
+.step h4{margin-top:0;font-size:22px;font-family:"Frank Ruhl Libre",serif;color:var(--ink)}
+.step .ex{
+  background:var(--bg-1);border-radius:12px;padding:14px 18px;margin-top:14px;
+  font-size:15px;color:var(--ink-soft);border-right:3px solid var(--indigo);
+}
+.step .ex strong{color:var(--violet-deep);font-family:"Heebo",sans-serif;font-size:13px;letter-spacing:.05em;}
+
+/* === GRID === */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:24px 0}
+@media(max-width:860px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .toc ol{grid-template-columns:1fr}
+}
+.minicard{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;
+  box-shadow:var(--shadow-sm);
+}
+.minicard h4{margin-top:0}
+.minicard .ico{
+  width:48px;height:48px;border-radius:12px;background:var(--grad-soft);
+  display:grid;place-items:center;font-size:22px;margin-bottom:12px;
+  color:var(--violet-deep);
+}
+
+/* === AARRR Funnel === */
+.funnel{margin:30px 0}
+.funnel-row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:20px 24px;margin-bottom:10px;box-shadow:var(--shadow-sm);
+  transition:transform .2s;
+}
+.funnel-row:hover{transform:translateX(-4px)}
+.funnel-row .letter{
+  width:54px;height:54px;border-radius:14px;
+  display:grid;place-items:center;
+  font-family:"Heebo",sans-serif;font-weight:900;font-size:24px;color:#fff;
+}
+.funnel-row:nth-child(1) .letter{background:linear-gradient(135deg,#3b82f6,#6366f1)}
+.funnel-row:nth-child(2) .letter{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.funnel-row:nth-child(3) .letter{background:linear-gradient(135deg,#8b5cf6,#a855f7)}
+.funnel-row:nth-child(4) .letter{background:linear-gradient(135deg,#a855f7,#d946ef)}
+.funnel-row:nth-child(5) .letter{background:linear-gradient(135deg,#d946ef,#ec4899)}
+.funnel-row .body h4{margin:0 0 4px;color:var(--ink);font-size:20px;font-family:"Frank Ruhl Libre",serif}
+.funnel-row .body p{margin:0;font-size:15px;color:var(--ink-soft)}
+.funnel-row .body .ex-metric{
+  font-family:"Heebo",sans-serif;font-size:13px;color:var(--violet-deep);
+  background:var(--bg-1);padding:4px 10px;border-radius:8px;margin-top:8px;display:inline-block;
+}
+
+/* === FLOWCHART === */
+.flowchart{
+  background:#fff;border:1px solid var(--line);border-radius:24px;
+  padding:40px;margin:30px 0;box-shadow:var(--shadow);overflow-x:auto;
+}
+.flowchart svg{max-width:100%;height:auto;display:block;margin:0 auto}
+
+/* === EXAMPLES === */
+.example{
+  background:#fff;border:1px solid var(--line);border-radius:24px;
+  padding:0;margin:30px 0;box-shadow:var(--shadow);overflow:hidden;
+}
+.example .head{
+  padding:30px 36px;color:#fff;position:relative;overflow:hidden;
+}
+.example .head::after{
+  content:"";position:absolute;top:-50%;left:-20%;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);
+  pointer-events:none;
+}
+.example.dating .head{background:linear-gradient(135deg,#ec4899 0%,#8b5cf6 100%)}
+.example.parking .head{background:linear-gradient(135deg,#3b82f6 0%,#6366f1 100%)}
+.example.food .head{background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%)}
+.example.fitness .head{background:linear-gradient(135deg,#10b981 0%,#3b82f6 100%)}
+.example .head h3{
+  margin:0;color:#fff;font-size:30px;font-family:"Frank Ruhl Libre",serif;
+}
+.example .head .sub{
+  font-family:"Heebo",sans-serif;font-size:14px;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.85;margin-bottom:8px;display:block;
+}
+.example .body{padding:36px}
+.example .vision{
+  background:var(--bg-1);border-radius:14px;padding:18px 22px;
+  border-right:3px solid var(--violet);margin-bottom:24px;
+  font-size:18px;font-style:italic;color:var(--ink);
+}
+.example .vision strong{
+  font-style:normal;font-family:"Heebo",sans-serif;font-size:13px;
+  letter-spacing:.1em;color:var(--violet-deep);display:block;margin-bottom:4px;text-transform:uppercase;
+}
+.example .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+@media(max-width:860px){.example .two-col{grid-template-columns:1fr}}
+.example .col h4{
+  font-family:"Heebo",sans-serif;font-size:13px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--violet-deep);margin-bottom:14px;
+  padding-bottom:10px;border-bottom:2px solid var(--line);
+}
+.metric-list{list-style:none}
+.metric-list li{
+  padding:10px 0;display:grid;grid-template-columns:auto 1fr auto;gap:12px;
+  align-items:start;border-bottom:1px dashed var(--line);
+}
+.metric-list li:last-child{border-bottom:none}
+.metric-list .b{
+  width:8px;height:8px;border-radius:50%;background:var(--violet);margin-top:10px;
+  flex-shrink:0;
+}
+.metric-list .name{
+  font-family:"Heebo",sans-serif;font-weight:600;font-size:15px;color:var(--ink);
+}
+.metric-list .desc{
+  font-size:14px;color:var(--muted);margin-top:2px;font-family:"Heebo",sans-serif;
+}
+.metric-list .unit{
+  font-family:"Heebo",sans-serif;font-size:12px;color:var(--violet-deep);
+  background:var(--bg-1);padding:3px 9px;border-radius:6px;white-space:nowrap;
+}
+
+/* === DASHBOARD MOCK === */
+.dashboard{
+  background:#fff;border:1px solid var(--line);border-radius:24px;
+  padding:36px;margin:30px 0;box-shadow:var(--shadow-lg);
+}
+.dash-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  flex-wrap:wrap;gap:14px;margin-bottom:26px;padding-bottom:20px;
+  border-bottom:1px solid var(--line);
+}
+.dash-head h3{margin:0;font-size:26px}
+.dash-head .live{
+  font-family:"Heebo",sans-serif;font-size:12px;color:var(--emerald);
+  display:inline-flex;align-items:center;gap:6px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;
+}
+.dash-head .live::before{
+  content:"";width:8px;height:8px;border-radius:50%;background:var(--emerald);
+  box-shadow:0 0 0 4px rgba(16,185,129,.25);animation:pulse 2s infinite;
+}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(16,185,129,0)}}
+.kpi-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;
+}
+@media(max-width:860px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi{
+  background:linear-gradient(135deg,#fbf9ff 0%,#fff 100%);
+  border:1px solid var(--line);border-radius:14px;padding:18px;
+}
+.kpi .lbl{
+  font-family:"Heebo",sans-serif;font-size:12px;color:var(--muted);
+  letter-spacing:.05em;margin-bottom:6px;
+}
+.kpi .val{
+  font-family:"Heebo",sans-serif;font-weight:700;font-size:30px;
+  color:var(--ink);letter-spacing:-.02em;
+}
+.kpi .delta{
+  font-family:"Heebo",sans-serif;font-size:13px;font-weight:600;margin-top:4px;
+}
+.kpi .delta.up{color:var(--emerald)}
+.kpi .delta.down{color:var(--rose)}
+
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:860px){.chart-row{grid-template-columns:1fr}}
+.chart-card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;
+}
+.chart-card h5{
+  font-family:"Heebo",sans-serif;font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;
+}
+.chart-card h5 .legend{font-size:11px;color:var(--muted);font-weight:400}
+
+/* Bar chart */
+.bars{display:flex;align-items:flex-end;gap:8px;height:160px;padding-top:10px}
+.bars .bar{
+  flex:1;background:var(--grad);border-radius:6px 6px 0 0;position:relative;
+  display:flex;justify-content:center;
+  transition:filter .2s;
+}
+.bars .bar:hover{filter:brightness(1.1)}
+.bars .bar span{
+  position:absolute;bottom:-22px;font-family:"Heebo",sans-serif;font-size:11px;
+  color:var(--muted);white-space:nowrap;
+}
+.bars .bar em{
+  position:absolute;top:-20px;font-family:"Heebo",sans-serif;font-size:11px;
+  color:var(--ink);font-weight:600;font-style:normal;white-space:nowrap;
+}
+
+/* Donut/pie */
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut{
+  width:140px;height:140px;border-radius:50%;flex-shrink:0;
+  background:conic-gradient(var(--indigo) 0% 42%, var(--violet) 42% 68%, #c4b5fd 68% 88%, #ddd6fe 88% 100%);
+  position:relative;
+}
+.donut::after{
+  content:"";position:absolute;inset:18px;background:#fff;border-radius:50%;
+}
+.donut-legend{font-family:"Heebo",sans-serif;font-size:13px;flex:1}
+.donut-legend li{list-style:none;display:flex;justify-content:space-between;
+  padding:5px 0;border-bottom:1px dashed var(--line);align-items:center;gap:8px}
+.donut-legend .sw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.donut-legend strong{color:var(--ink-soft)}
+
+/* Line area chart */
+.line-chart{height:200px;width:100%}
+
+/* === Table === */
+.table{
+  width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;
+  border:1px solid var(--line);margin:18px 0;font-family:"Heebo",sans-serif;font-size:15px;
+}
+.table th,.table td{padding:14px 18px;text-align:right;border-bottom:1px solid var(--line)}
+.table thead{background:var(--grad-soft)}
+.table th{font-weight:700;color:var(--violet-deep);font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+.table tr:last-child td{border-bottom:none}
+.table tbody tr:hover{background:var(--bg-1)}
+.pill{
+  display:inline-block;padding:3px 10px;border-radius:8px;font-size:12px;font-weight:600;
+}
+.pill.green{background:#d1fae5;color:#047857}
+.pill.red{background:#fee2e2;color:#b91c1c}
+.pill.blue{background:#dbeafe;color:#1e40af}
+.pill.purple{background:#ede9fe;color:#6d28d9}
+
+/* === Checklist === */
+.checklist{display:grid;gap:12px;margin:24px 0}
+.check-item{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px 20px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+}
+.check-item .box{
+  width:24px;height:24px;border-radius:8px;border:2px solid var(--violet);
+  display:grid;place-items:center;flex-shrink:0;margin-top:2px;
+}
+.check-item .box::after{
+  content:"✓";font-family:"Heebo",sans-serif;font-weight:900;color:var(--violet);font-size:14px;
+}
+.check-item p{margin:0;font-family:"Heebo",sans-serif;font-size:15px;color:var(--ink-soft)}
+.check-item strong{color:var(--ink);display:block;margin-bottom:2px}
+
+/* === Footer === */
+footer{
+  margin-top:80px;padding:40px 0;border-top:1px solid var(--line);text-align:center;
+}
+footer p{font-family:"Heebo",sans-serif;font-size:14px;color:var(--muted)}
+footer .sig{
+  font-family:"Frank Ruhl Libre",serif;font-style:italic;font-size:18px;
+  color:var(--violet-deep);margin-bottom:6px;
+}
+
+/* anchors */
+.anchor{display:block;position:relative;top:-20px;visibility:hidden}
+
+/* number drop */
+.bignum{
+  font-family:"Frank Ruhl Libre",serif;font-weight:900;
+  font-size:80px;line-height:1;color:transparent;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;
+  float:right;margin:0 0 6px 18px;
+}
+</style>
+</head>
+<body>
+
+<!-- ============== HERO ============== -->
+<header class="hero">
+  <div class="container">
+    <span class="eyebrow"><span class="dot"></span>נספח ב' · ניתוח והצגת מדדים עסקיים · מחלקת כלכלה וניהול</span>
+    <h1>איך בונים <span class="grad">מדדי ביצוע (KPIs)</span> לאפליקציה שלכם – צעד אחר צעד, מהחזון ועד הדשבורד</h1>
+    <p class="lead">תדריך מקיף, סופר־מפורט וצעד־אחר־צעד. בסוף הקריאה תדעו בדיוק מה למדוד, למה למדוד את זה, איפה לאסוף את הנתון, ואיך להציג אותו גם למנהל המוצר וגם למשתמש הקצה – עם דוגמאות מלאות מאפליקציית דייטים, חניה, משלוחי אוכל וכושר, ועם דשבורד אמיתי לדוגמה.</p>
+    <div class="hero-meta">
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>ניתוח KPIs</span>
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>תהליך 8 שלבים</span>
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v6H4zM4 14h16v6H4z"/></svg>2 דשבורדים</span>
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>4 דוגמאות מלאות</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============== TOC ============== -->
+<div class="container">
+  <nav class="toc">
+    <h2>תוכן עניינים</h2>
+    <ol>
+      <li><a href="#s1">למה בכלל למדוד? האנלוגיה של לוח המחוונים</a></li>
+      <li><a href="#s2">מה זה KPI? הגדרה אנושית, בלי שטויות</a></li>
+      <li><a href="#s3">החיבור הקדוש: מוצר ↔ חזון ↔ הצלחה ↔ מדדים</a></li>
+      <li><a href="#s4">מה מעניין מנהל ומה מעניין משתמש? (זה לא אותו דבר!)</a></li>
+      <li><a href="#s5">תהליך בניית KPIs – שמונה שלבים מסודרים</a></li>
+      <li><a href="#s6">קטגוריות מדדים שתמיד שווה לחשוב עליהן (AARRR וחברים)</a></li>
+      <li><a href="#s7">תרשים הזרימה: מהחזון אל הדשבורד</a></li>
+      <li><a href="#s8">דוגמה 1: אפליקציית דייטים – "Spark"</a></li>
+      <li><a href="#s9">דוגמה 2: אפליקציית חניה – "ParkSmart"</a></li>
+      <li><a href="#s10">דוגמה 3: משלוחי אוכל – "QuickBite"</a></li>
+      <li><a href="#s11">דוגמה 4: כושר – "FitFlow"</a></li>
+      <li><a href="#s12">שני דשבורדים: למנהל לעומת למשתמש</a></li>
+      <li><a href="#s13">דוגמה מלאה: דשבורד "ParkSmart" – מבט מנהל</a></li>
+      <li><a href="#s14">איפה Tableau נכנס לסיפור (וגם Power BI, Looker וכו')</a></li>
+      <li><a href="#s15">8 הטעויות הנפוצות שיגרמו לכם להוריד נקודות</a></li>
+      <li><a href="#s16">צ'ק־ליסט סופי לפני שאתם מגישים</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ============== SECTION 1 ============== -->
+<a id="s1" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 1 · המוטיבציה</div>
+    <h2 class="title">למה בכלל למדוד? <span class="grad">האנלוגיה של לוח המחוונים</span></h2>
+    <p class="intro">דמיינו שאתם נוהגים ברכב בלי לוח מחוונים. אין מד מהירות, אין מד דלק, אין נורית "המנוע במצב חירום". מה הסיכוי שתגיעו ליעד? אפסי. גם אם הרכב מצוין, אתם נוסעים בעיניים עצומות. <strong>אפליקציה בלי מדדי ביצוע היא בדיוק כזה רכב.</strong></p>
+
+    <div class="card featured">
+      <h3>מה קורה לאפליקציה בלי מדדים?</h3>
+      <p>חברי הצוות מתחילים לריב על "מה חשוב יותר": אחד אומר "צריך להוסיף פיצ'ר ווידאו!"; השני אומר "לא, הצ'אט שלנו אטי, נתקן אותו". <strong>אבל אף אחד לא יודע מה הצרכן באמת רוצה</strong>, או אם המוצר בכלל מצליח. מנהל המוצר יושב מול מצגת ריקה ושואל את עצמו: "האם השקנו את הפיצ'ר החדש בהצלחה? לא יודע. כמה משתמשים פעילים יש לנו היום? לא יודע. אנשים נהנים? לא יודע." הוא נחנק בערפל.</p>
+      <p>עם מדדים נכונים, פתאום הערפל מתפזר: "המשתמשים הצעירים נוטשים אחרי 3 ימים, המבוגרים נשארים חודשים – נתמקד בשיפור החוויה לצעירים." זו ההצדקה היחידה לקיומם של מדדי ביצוע: <strong>להחליף ניחושים בעובדות</strong>.</p>
+    </div>
+
+    <div class="callout">
+      <span class="label">המסר שצריך לזכור</span>
+      <p style="color:var(--ink);margin:0;font-size:18px"><strong>מדידה היא היכולת לקבל החלטות מבוססות נתונים במקום מבוססות "ככה אני מרגיש".</strong> בלי זה, המוצר ייכשל באופן מקצועי מאוד.</p>
+    </div>
+
+    <h3>שלוש שאלות שכל מנהל מוצר חייב לדעת לענות עליהן בכל בוקר</h3>
+    <div class="grid-3">
+      <div class="minicard">
+        <div class="ico">📈</div>
+        <h4>האם המוצר גדל?</h4>
+        <p>כמה משתמשים חדשים הצטרפו? כמה פעילים? כמה הכנסה הם מייצרים?</p>
+      </div>
+      <div class="minicard">
+        <div class="ico">💚</div>
+        <h4>האם המשתמשים מאושרים?</h4>
+        <p>הם חוזרים? הם משלימים תהליכים? הם ממליצים לחברים?</p>
+      </div>
+      <div class="minicard">
+        <div class="ico">🚨</div>
+        <h4>איפה השרפות?</h4>
+        <p>איפה משתמשים נופלים? איפה יש באג שמסב נזק? מה דורש התערבות מיידית?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 2 ============== -->
+<a id="s2" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 2 · הגדרות יסוד</div>
+    <h2 class="title">מה זה <span class="grad">KPI</span>? הגדרה אנושית בלי שטויות</h2>
+
+    <div class="definition">
+      <div class="ico">KPI</div>
+      <div class="body">
+        <strong>KEY PERFORMANCE INDICATOR</strong>
+        <p><strong>מדד ביצוע מרכזי</strong> – מספר ספציפי, ניתן למדידה, שמעיד על מידת ההצלחה של המוצר במשימה מוגדרת. השם רומז על שלוש המילים: <em>Key</em> – הוא חשוב, לא סתם נתון; <em>Performance</em> – הוא מתאר ביצוע, לא רק תיאור; <em>Indicator</em> – הוא רומז, לא מספר את כל הסיפור לבד.</p>
+      </div>
+    </div>
+
+    <h3>ההבדל בין נתון (Metric) ל־KPI</h3>
+    <p>כאן נופלים 80% מהסטודנטים, אז שימו לב היטב. <strong>כל KPI הוא מדד, אבל לא כל מדד הוא KPI.</strong> נתון הוא כל דבר שניתן לספור באפליקציה: כמה לחיצות על כפתור "בית", כמה גלילות במסך הראשי, כמה אנשים פתחו את ההגדרות. הרבה מהדברים האלה לא באמת חשובים. KPI לעומת זאת הוא <strong>מדד שאם הוא יורד, יש לכם בעיה אסטרטגית</strong>.</p>
+
+    <div class="grid-2">
+      <div class="minicard" style="border-right:3px solid var(--rose)">
+        <h4 style="color:var(--rose)">❌ נתון רגיל (לא KPI)</h4>
+        <p style="font-family:'Heebo',sans-serif;font-size:15px"><strong>"מספר פתיחות של מסך ההגדרות"</strong></p>
+        <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--muted)">אינפורמטיבי, אבל לא משקף הצלחה. אם הוא יעלה ב־20% – לא תרגישו טוב או רע, פשוט תגידו "אוקיי".</p>
+      </div>
+      <div class="minicard" style="border-right:3px solid var(--emerald)">
+        <h4 style="color:var(--emerald)">✅ KPI אמיתי</h4>
+        <p style="font-family:'Heebo',sans-serif;font-size:15px"><strong>"אחוז משתמשים שחזרו תוך 7 ימים מההורדה"</strong></p>
+        <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--muted)">אם הוא עולה – חגיגה. אם הוא צונח – מתכנסים בדחיפות. הוא <em>מנבא</em> את עתיד המוצר.</p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="label">מבחן הצליל לבדיקה האם זה KPI</span>
+      <p style="color:var(--ink);margin:0;font-size:17px">קחו את המדד שלכם ותסיימו את המשפט: "אם המדד הזה <strong>ירד לחצי</strong> מחר, נצטרך לכנס ישיבת חירום." אם התשובה היא "ברור!", זה KPI. אם התשובה היא "מממ, אולי", זה רק נתון רקע.</p>
+    </div>
+
+    <h3>איך KPI טוב נראה? כלל ה־SMART</h3>
+    <p>זה הזמן להכיר את אחד המודלים השימושיים בעולם הניהול. KPI איכותי הוא תמיד <strong>SMART</strong>:</p>
+
+    <div class="grid-3">
+      <div class="minicard">
+        <div class="ico" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);color:var(--indigo-deep)">S</div>
+        <h4>Specific – ספציפי</h4>
+        <p>לא "הרבה משתמשים", אלא "5,000 משתמשים פעילים יומיים בסגמנט הצעיר 18-25".</p>
+      </div>
+      <div class="minicard">
+        <div class="ico" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);color:var(--indigo-deep)">M</div>
+        <h4>Measurable – ניתן למדידה</h4>
+        <p>חייב להיות מספר. "המשתמשים מרוצים" זה לא מדיד. "ציון NPS של 50+" כן.</p>
+      </div>
+      <div class="minicard">
+        <div class="ico" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);color:var(--indigo-deep)">A</div>
+        <h4>Achievable – בר השגה</h4>
+        <p>"מיליון משתמשים בחודש הראשון" לא יעד, אלא חלום. שאפו גבוה, אבל קרקעית.</p>
+      </div>
+      <div class="minicard">
+        <div class="ico" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);color:var(--indigo-deep)">R</div>
+        <h4>Relevant – רלוונטי</h4>
+        <p>קשור לחזון. אם המוצר עוסק בשידוכים, מה אכפת לכם כמה לייקים יש בעמוד הפייסבוק שלכם?</p>
+      </div>
+      <div class="minicard">
+        <div class="ico" style="background:linear-gradient(135deg,#dbeafe,#ede9fe);color:var(--indigo-deep)">T</div>
+        <h4>Time-bound – תחום בזמן</h4>
+        <p>"להגיע ל־DAU של 10,000" עד מתי? עד סוף הסמסטר? עד 2027? בלי זמן זה לא יעד.</p>
+      </div>
+      <div class="minicard" style="background:var(--grad);color:#fff;border:none">
+        <h4 style="color:#fff">דוגמה מלאה</h4>
+        <p style="color:rgba(255,255,255,.92)">"להגיע ל־<strong>40% Retention</strong> בשבוע הראשון, בקרב משתמשים חדשים בגילאי 25-40, <strong>עד סוף הרבעון הראשון 2027</strong>."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 3 ============== -->
+<a id="s3" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 3 · החיבור הקדוש</div>
+    <h2 class="title">החיבור הקדוש: <span class="grad">מוצר ↔ חזון ↔ הצלחה ↔ מדדים</span></h2>
+    <p class="intro">זה השלד של כל מה שתעשו השנה. אם לא תבינו את הקשר הזה, יכולים לבנות 100 KPIs מהממים שלא קשורים למוצר שלכם – ולא להבין למה הוא לא מצליח. תהליך הגזירה הוא קווי, וצריך לעבור אותו לפי הסדר.</p>
+
+    <div class="card featured">
+      <h3 style="margin-top:0">השרשרת המלאה (תזכרו אותה כמו לוח הכפל)</h3>
+      <p style="font-family:'Heebo',sans-serif;font-size:18px;color:var(--ink)"><strong>חזון המוצר</strong> ← <strong>הגדרת הצלחה</strong> ← <strong>יעדים אסטרטגיים</strong> ← <strong>KPIs ראשיים</strong> ← <strong>KPIs משניים</strong> ← <strong>נתונים גולמיים</strong> ← <strong>מקור הנתון (אירוע באפליקציה)</strong></p>
+
+      <p>בואו נחיה את זה. אם החזון הוא "להפוך מציאת חניה ברחוב לחוויה פשוטה ומהירה", הצלחה תהיה "משתמשים מוצאים חניה תוך פחות מ־5 דקות". יעד אסטרטגי יהיה "להגיע למצב שב־80% מהחיפושים, משתמש מוצא חניה תוך 5 דקות". ה־KPI הראשי הוא <strong>"חציון זמן ממציאת חניה ועד הגעה אליה"</strong>. KPI משני: <strong>"אחוז חיפושים שננטשו ללא חניה"</strong>. נתון גולמי: כל פעם שמשתמש פתח את האפליקציה (timestamp A) וכל פעם שלחץ "הגעתי לחניה" (timestamp B). מקור הנתון: אירוע analytics שאתם מטמיעים בכפתורים.</p>
+    </div>
+
+    <div class="callout warn">
+      <span class="label">הטעות הקלאסית של סטודנט מתחיל</span>
+      <p style="color:var(--ink);margin:0">בוחרים מדדים לפי "מה קל למדוד" (downloads, clicks) במקום לפי "מה משקף את החזון". זה כמו לחפש מפתחות מתחת לפנס במקום במקום שבו איבדתם אותם. <strong>תמיד מתחילים מהחזון</strong>, גם אם המדד שיוצא קשה למדוד.</p>
+    </div>
+
+    <h3>ה־North Star Metric – מדד "כוכב הצפון"</h3>
+    <p>אם אסור היה לכם להציג למנכ"ל אלא מספר אחד שמסכם את הצלחת המוצר – מה המספר הזה היה? זהו ה־North Star. <strong>הוא מספר אחד שמרכז את כל הצוות סביב מטרה משותפת</strong>. הוא משתנה ממוצר למוצר, אבל יש לו שלוש תכונות חובה:</p>
+    <ol style="margin:14px 24px 0;line-height:2.1;font-family:'Heebo',sans-serif;color:var(--ink-soft)">
+      <li>הוא משקף ערך אמיתי שהמוצר נותן למשתמש (לא רק רווח חברה).</li>
+      <li>אם הוא עולה – החברה גדלה. אם הוא יורד – החברה דועכת.</li>
+      <li>הוא נראה כמו "מספר פעולות שמייצרות ערך", לא "סך הכנסה".</li>
+    </ol>
+
+    <table class="table" style="margin-top:18px">
+      <thead><tr><th>מוצר</th><th>North Star Metric</th><th>למה זה הגיוני?</th></tr></thead>
+      <tbody>
+        <tr><td>Spotify</td><td>זמן האזנה כולל בחודש</td><td>משתמש שמאזין הרבה = משתמש שנהנה</td></tr>
+        <tr><td>Airbnb</td><td>מספר לילות מאוכלסים</td><td>לא מספר הרשמות – מספר עסקאות מוצלחות בפועל</td></tr>
+        <tr><td>WhatsApp</td><td>מספר הודעות שנשלחו</td><td>שיחה מתמשכת = ערך מתמשך</td></tr>
+        <tr><td>אפליקציית דייטים</td><td>מספר שיחות הדדיות שהתקיימו</td><td>לא מספר התאמות – אלא קשר אמיתי</td></tr>
+        <tr><td>אפליקציית חניה</td><td>מספר חניות שהושלמו בהצלחה</td><td>לא הורדות, לא חיפושים – אלא תוצאות</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============== SECTION 4 ============== -->
+<a id="s4" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 4 · בעלי עניין</div>
+    <h2 class="title">מה מעניין <span class="grad">מנהל</span> ומה מעניין <span class="grad">משתמש</span>?</h2>
+    <p class="intro">לפני שאתם בוחרים אפילו מדד אחד, חייבים להבין בשביל מי הוא. <strong>אותו מדד יכול להיות סופר־חשוב למנהל וחסר משמעות למשתמש</strong> – או להיפך. נספח ב' דורש שני דשבורדים נפרדים בדיוק בגלל ההבחנה הזו.</p>
+
+    <div class="grid-2">
+      <div class="card" style="background:linear-gradient(135deg,#fff 0%,#f0eeff 100%);border-color:#d8d0fa">
+        <h3 style="margin-top:0;color:var(--violet-deep)">👔 מנהל המוצר מסתכל על "המוצר ככלל"</h3>
+        <p>הוא רוצה להבין את <strong>הבריאות העסקית</strong> של המוצר. הוא לא מתעניין במשתמש אחד ספציפי – אלא בהתנהגות אגרגטיבית. הוא רואה גרפים של אלפי משתמשים יחד, מחפש דפוסים, מזהה מגמות.</p>
+        <h4>מה מעניין אותו?</h4>
+        <ul style="margin-right:20px;font-family:'Heebo',sans-serif">
+          <li>צמיחה: כמה משתמשים חדשים בחודש?</li>
+          <li>שימור: אחוז המשתמשים שחזרו</li>
+          <li>הכנסה: ARPU, MRR, LTV</li>
+          <li>איפה הכי הרבה נטישה? איפה צוואר בקבוק?</li>
+          <li>איזה סגמנט מבוגרים/צעירים/גברים/נשים מתנהג איך?</li>
+          <li>השוואה לחודש קודם, לרבעון, לתחזית</li>
+        </ul>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#fff 0%,#f0f6ff 100%);border-color:#cfdcfa">
+        <h3 style="margin-top:0;color:var(--indigo-deep)">👤 המשתמש מסתכל על "אני"</h3>
+        <p>למשתמש לא אכפת אם יש 10 או 10,000 משתמשים אחרים. הוא רוצה לראות את <strong>הפעילות שלו עצמו</strong>, לקבל הקשר אישי, ולקבל החלטות לגבי השימוש שלו במוצר.</p>
+        <h4>מה מעניין אותו?</h4>
+        <ul style="margin-right:20px;font-family:'Heebo',sans-serif">
+          <li>"כמה דברים עשיתי החודש?"</li>
+          <li>"איפה אני יחסית לחבריי?"</li>
+          <li>"איפה אני יחסית לחודש שעבר?"</li>
+          <li>"כמה חסכתי / רווחתי / השגתי?"</li>
+          <li>הישגים, רצף ימים, יעדים אישיים</li>
+          <li>טיפים אישיים על בסיס דפוסי השימוש שלו</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="label">דוגמה מוחשית – חניה</span>
+      <p style="color:var(--ink);margin:0"><strong>מנהל</strong> רואה: "השעה 17:00-19:00 ביום ה' היא שיא העומס באזור תל אביב, 87% מהחניות תפוסות, זמן חיפוש ממוצע 7.4 דקות." <strong>משתמש</strong> רואה: "החודש חנית 23 פעמים, חסכת 142 ש"ח לעומת ממוצע המשתמשים באזורך, החניה הכי מהירה שלך – 1:32 דקות בשמעון בן צמח."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 5 ============== -->
+<a id="s5" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 5 · התהליך</div>
+    <h2 class="title">תהליך בניית KPIs – <span class="grad">שמונה שלבים מסודרים</span></h2>
+    <p class="intro">זה הלב של התדריך. עברו על השלבים בסדר הזה, אל תדלגו, אל תקצרו. בסוף תהליך כזה תהיו עם תוצר מקצועי שמתאים בדיוק לדרישות של נספח ב'.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h4>נסחו את חזון המוצר במשפט אחד</h4>
+          <p>חזון אינו תיאור טכני של מה האפליקציה עושה. חזון הוא <strong>איזה שינוי בעולם המוצר יוצר עבור המשתמש</strong>. הוא חייב להיות קצר, רגשי, וברור גם לסבתא שלכם.</p>
+          <div class="ex">
+            <strong>❌ חזון רע:</strong> "אפליקציה למציאת חניה עם GPS, התראות בזמן אמת ותשלום באמצעות PayPal." (זה תיאור טכני).<br>
+            <strong>✅ חזון טוב:</strong> "להחזיר למשתמש את 30 הדקות שהוא מבזבז יום־יום על חיפוש חניה."
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h4>זהו את בעלי העניין (Stakeholders)</h4>
+          <p>מי "מצליח" כאשר המוצר מצליח? בדרך כלל יש שלוש קבוצות: <strong>(א) משתמשי הקצה</strong> (אלה שמשתמשים), <strong>(ב) הצד השני</strong> (במוצרים דו־צדדיים: בעלי חניות, מסעדות, בעלי דירות), <strong>(ג) החברה עצמה</strong> (מנהלי המוצר, השקעה, צוות). לכל קבוצה הצלחה אחרת.</p>
+          <div class="ex">
+            <strong>דוגמה – משלוחי אוכל:</strong> משתמש = רעב מהיר ואוכל איכותי במחיר טוב | מסעדה = יותר הזמנות בעמלות סבירות | שליח = יותר משלוחים בשעה ושעות נוחות | חברה = יותר עסקאות, יותר רווח.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h4>הגדירו "הצלחה" לכל בעל עניין במשפט אחד</h4>
+          <p>לכל קבוצה שזיהיתם בשלב 2 – כתבו מה <strong>בדיוק</strong> נחשב הצלחה. אל תכתבו "המשתמש מאושר", אלא משהו תצפיתי. שאלו את עצמכם: "מה הייתי רואה במצלמה נסתרת בבית המשתמש שהיה גורם לי להגיד הצלחנו?"</p>
+          <div class="ex">
+            <strong>דייטים – הצלחה למשתמש:</strong> "המשתמש פגש בעולם האמיתי לפחות אדם אחד שהכיר באפליקציה" – זה הצלחה אמיתית, לא מספר התאמות.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <div>
+          <h4>גזרו יעדים אסטרטגיים מדידים (שיהיו עם מספר)</h4>
+          <p>"הצלחה" הופכת ליעד כאשר מצמידים לה מספר ותאריך. אל תפחדו לזרוק מספרים – גם אם הם ניחוש, חשוב שיהיה משהו לעבוד מולו, אחר כך משפרים.</p>
+          <div class="ex">
+            <strong>חניה:</strong> "ב־80% מהחיפושים, המשתמש ימצא חניה תוך 5 דקות, עד סוף 2026."<br>
+            <strong>דייטים:</strong> "10% מההתאמות יובילו לשיחה הדדית של 5+ הודעות, עד סוף הרבעון."
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">5</div>
+        <div>
+          <h4>בחרו KPI ראשי + 3-5 KPIs משניים שעוטפים אותו</h4>
+          <p>ה־KPI הראשי הוא ה־North Star. ה־KPIs המשניים הם <strong>"מדדי הכוונה"</strong> – הם מסבירים <em>למה</em> ה־KPI הראשי עלה או ירד. בלעדיהם, יש לכם מד דלק בלי לדעת אם הדלק יורד בגלל נסיעה ארוכה, דלקה במנוע, או נזילה בצינור.</p>
+          <div class="ex">
+            <strong>חניה – ראשי:</strong> חציון זמן למציאת חניה. <strong>משניים:</strong> אחוז חיפושים שננטשו, אחוז שטחים שזוהו כפנויים אך היו תפוסים בפועל (FALSE POSITIVES), עומס לפי שעה, שביעות רצון לאחר חניה.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">6</div>
+        <div>
+          <h4>הגדירו את <em>נוסחת החישוב</em> של כל KPI</h4>
+          <p>זה השלב שבו נופלים סטודנטים שעשו הכל יפה עד עכשיו. <strong>כל KPI חייב נוסחה חד־משמעית.</strong> "Retention" זה לא KPI – זה משפחה של מדדים. צריך לכתוב: "Retention יום 7 = (מספר משתמשים שהיו פעילים בין יום 6 ליום 8 לאחר ההורדה) / (מספר משתמשים שהורידו בין יום 0 ליום 7 לפני)."</p>
+          <div class="ex">
+            <strong>דייטים – שיעור התאמות איכותיות:</strong> = (מספר התאמות עם שיחה הדדית של 5+ הודעות בשבוע) ÷ (סך התאמות בשבוע) × 100
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">7</div>
+        <div>
+          <h4>הגדירו מקור הנתון – איזה אירוע באפליקציה מייצר את המספר?</h4>
+          <p>זה השלב הטכני. כל KPI נשען על <strong>אירועים</strong> שאתם <em>חייבים</em> לקודד לתוך האפליקציה (event tracking). בלי זה אין נתון, ובלי נתון אין KPI. ארגנו טבלה שמיפת ל־KPI ↔ אירוע ↔ פרמטרים.</p>
+          <div class="ex">
+            <strong>אירוע: search_started</strong> | פרמטרים: user_id, timestamp, location, radius<br>
+            <strong>אירוע: parking_found</strong> | פרמטרים: user_id, timestamp, search_id, distance_meters<br>
+            זמן חיפוש = parking_found.timestamp − search_started.timestamp
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">8</div>
+        <div>
+          <h4>תכננו פילוחים (Segmentations) – איך תפרקו את המדד</h4>
+          <p>נתון יחיד הוא משעמם. אותו נתון מפולח לפי גיל, מיקום, סוג מנוי, שעת יום, מערכת הפעלה – הוא יהלום. תכננו מראש לפי אלו ממדים תרצו לפרק כל KPI, כי זה משפיע על איסוף הנתונים.</p>
+          <div class="ex">
+            <strong>פילוחים נפוצים:</strong> דמוגרפיים (גיל/מגדר), גיאוגרפיים (עיר/אזור), זמן (שעה/יום/חודש), טכנולוגיים (iOS/Android), עסקיים (חינם/Premium), התנהגותיים (משתמש חדש/ותיק).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">סיכום השלבים בשורה אחת</span>
+      <p style="color:var(--ink);margin:0;font-size:17px">חזון ← בעלי עניין ← הגדרת הצלחה ← יעדים ← KPI ראשי + משניים ← נוסחה ← מקור נתון ← פילוחים. <strong>אחר כך</strong> בונים דשבורד.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 6 ============== -->
+<a id="s6" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 6 · קטגוריות</div>
+    <h2 class="title">קטגוריות מדדים שתמיד שווה לחשוב עליהן – <span class="grad">AARRR (פיראט)</span> וחברים</h2>
+    <p class="intro">"מודל הפיראט" של Dave McClure הוא הדרך הקלאסית למפות KPIs לאפליקציה. שמו AARRR (כמו צעקת פיראט: ארר!), והוא מחלק את חיי המשתמש לחמש שכבות. <strong>בכל פרויקט שווה לפחות לבדוק שיש לכם KPI אחד לכל שכבה.</strong></p>
+
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="letter">A</div>
+        <div class="body">
+          <h4>Acquisition · גיוס</h4>
+          <p>איך משתמשים מגיעים לאפליקציה? מאיזה ערוץ? כמה זה עולה לכם?</p>
+          <span class="ex-metric">Downloads, CAC, Conversion Rate מהדף לפרסומת</span>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="letter">A</div>
+        <div class="body">
+          <h4>Activation · הפעלה</h4>
+          <p>האם החוויה הראשונית גרמה למשתמש לחוות את "רגע הקסם" של המוצר? אם הוא הוריד וסגר – לא הופעל.</p>
+          <span class="ex-metric">% משלימים onboarding, זמן ל"רגע הקסם", % מבצעים פעולה ראשונה</span>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="letter">R</div>
+        <div class="body">
+          <h4>Retention · שימור</h4>
+          <p>האם המשתמש חוזר? אם לא – כל מאמצי הגיוס שלכם זרוקים בפח.</p>
+          <span class="ex-metric">D1/D7/D30 Retention, DAU/MAU Ratio, Churn Rate</span>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="letter">R</div>
+        <div class="body">
+          <h4>Revenue · הכנסה</h4>
+          <p>כמה כסף המוצר מייצר, ומכל משתמש בנפרד?</p>
+          <span class="ex-metric">ARPU, MRR, LTV, Conversion to Paid</span>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <div class="letter">R</div>
+        <div class="body">
+          <h4>Referral · המלצה</h4>
+          <p>האם המשתמשים מספיק מתלהבים כדי להזמין חברים? זה ערוץ הגיוס הזול ביותר.</p>
+          <span class="ex-metric">NPS, K-Factor, % משתמשים ששלחו הזמנה</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>קטגוריות נוספות שכדאי להוסיף מעל ה־AARRR</h3>
+    <div class="grid-3">
+      <div class="minicard">
+        <div class="ico">⚙️</div>
+        <h4>מדדי ביצועי מערכת</h4>
+        <p>זמן טעינה, אחוז קריסות, אחוז API שגוי. למשתמש לא אכפת מארכיטקטורה – אבל אם האפליקציה אטית, הוא עוזב.</p>
+      </div>
+      <div class="minicard">
+        <div class="ico">😊</div>
+        <h4>מדדי שביעות רצון</h4>
+        <p>NPS (Net Promoter Score), CSAT (Customer Satisfaction), ציוני חנות, דירוגים בתוך האפליקציה.</p>
+      </div>
+      <div class="minicard">
+        <div class="ico">🛡️</div>
+        <h4>מדדי איכות/אמינות</h4>
+        <p>אחוז עסקאות שהושלמו, אחוז דיווחים על תקלה, אחוז משתמשים שחסומים בגלל פעילות חשודה.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 7 - FLOWCHART ============== -->
+<a id="s7" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 7 · תרשים הזרימה</div>
+    <h2 class="title">תרשים הזרימה: <span class="grad">מהחזון אל הדשבורד</span></h2>
+    <p class="intro">כל מה שלמדנו עד עכשיו – באיור אחד. הדפיסו אותו, תלו אותו מעל המחשב, והסתכלו עליו כל פעם שאתם מוסיפים מדד חדש.</p>
+
+    <div class="flowchart">
+      <svg viewBox="0 0 1100 740" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="תרשים זרימה לבניית KPIs">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5b5bd6"/><stop offset="100%" stop-color="#8b5cf6"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#eef0ff"/><stop offset="100%" stop-color="#f5eeff"/>
+          </linearGradient>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5b5bd6"/>
+          </marker>
+          <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#5b5bd6" flood-opacity="0.18"/>
+          </filter>
+        </defs>
+
+        <!-- Step 1 -->
+        <g transform="translate(420,30)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="url(#g1)"/>
+          <text x="130" y="38" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="14" fill="white" letter-spacing="2">STEP 1</text>
+          <text x="130" y="62" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="22" fill="white">חזון המוצר</text>
+        </g>
+        <line x1="550" y1="110" x2="550" y2="140" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Step 2 -->
+        <g transform="translate(420,140)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="130" y="38" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#5b5bd6" letter-spacing="2">STEP 2</text>
+          <text x="130" y="62" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="20" fill="#1a1547">זיהוי בעלי עניין</text>
+        </g>
+        <line x1="550" y1="220" x2="550" y2="250" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Step 3 — Branching -->
+        <g transform="translate(60,250)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="url(#g2)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#6d28d9" letter-spacing="2">STEP 3 · משתמש</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">הגדרת הצלחה למשתמש</text>
+        </g>
+        <g transform="translate(420,250)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="url(#g2)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#6d28d9" letter-spacing="2">STEP 3 · עסק</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">הגדרת הצלחה לחברה</text>
+        </g>
+        <g transform="translate(780,250)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="url(#g2)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#6d28d9" letter-spacing="2">STEP 3 · צד שני</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">הגדרת הצלחה לספקים</text>
+        </g>
+
+        <!-- merge to step 4 -->
+        <path d="M190 330 L 190 380 L 550 380" fill="none" stroke="#5b5bd6" stroke-width="2"/>
+        <path d="M910 330 L 910 380 L 550 380" fill="none" stroke="#5b5bd6" stroke-width="2"/>
+        <line x1="550" y1="330" x2="550" y2="400" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Step 4 -->
+        <g transform="translate(420,400)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#5b5bd6" letter-spacing="2">STEP 4</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="20" fill="#1a1547">יעדים אסטרטגיים (SMART)</text>
+        </g>
+        <line x1="550" y1="480" x2="550" y2="510" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Step 5 -->
+        <g transform="translate(420,510)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="url(#g1)"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="white" letter-spacing="2">STEP 5</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="20" fill="white">KPI ראשי + משניים</text>
+        </g>
+        <!-- side outputs from step 5 -->
+        <path d="M420 550 L 290 550" fill="none" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M680 550 L 810 550" fill="none" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+        <g transform="translate(60,510)">
+          <rect width="230" height="80" rx="16" fill="#fff" stroke="#cfdcfa" stroke-width="1.5"/>
+          <text x="115" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#3d3aa8" letter-spacing="1.5">STEP 6</text>
+          <text x="115" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="17" fill="#1a1547">נוסחת חישוב</text>
+        </g>
+        <g transform="translate(810,510)">
+          <rect width="230" height="80" rx="16" fill="#fff" stroke="#cfdcfa" stroke-width="1.5"/>
+          <text x="115" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#3d3aa8" letter-spacing="1.5">STEP 7</text>
+          <text x="115" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="17" fill="#1a1547">מקור הנתון (Event)</text>
+        </g>
+
+        <line x1="550" y1="590" x2="550" y2="620" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr)"/>
+        <g transform="translate(420,620)" filter="url(#shadow)">
+          <rect width="260" height="80" rx="20" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="130" y="36" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="13" fill="#5b5bd6" letter-spacing="2">STEP 8</text>
+          <text x="130" y="60" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="20" fill="#1a1547">פילוחים + דשבורד</text>
+        </g>
+
+        <!-- Side notes -->
+        <g transform="translate(60,30)">
+          <rect width="240" height="60" rx="12" fill="#fff" stroke="#e3e0f7" stroke-dasharray="4,3"/>
+          <text x="120" y="26" text-anchor="middle" font-family="Heebo,sans-serif" font-size="12" fill="#6b6794">תזכרו תמיד:</text>
+          <text x="120" y="46" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="14" fill="#5b5bd6">מתחילים מהחזון, לא מהנתון</text>
+        </g>
+        <g transform="translate(800,30)">
+          <rect width="240" height="60" rx="12" fill="#fff" stroke="#e3e0f7" stroke-dasharray="4,3"/>
+          <text x="120" y="26" text-anchor="middle" font-family="Heebo,sans-serif" font-size="12" fill="#6b6794">תזכרו תמיד:</text>
+          <text x="120" y="46" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="14" fill="#5b5bd6">לא כל מה שנספר – שווה לספור</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 8 - DATING ============== -->
+<a id="s8" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 8 · דוגמה 1</div>
+    <h2 class="title">דוגמה מלאה: <span class="grad">אפליקציית דייטים "Spark"</span></h2>
+    <p class="intro">בואו נעבור צעד־אחר־צעד דרך התהליך מפרק 5, על אפליקציית דייטים דמיונית. תשימו לב איך כל ההגדרות זורמות אחת מהשנייה.</p>
+
+    <div class="example dating">
+      <div class="head">
+        <span class="sub">דוגמה מלאה · 4 שכבות מדידה</span>
+        <h3>💜 Spark – להפוך התאמה למפגש אמיתי</h3>
+      </div>
+      <div class="body">
+        <div class="vision">
+          <strong>חזון המוצר</strong>
+          "להפוך את המסך הקטן לדלת אמיתית – לעזור לאנשים להעביר את הקשר מהאפליקציה לעולם, ולהיפגש פנים אל פנים בתוך 30 ימים."
+        </div>
+
+        <h4>🎯 הצלחה לפי בעלי עניין</h4>
+        <table class="table">
+          <thead><tr><th>בעל עניין</th><th>הצלחה במשפט אחד</th></tr></thead>
+          <tbody>
+            <tr><td><strong>משתמש קצה</strong></td><td>קבע פגישה אחת לפחות עם מישהו שהכיר ב־30 הימים הראשונים</td></tr>
+            <tr><td><strong>חברת Spark</strong></td><td>צמיחת בסיס המשתמשים המשלמים ב־15% רבעוני</td></tr>
+            <tr><td><strong>מותגי שותפים</strong> (בארים, מסעדות)</td><td>20%+ מהמפגשים מתקיימים במקומות שותפים</td></tr>
+          </tbody>
+        </table>
+
+        <h4>⭐ ה־North Star Metric</h4>
+        <div class="callout" style="background:linear-gradient(135deg,#fdf2f8,#f5eeff)">
+          <p style="margin:0;color:var(--ink);font-size:18px"><strong>מספר "פגישות שאושרו" שבועי</strong> – כלומר, התאמות שבהן שני הצדדים אישרו שנפגשו פיזית (דרך כפתור "נפגשנו" אחרי השיחה). זה הערך האמיתי, לא לייקים ולא התאמות.</p>
+        </div>
+
+        <h4>📊 KPIs לפי שתי קבוצות יעד</h4>
+        <div class="two-col">
+          <div class="col">
+            <h4>למנהל המוצר 👔</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">DAU / MAU Ratio</div><div class="desc">אינדקס "התמכרות": כמה מהפעילים החודשיים פעילים גם יומית. יעד: 0.30+</div></div><span class="unit">יחס</span></li>
+              <li><span class="b"></span><div><div class="name">Match Rate</div><div class="desc">אחוז Swipes שמובילים להתאמה הדדית. מנבא איכות אלגוריתם.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Conversation Start Rate</div><div class="desc">% התאמות עם הודעה ראשונה תוך 48 שעות. מודד "אנרגיית התחלה".</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Quality Match Rate</div><div class="desc">% התאמות שהגיעו ל־5+ הודעות הדדיות. הסקס של המדידה.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Met-In-Person Rate</div><div class="desc">% התאמות שהפכו לפגישה פיזית (North Star).</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">ARPU</div><div class="desc">הכנסה ממוצעת לכל משתמש פעיל חודשי – Premium + Boosts.</div></div><span class="unit">₪/חודש</span></li>
+              <li><span class="b"></span><div><div class="name">Gender Balance Ratio</div><div class="desc">יחס פעילים נשים:גברים. חוסר איזון הורג את החוויה לשני הצדדים.</div></div><span class="unit">יחס</span></li>
+              <li><span class="b"></span><div><div class="name">Churn Rate חודשי</div><div class="desc">% משתמשים שהפסיקו לחלוטין. מתחת ל־8% זה טוב.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Report Rate</div><div class="desc">% משתמשים שדווחו כפוגעניים. מודד את "בריאות הקהילה".</div></div><span class="unit">‰</span></li>
+            </ul>
+            <h4 style="margin-top:18px">פילוחים</h4>
+            <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--ink-soft);margin:0">גיל (5 קבוצות), מגדר, עיר, סוג מנוי (Free/Plus/Gold), מערכת הפעלה, ערוץ הגעה.</p>
+          </div>
+          <div class="col">
+            <h4>למשתמש הקצה 👤</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">התאמות החודש</div><div class="desc">מספר ההתאמות שלך בהשוואה לחודש הקודם.</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">אחוז שיחות שיזמת</div><div class="desc">"אתה איש שיחה" – האם אתה זה שמתחיל או מחכה?</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">זמן תגובה ממוצע שלי</div><div class="desc">"אתה רספונסיבי" – משפיע על הסיכוי שיתפתח קשר.</div></div><span class="unit">דקות</span></li>
+              <li><span class="b"></span><div><div class="name">ציון השלמת פרופיל</div><div class="desc">בין 0–100. ככל שגבוה יותר, יותר מתאמים. עם המלצות מה לשפר.</div></div><span class="unit">/100</span></li>
+              <li><span class="b"></span><div><div class="name">צפיות בפרופיל שלך</div><div class="desc">"מי הסתכל עליי?" – הגביש של אפליקציות דייטים.</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">סטריק שיחות</div><div class="desc">כמה ימים ברצף החזקת לפחות שיחה פעילה אחת.</div></div><span class="unit">ימים</span></li>
+              <li><span class="b"></span><div><div class="name">פגישות שאושרו</div><div class="desc">"הפגישות שיצאו לך מהאפליקציה." הצגה רגשית, גם 0 זה בסדר.</div></div><span class="unit">#</span></li>
+            </ul>
+            <h4 style="margin-top:18px">דגשים</h4>
+            <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--ink-soft);margin:0">לא להציג מדדים שמדכאים. למשל "אחוז שיחות שלא נענו" יגרום למשתמש לעזוב. תמיד הציגו נתונים חיוביים ופעולות לשיפור.</p>
+          </div>
+        </div>
+
+        <div class="callout tip" style="margin-top:24px">
+          <span class="label">איך גוזרים את כל זה מהחזון?</span>
+          <p style="color:var(--ink);margin:0">החזון מדבר על "פגישה פיזית תוך 30 ימים". לכן ה־North Star הוא Met-In-Person Rate. ה־KPIs המשניים הם <em>שלבי המסע</em> שמובילים לשם: התאמה → שיחה → שיחה איכותית → פגישה. כל אחד הוא משוואה לקודמתו.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 9 - PARKING ============== -->
+<a id="s9" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 9 · דוגמה 2</div>
+    <h2 class="title">דוגמה מלאה: <span class="grad">אפליקציית חניה "ParkSmart"</span></h2>
+    <p class="intro">דוגמה לאפליקציה דו־צדדית: מצד אחד נהגים שמחפשים חניה, מהצד השני בעלי חניות שמשכירים שטח.</p>
+
+    <div class="example parking">
+      <div class="head">
+        <span class="sub">דוגמה מלאה · מוצר דו־צדדי</span>
+        <h3>🅿️ ParkSmart – למצוא חניה תוך 5 דקות</h3>
+      </div>
+      <div class="body">
+        <div class="vision">
+          <strong>חזון המוצר</strong>
+          "להחזיר למשתמש את 30 הדקות שהוא מבזבז כל יום על חיפוש חניה ברחוב, ולתת לבעלי שטח חניה הזדמנות להרוויח מהשטח הריק שלהם."
+        </div>
+
+        <h4>🎯 הצלחה לפי בעלי עניין</h4>
+        <table class="table">
+          <thead><tr><th>בעל עניין</th><th>הצלחה במשפט אחד</th></tr></thead>
+          <tbody>
+            <tr><td><strong>נהג (משתמש)</strong></td><td>למצוא חניה תוך פחות מ־5 דקות ב־80% מהחיפושים</td></tr>
+            <tr><td><strong>בעל חניה</strong></td><td>להרוויח לפחות 300 ₪ בחודש מהשטח שלו</td></tr>
+            <tr><td><strong>חברת ParkSmart</strong></td><td>להגיע ל־10K חניות חודשיות בהשגחה עד סוף 2026</td></tr>
+            <tr><td><strong>עירייה (שותף עתידי)</strong></td><td>הפחתת תנועה ב־12% בשעות שיא</td></tr>
+          </tbody>
+        </table>
+
+        <h4>⭐ ה־North Star Metric</h4>
+        <div class="callout" style="background:linear-gradient(135deg,#eff6ff,#f5eeff)">
+          <p style="margin:0;color:var(--ink);font-size:18px"><strong>מספר חניות שהושלמו בהצלחה (Successful Parkings)</strong> – חיפוש שהוביל לכך שהנהג חנה ושילם דרך האפליקציה. לא הורדות, לא חיפושים, לא הצצות במפה – חניות בפועל.</p>
+        </div>
+
+        <h4>📊 KPIs לפי שתי קבוצות יעד</h4>
+        <div class="two-col">
+          <div class="col">
+            <h4>למנהל המוצר 👔</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">Successful Parkings / Day</div><div class="desc">North Star. סך החניות המאושרות ביום.</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">Median Time-to-Park</div><div class="desc">חציון הזמן מ"התחלת חיפוש" עד "אישור חניה". יעד: ≤5 דקות.</div></div><span class="unit">דקות</span></li>
+              <li><span class="b"></span><div><div class="name">Search Abandonment Rate</div><div class="desc">% חיפושים שננטשו בלי חניה. ככל שגבוה יותר – יש לכם בעיה.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Occupancy Rate</div><div class="desc">% שטחים זמינים שמושכרים בפועל. מודד את "צד ההיצע".</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">False Availability Rate</div><div class="desc">% שטחים שהוצגו פנויים אבל היו תפוסים. הורג אמון.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Avg Revenue / Parking</div><div class="desc">ממוצע הכנסה לחניה. עולה ככל שמשתפים עם מקומות יקרים.</div></div><span class="unit">₪</span></li>
+              <li><span class="b"></span><div><div class="name">CAC vs LTV</div><div class="desc">עלות גיוס משתמש מול הכנסה ממוצעת ממנו לאורך זמן. יעד: LTV ≥ 3×CAC</div></div><span class="unit">יחס</span></li>
+              <li><span class="b"></span><div><div class="name">Hot Zones Heatmap</div><div class="desc">לא מספר אחד, אלא תצוגה: איפה הביקוש הגבוה ביותר.</div></div><span class="unit">מפה</span></li>
+            </ul>
+            <h4 style="margin-top:18px">פילוחים</h4>
+            <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--ink-soft);margin:0">עיר, שכונה, שעה, יום בשבוע, סוג רכב (פרטי/מסחרי), משתמש חדש/ותיק, יום חול/סופ"ש/חג.</p>
+          </div>
+          <div class="col">
+            <h4>למשתמש הקצה 👤</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">חניות החודש</div><div class="desc">סך החניות שלך החודש. מעורר תחושת שימוש.</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">סך הוצאה החודש</div><div class="desc">כסף ששילמת על חניות, פירוט יומי במפה.</div></div><span class="unit">₪</span></li>
+              <li><span class="b"></span><div><div class="name">סך החיסכון לעומת קנס</div><div class="desc">"חסכת 240 ₪ ב־3 פעמים שהיה קנס פוטנציאלי."</div></div><span class="unit">₪</span></li>
+              <li><span class="b"></span><div><div class="name">זמן ממוצע לחיפוש שלי</div><div class="desc">בהשוואה לממוצע באזורך – האם אתה יעיל.</div></div><span class="unit">דקות</span></li>
+              <li><span class="b"></span><div><div class="name">החניות הקבועות שלי</div><div class="desc">איפה אתה חונה הכי הרבה.</div></div><span class="unit">רשימה</span></li>
+              <li><span class="b"></span><div><div class="name">דירוג כנהג</div><div class="desc">ציון התנהגות בחניות שותפות (לא לכלוך, לא בריון).</div></div><span class="unit">/5</span></li>
+              <li><span class="b"></span><div><div class="name">המלצה אישית</div><div class="desc">"בכל יום ה' ב־17:30 חניות באבן גבירול מלאות. נסה את שינקין."</div></div><span class="unit">טקסט</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout warn">
+          <span class="label">דקות ניהוליות נוספות לחשוב עליהן</span>
+          <p style="color:var(--ink);margin:0">בחניה יש מתח: <strong>אם תאספו אחוז גבוה של "Time-to-Park" אבל ה־"Occupancy" נמוך</strong>, פירוש הדבר שיש לכם הרבה שטחים אבל פחות נהגים. <strong>אם הפוך</strong> – הביקוש גבוה אבל ההיצע נמוך. ה־KPIs הללו <em>תמיד</em> צריכים להיקרא בזוגות.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 10 - FOOD ============== -->
+<a id="s10" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 10 · דוגמה 3</div>
+    <h2 class="title">דוגמה: <span class="grad">משלוחי אוכל "QuickBite"</span></h2>
+
+    <div class="example food">
+      <div class="head">
+        <span class="sub">מוצר תלת־צדדי · משתמש + מסעדה + שליח</span>
+        <h3>🍕 QuickBite – אוכל חם תוך 30 דקות</h3>
+      </div>
+      <div class="body">
+        <div class="vision">
+          <strong>חזון המוצר</strong>
+          "להגיש למשתמשים את האוכל החם שהזמינו תוך 30 דקות, עם חיוך, מהמסעדה שאוהבים."
+        </div>
+
+        <h4>📊 הKPIs המרכזיים</h4>
+        <div class="two-col">
+          <div class="col">
+            <h4>למנהל המוצר 👔</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">Median Delivery Time</div><div class="desc">חציון זמן ממוצע מהזמנה ועד מסירה.</div></div><span class="unit">דק'</span></li>
+              <li><span class="b"></span><div><div class="name">On-Time Delivery %</div><div class="desc">% משלוחים שהגיעו בזמן ההבטחה.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Order Acceptance Rate</div><div class="desc">% הזמנות שמסעדה אישרה (לא דחתה).</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Avg Basket Size</div><div class="desc">ערך הזמנה ממוצע.</div></div><span class="unit">₪</span></li>
+              <li><span class="b"></span><div><div class="name">Order Frequency / User</div><div class="desc">כמה הזמנות חודשיות בממוצע למשתמש פעיל.</div></div><span class="unit">/חודש</span></li>
+              <li><span class="b"></span><div><div class="name">Restaurant Churn</div><div class="desc">% מסעדות שעזבו את הפלטפורמה החודש.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Courier Earnings/Hour</div><div class="desc">ממוצע רווח שעתי לשליח – משפיע על הצטרפותם.</div></div><span class="unit">₪</span></li>
+            </ul>
+          </div>
+          <div class="col">
+            <h4>למשתמש הקצה 👤</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">המסעדות המועדפות שלי</div><div class="desc">3-5 הכי מוזמנות אישית.</div></div><span class="unit">רשימה</span></li>
+              <li><span class="b"></span><div><div class="name">סך הוצאה החודש</div><div class="desc">כמה הוצאת על אוכל.</div></div><span class="unit">₪</span></li>
+              <li><span class="b"></span><div><div class="name">המנה האהובה שלך</div><div class="desc">הפריט הכי נפוץ בהיסטוריה שלך.</div></div><span class="unit">טקסט</span></li>
+              <li><span class="b"></span><div><div class="name">זמן משלוח ממוצע שלי</div><div class="desc">"אתה מקבל ב־18 דק' בממוצע."</div></div><span class="unit">דק'</span></li>
+              <li><span class="b"></span><div><div class="name">קופונים פעילים</div><div class="desc">מה זמין לי כרגע.</div></div><span class="unit">#</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 11 - FITNESS ============== -->
+<a id="s11" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 11 · דוגמה 4</div>
+    <h2 class="title">דוגמה: <span class="grad">אפליקציית כושר "FitFlow"</span></h2>
+
+    <div class="example fitness">
+      <div class="head">
+        <span class="sub">מוצר B2C · מבוסס הרגלים</span>
+        <h3>💪 FitFlow – להפוך תנועה להרגל יומי</h3>
+      </div>
+      <div class="body">
+        <div class="vision">
+          <strong>חזון המוצר</strong>
+          "לעזור לכל אדם להפוך פעילות גופנית להרגל יומי, גם כשהוא עייף, גם כשהוא לא רוצה."
+        </div>
+
+        <h4>📊 הKPIs המרכזיים</h4>
+        <div class="two-col">
+          <div class="col">
+            <h4>למנהל המוצר 👔</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">Weekly Active Streak %</div><div class="desc">% משתמשים עם רצף של 3+ ימים השבוע.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Workout Completion Rate</div><div class="desc">% אימונים שהותחלו והושלמו.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">D30 Retention</div><div class="desc">% משתמשים פעילים יום 30 מההורדה.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Premium Conversion</div><div class="desc">% משתמשים שעברו לתשלום.</div></div><span class="unit">%</span></li>
+              <li><span class="b"></span><div><div class="name">Avg Sessions / User / Week</div><div class="desc">ממוצע אימונים בשבוע למשתמש פעיל.</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">Content Engagement</div><div class="desc">איזה סוגי אימונים הכי פופולריים – יוגה, ריצה, כוח.</div></div><span class="unit">דירוג</span></li>
+            </ul>
+          </div>
+          <div class="col">
+            <h4>למשתמש הקצה 👤</h4>
+            <ul class="metric-list">
+              <li><span class="b"></span><div><div class="name">סטריק נוכחי</div><div class="desc">כמה ימים ברצף התאמנת. הלב הרגשי של האפליקציה.</div></div><span class="unit">ימים</span></li>
+              <li><span class="b"></span><div><div class="name">קלוריות שנשרפו השבוע</div><div class="desc">סך מצטבר השבוע.</div></div><span class="unit">קק"ל</span></li>
+              <li><span class="b"></span><div><div class="name">דקות תנועה השבוע</div><div class="desc">סך דקות אימון מצטבר השבוע, מול יעד.</div></div><span class="unit">דקות</span></li>
+              <li><span class="b"></span><div><div class="name">הישגים (Badges)</div><div class="desc">"15 אימונים החודש 🏆", "100 ק"מ ריצה 🥇"</div></div><span class="unit">#</span></li>
+              <li><span class="b"></span><div><div class="name">חברים שמתאמנים</div><div class="desc">"3 חברים התאמנו השבוע" – חברתיות מעודדת.</div></div><span class="unit">#</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 12 - DUAL DASHBOARDS ============== -->
+<a id="s12" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 12 · ארכיטקטורת דשבורד</div>
+    <h2 class="title">שני דשבורדים: <span class="grad">למנהל לעומת למשתמש</span></h2>
+    <p class="intro">נספח ב' מבקש שני דשבורדים. ההבדלים ביניהם לא רק בנתונים – אלא בכל פילוסופיית התכנון: אילו מטריקות, איך מצויירות, איזה צבעים, איזה רמת אגרגציה, איזה רזולוציית זמן.</p>
+
+    <table class="table">
+      <thead><tr><th>פרמטר</th><th>דשבורד מנהל</th><th>דשבורד משתמש</th></tr></thead>
+      <tbody>
+        <tr><td><strong>קהל יעד</strong></td><td>צוות מוצר / מנכ"ל / משקיע</td><td>משתמש הקצה (אזרח, נהג, חבר)</td></tr>
+        <tr><td><strong>אגרגציה</strong></td><td>אלפי-מיליוני משתמשים יחד</td><td>משתמש אחד בלבד (PERSONAL)</td></tr>
+        <tr><td><strong>אופק זמן</strong></td><td>שבוע / חודש / רבעון / שנה</td><td>היום / השבוע / החודש</td></tr>
+        <tr><td><strong>סוג גרפים</strong></td><td>Line, Bar, Funnel, Heatmap, Cohort</td><td>Donut, Gauge, Streak Calendar, Progress Bars</td></tr>
+        <tr><td><strong>פילוחים</strong></td><td>מרובי-ממדים, אינטראקטיביים</td><td>אישיים: השבוע מול החודש</td></tr>
+        <tr><td><strong>צבעים</strong></td><td>נקיים, עסקיים, אינפורמטיביים</td><td>חמים, מתגמלים, רגשיים</td></tr>
+        <tr><td><strong>קריאה לפעולה</strong></td><td>"נחקור את הסגמנט הצעיר"</td><td>"שתפו עם חבר, השלימו פרופיל"</td></tr>
+        <tr><td><strong>תדירות שימוש</strong></td><td>שבועי / יומי לצוות, חודשי להנהלה</td><td>פעם בכניסה ל-app</td></tr>
+        <tr><td><strong>פרטיות</strong></td><td>מצרפי, אנונימי</td><td>אישי לחלוטין</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid-2" style="margin-top:30px">
+      <div class="card">
+        <h3 style="margin-top:0">👔 רכיבי דשבורד מנהל</h3>
+        <ol style="margin-right:22px;font-family:'Heebo',sans-serif;line-height:2;color:var(--ink-soft)">
+          <li><strong>שורת KPI עליונה</strong> – 4-6 מספרים גדולים עם הפרש מהתקופה הקודמת.</li>
+          <li><strong>גרף קוו מרכזי</strong> – ה־North Star לאורך זמן, אופציה לתקופה.</li>
+          <li><strong>משפך AARRR</strong> – לראות איפה משתמשים נופלים בתהליך.</li>
+          <li><strong>פילוח דמוגרפי</strong> – Donut/Pie של גיל, מגדר, מיקום.</li>
+          <li><strong>טבלת השוואת קוהורט</strong> – משתמשים מ"ינואר 2026" מול "פברואר 2026".</li>
+          <li><strong>Heatmap</strong> – שעות שיא / איזורים חמים.</li>
+          <li><strong>פילטרים</strong> – תאריך, סגמנט, מערכת הפעלה (משתנים בלחיצה).</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">👤 רכיבי דשבורד משתמש</h3>
+        <ol style="margin-right:22px;font-family:'Heebo',sans-serif;line-height:2;color:var(--ink-soft)">
+          <li><strong>ברכה אישית</strong> – "בוקר טוב, רותם!"</li>
+          <li><strong>סיכום יומי/שבועי</strong> – פעולות שביצעת ביום הנוכחי.</li>
+          <li><strong>סטריק / רצף</strong> – לעורר התמדה.</li>
+          <li><strong>השוואה אישית</strong> – "השבוע 23%↑ לעומת ממוצע שלך."</li>
+          <li><strong>Progress Bars</strong> – יעדים אישיים.</li>
+          <li><strong>Badges / Achievements</strong> – חיזוקים חיוביים.</li>
+          <li><strong>המלצה הבאה</strong> – "נסה את X, רוב המשתמשים באזורך עושים זאת."</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 13 - FULL EXAMPLE DASHBOARD ============== -->
+<a id="s13" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 13 · דוגמה מלאה לדשבורד</div>
+    <h2 class="title">דוגמה מלאה: <span class="grad">דשבורד "ParkSmart" – מבט מנהל</span></h2>
+    <p class="intro">להלן מודל של דשבורד אמיתי לחלוטין שתבנו בכלי כמו Tableau או Power BI. כל הנתונים סינתטיים, אבל המבנה והשפה הם בדיוק מה שצריך להוציא.</p>
+
+    <div class="dashboard">
+      <div class="dash-head">
+        <div>
+          <h3>🅿️ ParkSmart · Manager Dashboard</h3>
+          <p style="font-family:'Heebo',sans-serif;font-size:14px;color:var(--muted);margin:0">תצוגה: 30 הימים האחרונים · עודכן: לפני 12 דקות</p>
+        </div>
+        <span class="live">LIVE · UPDATED</span>
+      </div>
+
+      <!-- KPI Row -->
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="lbl">חניות שהושלמו (North Star)</div>
+          <div class="val">24,316</div>
+          <div class="delta up">▲ 18.4% מהחודש הקודם</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">חציון Time-to-Park</div>
+          <div class="val">4:12</div>
+          <div class="delta up">▼ 0:34 מהחודש הקודם</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">% נטישת חיפוש</div>
+          <div class="val">11.2%</div>
+          <div class="delta down">▲ 1.8% מהחודש הקודם</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">הכנסה ממוצעת לחניה</div>
+          <div class="val">₪14.40</div>
+          <div class="delta up">▲ ₪0.90</div>
+        </div>
+      </div>
+
+      <!-- Charts row 1 -->
+      <div class="chart-row">
+        <div class="chart-card">
+          <h5>חניות יומיות לאורך 30 ימים<span class="legend">Daily Successful Parkings</span></h5>
+          <svg class="line-chart" viewBox="0 0 600 200" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="area1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- grid -->
+            <line x1="0" y1="50" x2="600" y2="50" stroke="#eee" stroke-dasharray="4,4"/>
+            <line x1="0" y1="100" x2="600" y2="100" stroke="#eee" stroke-dasharray="4,4"/>
+            <line x1="0" y1="150" x2="600" y2="150" stroke="#eee" stroke-dasharray="4,4"/>
+            <!-- area -->
+            <path d="M0,140 L20,135 L40,128 L60,132 L80,118 L100,110 L120,115 L140,98 L160,102 L180,88 L200,82 L220,90 L240,78 L260,72 L280,80 L300,68 L320,62 L340,55 L360,60 L380,48 L400,52 L420,42 L440,45 L460,38 L480,42 L500,35 L520,28 L540,32 L560,22 L580,18 L600,15 L600,200 L0,200 Z" fill="url(#area1)"/>
+            <!-- line -->
+            <path d="M0,140 L20,135 L40,128 L60,132 L80,118 L100,110 L120,115 L140,98 L160,102 L180,88 L200,82 L220,90 L240,78 L260,72 L280,80 L300,68 L320,62 L340,55 L360,60 L380,48 L400,52 L420,42 L440,45 L460,38 L480,42 L500,35 L520,28 L540,32 L560,22 L580,18 L600,15" fill="none" stroke="#5b5bd6" stroke-width="2.5"/>
+            <!-- last dot -->
+            <circle cx="600" cy="15" r="5" fill="#5b5bd6"/>
+            <circle cx="600" cy="15" r="10" fill="#5b5bd6" opacity="0.2"/>
+          </svg>
+          <div style="display:flex;justify-content:space-between;font-family:'Heebo',sans-serif;font-size:11px;color:var(--muted);margin-top:6px">
+            <span>1.4.26</span><span>10.4.26</span><span>20.4.26</span><span>30.4.26</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h5>פילוח לפי סוג מנוי</h5>
+          <div class="donut-wrap">
+            <div class="donut"></div>
+            <ul class="donut-legend">
+              <li><span style="display:flex;align-items:center;gap:8px"><span class="sw" style="background:var(--indigo)"></span>Free</span><strong>42%</strong></li>
+              <li><span style="display:flex;align-items:center;gap:8px"><span class="sw" style="background:var(--violet)"></span>Plus</span><strong>26%</strong></li>
+              <li><span style="display:flex;align-items:center;gap:8px"><span class="sw" style="background:#c4b5fd"></span>Premium</span><strong>20%</strong></li>
+              <li><span style="display:flex;align-items:center;gap:8px"><span class="sw" style="background:#ddd6fe"></span>Business</span><strong>12%</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bar chart - hour heatmap -->
+      <div class="chart-card" style="margin-bottom:18px">
+        <h5>עומס חניות לפי שעה ביום (ממוצע 30 יום)<span class="legend">Bars · Avg Parkings per Hour</span></h5>
+        <div class="bars" style="margin-top:30px;margin-bottom:30px">
+          <div class="bar" style="height:18%"><em>120</em><span>6:00</span></div>
+          <div class="bar" style="height:32%"><em>215</em><span>7:00</span></div>
+          <div class="bar" style="height:58%"><em>390</em><span>8:00</span></div>
+          <div class="bar" style="height:72%"><em>485</em><span>9:00</span></div>
+          <div class="bar" style="height:60%"><em>402</em><span>10:00</span></div>
+          <div class="bar" style="height:54%"><em>362</em><span>11:00</span></div>
+          <div class="bar" style="height:58%"><em>388</em><span>12:00</span></div>
+          <div class="bar" style="height:50%"><em>336</em><span>13:00</span></div>
+          <div class="bar" style="height:46%"><em>308</em><span>14:00</span></div>
+          <div class="bar" style="height:48%"><em>320</em><span>15:00</span></div>
+          <div class="bar" style="height:64%"><em>428</em><span>16:00</span></div>
+          <div class="bar" style="height:88%"><em>591</em><span>17:00</span></div>
+          <div class="bar" style="height:96%"><em>645</em><span>18:00</span></div>
+          <div class="bar" style="height:80%"><em>538</em><span>19:00</span></div>
+          <div class="bar" style="height:58%"><em>388</em><span>20:00</span></div>
+          <div class="bar" style="height:38%"><em>252</em><span>21:00</span></div>
+          <div class="bar" style="height:22%"><em>148</em><span>22:00</span></div>
+          <div class="bar" style="height:12%"><em>78</em><span>23:00</span></div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="chart-card">
+        <h5>השוואת ביצועים לפי שכונה (TLV)</h5>
+        <table class="table" style="margin:6px 0 0">
+          <thead><tr><th>שכונה</th><th>חניות / 30 יום</th><th>חציון Time-to-Park</th><th>נטישת חיפוש</th><th>סטטוס</th></tr></thead>
+          <tbody>
+            <tr><td>פלורנטין</td><td>3,412</td><td>3:18</td><td>7.2%</td><td><span class="pill green">בריא</span></td></tr>
+            <tr><td>נווה צדק</td><td>2,891</td><td>5:42</td><td>13.8%</td><td><span class="pill purple">לעקוב</span></td></tr>
+            <tr><td>הצפון הישן</td><td>4,205</td><td>4:08</td><td>9.4%</td><td><span class="pill green">בריא</span></td></tr>
+            <tr><td>רמת אביב</td><td>1,672</td><td>2:54</td><td>5.1%</td><td><span class="pill green">בריא</span></td></tr>
+            <tr><td>שכונת התקווה</td><td>1,108</td><td>7:31</td><td>18.6%</td><td><span class="pill red">בעיה</span></td></tr>
+            <tr><td>יפו ד'</td><td>986</td><td>6:52</td><td>16.2%</td><td><span class="pill red">בעיה</span></td></tr>
+            <tr><td>כרם התימנים</td><td>2,540</td><td>4:46</td><td>11.0%</td><td><span class="pill blue">תקין</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="label">איך לקרוא את הדשבורד הזה ב־30 שניות</span>
+      <p style="color:var(--ink);margin:0">המנהל מסתכל קודם על השורה העליונה (4 KPIs ראשיים) – הוא רואה גידול ב־North Star (טוב!), אבל גם עלייה ב־"נטישת חיפוש" (רע!). הוא חוקר לעומק: בגרף השעות הוא מבחין שב־17-18 העומס שיא. בטבלת השכונות הוא רואה שב"שכונת התקווה" יש בעיה אדומה. ההחלטה הבאה ברורה: <strong>לצרף עוד היצע באזור התקווה לקראת שעות אחה"צ</strong>. ככה מדדים הופכים להחלטות.</p>
+    </div>
+
+    <h3>דשבורד משתמש ב-ParkSmart – איך זה נראה?</h3>
+    <p>בניגוד למנהל, המשתמש רואה <strong>סיפור אישי</strong>. למשל:</p>
+    <div class="card featured">
+      <h4 style="margin-top:0;font-size:22px;color:var(--ink)">"בוקר טוב, אביב! 🌅"</h4>
+      <p style="font-family:'Heebo',sans-serif;color:var(--ink-soft);font-size:15px">החודש חנית <strong style="color:var(--violet-deep)">23 פעמים</strong> וחסכת <strong style="color:var(--emerald)">142 ₪</strong> לעומת חניה ברחוב באזורך. הזמן הממוצע שלך למציאת חניה: <strong>3:42 דקות</strong> – מהיר מ־78% מהנהגים בתל אביב! 🚀</p>
+      <p style="font-family:'Heebo',sans-serif;color:var(--ink-soft);font-size:15px">הצעה: ביום ה' הקרוב בשעה 18:00 אתה רגיל לחנות באבן גבירול – צפוי עומס גבוה. נסה חניה שמורה מראש (₪12) ותחסוך 8 דקות.</p>
+      <p style="font-family:'Heebo',sans-serif;color:var(--emerald);font-size:14px;font-weight:600;margin:0">🏆 הישג חדש: "30 חניות ירוקות" – כל פעם שחנית במקום מותר!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 14 - TOOLS ============== -->
+<a id="s14" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 14 · כלים</div>
+    <h2 class="title">איפה <span class="grad">Tableau</span> נכנס לסיפור (וגם Power BI, Looker וכו')</h2>
+    <p class="intro">נספח ב' מציין במפורש "כלי בינה עסקית כגון Tableau". כלי BI הוא הצינור בין הנתונים הגולמיים שלכם (מסדי נתונים, לוגים, Google Analytics) לבין הדשבורד היפה שראיתם. ככה נראה הסיפור המלא בשרשרת:</p>
+
+    <div class="flowchart">
+      <svg viewBox="0 0 1100 250" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5b5bd6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
+          <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b5bd6"/></marker>
+        </defs>
+        <g transform="translate(20,80)">
+          <rect width="180" height="100" rx="18" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="90" y="32" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#5b5bd6" letter-spacing="1.5">SOURCE</text>
+          <text x="90" y="56" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">אירועים</text>
+          <text x="90" y="78" text-anchor="middle" font-family="Heebo,sans-serif" font-size="13" fill="#6b6794">App + Backend</text>
+        </g>
+        <line x1="210" y1="130" x2="248" y2="130" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr2)"/>
+        <g transform="translate(250,80)">
+          <rect width="180" height="100" rx="18" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="90" y="32" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#5b5bd6" letter-spacing="1.5">STORE</text>
+          <text x="90" y="56" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">מסד נתונים</text>
+          <text x="90" y="78" text-anchor="middle" font-family="Heebo,sans-serif" font-size="13" fill="#6b6794">PostgreSQL/BigQuery</text>
+        </g>
+        <line x1="440" y1="130" x2="478" y2="130" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr2)"/>
+        <g transform="translate(480,80)">
+          <rect width="180" height="100" rx="18" fill="url(#g3)"/>
+          <text x="90" y="32" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="white" letter-spacing="1.5">TRANSFORM</text>
+          <text x="90" y="56" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="white">ETL + SQL</text>
+          <text x="90" y="78" text-anchor="middle" font-family="Heebo,sans-serif" font-size="13" fill="white" opacity="0.92">חישוב KPI</text>
+        </g>
+        <line x1="670" y1="130" x2="708" y2="130" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr2)"/>
+        <g transform="translate(710,80)">
+          <rect width="180" height="100" rx="18" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="90" y="32" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#5b5bd6" letter-spacing="1.5">VISUALIZE</text>
+          <text x="90" y="56" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">Tableau / Power BI</text>
+          <text x="90" y="78" text-anchor="middle" font-family="Heebo,sans-serif" font-size="13" fill="#6b6794">דשבורד</text>
+        </g>
+        <line x1="900" y1="130" x2="938" y2="130" stroke="#5b5bd6" stroke-width="2" marker-end="url(#arr2)"/>
+        <g transform="translate(940,80)">
+          <rect width="140" height="100" rx="18" fill="#fff" stroke="#5b5bd6" stroke-width="2"/>
+          <text x="70" y="32" text-anchor="middle" font-family="Heebo,sans-serif" font-weight="700" font-size="12" fill="#5b5bd6" letter-spacing="1.5">DECIDE</text>
+          <text x="70" y="58" text-anchor="middle" font-family="David Libre,serif" font-weight="700" font-size="18" fill="#1a1547">החלטה</text>
+          <text x="70" y="80" text-anchor="middle" font-family="Heebo,sans-serif" font-size="12" fill="#6b6794">של מנהל המוצר</text>
+        </g>
+      </svg>
+    </div>
+
+    <h3>טיפים פרקטיים לעבודה ב־Tableau</h3>
+    <div class="grid-3">
+      <div class="minicard"><div class="ico">📁</div><h4>חבר את המקור הנכון</h4><p>אל תעבדו עם CSV יומי שאתם מורידים ידנית. חברו ישירות למסד הנתונים כדי שהדשבורד יתעדכן אוטומטית.</p></div>
+      <div class="minicard"><div class="ico">🧮</div><h4>הגדירו Calculated Fields</h4><p>נוסחאות KPI ("Time-to-Park") מחשבים פעם אחת, ומשתמשים בהם בכל הגרפים.</p></div>
+      <div class="minicard"><div class="ico">🎛️</div><h4>פילטרים גלובליים</h4><p>פילטר אחד למעלה (תאריך, עיר, מנוי) שמשפיע על כל הגרפים בלוח – חוסך זמן.</p></div>
+      <div class="minicard"><div class="ico">🎨</div><h4>פלטה עקבית</h4><p>אותם צבעים = אותם דברים. צבע אחד למשתמשי Premium, צבע אחר לחינם – בכל הגרפים.</p></div>
+      <div class="minicard"><div class="ico">⚡</div><h4>סדר הקריאה</h4><p>למעלה־ימין: ה־KPIs הכי חשובים. מתחת: מגמות. בתחתית: פירוט.</p></div>
+      <div class="minicard"><div class="ico">📤</div><h4>שיתוף</h4><p>פרסמו דשבורד דרך Tableau Public / Server. הוסיפו עדכון מתוזמן (Refresh).</p></div>
+    </div>
+
+    <div class="callout">
+      <span class="label">אלטרנטיבות חינמיות שאתם יכולים להשתמש בהן</span>
+      <p style="color:var(--ink);margin:0"><strong>Looker Studio (Google):</strong> חינם לחלוטין, מתחבר ל־Google Sheets / BigQuery / Analytics. <strong>Power BI Desktop:</strong> חינם לאישי. <strong>Metabase:</strong> Open source. <strong>Tableau Public:</strong> חינם, אבל הדשבורדים פומביים. לסטודנטים: Tableau Desktop חינם דרך Tableau Student.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 15 - MISTAKES ============== -->
+<a id="s15" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 15 · אזהרות</div>
+    <h2 class="title">8 הטעויות הנפוצות <span class="grad">שיגרמו לכם להוריד נקודות</span></h2>
+
+    <div class="steps">
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">1</div><div><h4>בחירת Vanity Metrics</h4><p>"מספר הורדות" / "לייקים בעמוד הפייסבוק" – מספרים שנשמעים מרשימים אבל לא מנבאים הצלחה אמיתית. מספר הורדות שווה אפס אם 95% מוחקים תוך שעה.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">2</div><div><h4>יותר מ־8 KPIs ראשיים</h4><p>אם הכל חשוב – שום דבר לא חשוב. דשבורד מנהל צריך 4-6 KPI לכל היותר, השאר משניים. רשימה של 25 KPI היא הכרזה על חוסר תעדוף.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">3</div><div><h4>חוסר נוסחת חישוב</h4><p>לכתוב "Retention" בלי להגדיר D1/D7/D30 ובלי נוסחה. בודקי הפרויקט שואלים "ואיך אתה מודד את זה?" – אתם מגמגמים. נקודות יורדות.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">4</div><div><h4>אין קישור לחזון</h4><p>תיארתם חזון יפה בפרק הראשון, ובחרתם מדדים לא קשורים. כל KPI צריך להיגזר מהחזון. הוסיפו טבלה מקשרת: חזון ← הצלחה ← KPI.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">5</div><div><h4>אותם KPIs למשתמש ולמנהל</h4><p>זו הטעות הכי נפוצה בנספח ב'. אם הצגתם למשתמש "MAU" ו"ARPU" – אתם מבולבלים. למשתמש קצה לא אכפת מ־MAU. תפסיקו לזרוק עליו מספרים מצרפיים.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">6</div><div><h4>אין יעד מספרי</h4><p>"רוצים לשפר Retention" – טוב, אבל מאיזה ערך לאיזה ערך? יעד תמיד מספר ותאריך, לפי SMART.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">7</div><div><h4>אין פילוחים</h4><p>"DAU = 8,000" זה התחלה, אבל מי הם? צעירים? במאי? בתל אביב? בלי פילוחים, אין החלטות. הכינו לפחות 3 ממדים לכל KPI.</p></div></div>
+      <div class="step" style="border-right:4px solid var(--rose)"><div class="num" style="background:linear-gradient(135deg,#f43f5e,#fb7185)">8</div><div><h4>דשבורד מבולגן</h4><p>15 גרפים בעמוד אחד, צבעים שונים בכל אחד, כותרות לא ברורות. הדשבורד הוא <em>סיפור</em>. ספרו אותו בסדר הגיוני: סקירה → פירוט → טבלה.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION 16 - CHECKLIST ============== -->
+<a id="s16" class="anchor"></a>
+<section>
+  <div class="container">
+    <div class="sec-num"><span class="bar"></span>פרק 16 · צ׳ק־ליסט סופי</div>
+    <h2 class="title">צ׳ק־ליסט סופי <span class="grad">לפני שאתם מגישים</span></h2>
+    <p class="intro">עברו על הרשימה הזו לפני שהפרויקט שלכם נוחת על שולחן הבדיקה. אם חסר משהו – חזרו לעבוד. אם הכל מסומן – כנראה שאתם בכיוון מצוין.</p>
+
+    <h3>שלב 1: בסיס תיאורטי</h3>
+    <div class="checklist">
+      <div class="check-item"><div class="box"></div><p><strong>חזון מוצר מנוסח במשפט אחד</strong>שמדבר על שינוי בעולם המשתמש, לא על תכונות טכניות.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>זוהו בעלי העניין (לפחות שלושה)</strong>עם משפט הצלחה לכל אחד.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>North Star Metric מוגדר במפורש</strong>ומוסבר למה דווקא הוא.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>יעדים אסטרטגיים בפורמט SMART</strong>– לכל אחד מספר + תאריך.</p></div>
+    </div>
+
+    <h3>שלב 2: מדדים</h3>
+    <div class="checklist">
+      <div class="check-item"><div class="box"></div><p><strong>4-6 KPIs ראשיים למנהל</strong>(לא 25, לא 2). כל אחד עם נוסחה, יחידת מידה ויעד.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>5-7 KPIs אישיים למשתמש</strong>שמדברים על "אני", לא על "כולם".</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>כיסוי לפחות 4 מתוך 5 שלבי AARRR</strong>(Acquisition, Activation, Retention, Revenue, Referral).</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>טבלה: KPI ↔ אירוע ↔ מקור נתון</strong>שמסבירה איפה הנתון נאסף בקוד.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>לפחות 3 פילוחים מוגדרים לכל KPI</strong>(לדוגמה: גיל, מיקום, מנוי).</p></div>
+    </div>
+
+    <h3>שלב 3: דשבורדים</h3>
+    <div class="checklist">
+      <div class="check-item"><div class="box"></div><p><strong>שני דשבורדים נפרדים</strong>– אחד למנהל, אחד למשתמש. לא לערבב.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>דשבורד מנהל כולל</strong>: KPI Row + גרף קוו + Funnel/Donut + Heatmap + טבלת פילוח.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>דשבורד משתמש כולל</strong>: ברכה אישית + סיכום + סטריק + השוואות אישיות + Badges.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>פילטרים גלובליים מוגדרים</strong>(תאריך, סגמנט) בדשבורד המנהל.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>סקיצה גרפית של הדשבורדים</strong>(Tableau / Looker / Figma) או דוגמה אמיתית עם נתונים סינתטיים.</p></div>
+    </div>
+
+    <h3>שלב 4: שקופית מסכמת</h3>
+    <div class="checklist">
+      <div class="check-item"><div class="box"></div><p><strong>תרשים זרימה אחד</strong>שמסכם את כל ההיגיון: חזון → North Star → KPIs → מקורות נתון.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>תוכנית עבודה מינימלית</strong>– איזה אירועים תקודדו בקוד, ובאיזה כלי תבנו דשבורד.</p></div>
+      <div class="check-item"><div class="box"></div><p><strong>סיכון אחד שזיהיתם</strong>(למשל: "אנחנו מודדים זמן חניה, אבל המשתמש יכול לעצור את הטיימר בטעות"), ותוכנית להתמודדות.</p></div>
+    </div>
+
+    <div class="callout tip" style="margin-top:30px">
+      <span class="label">המבחן הסופי – "הבחינה של המנכ"ל"</span>
+      <p style="color:var(--ink);margin:0;font-size:17px">דמיינו שמנכ"ל החברה נכנס לחדר ושואל אתכם: "תראה לי מספר אחד שאומר אם המוצר שלנו עובד." האם אתם יודעים להצביע על מספר אחד ספציפי בדשבורד? <strong>אם כן – ה־North Star שלכם ברור. אם לא – חזרו לפרק 3.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="container">
+    <p class="sig">— תדריך נספח ב' · בניית מדדי ביצוע למוצר —</p>
+    <p>מחלקת כלכלה וניהול · המכללה האקדמית עמק יזרעאל</p>
+    <p style="margin-top:10px;color:var(--violet-deep);font-weight:600">תזכרו: מדידה היא הדבר היחיד שמפריד בין מוצר שמצליח לבין השערה שהתבדתה.</p>
+  </div>
+</footer>
+
+</body>
+</html>
